@@ -1,0 +1,53 @@
+"""Run bounded, metered connectivity probes; write only safe metadata."""
+import json
+from datetime import datetime, timezone
+from app.config import Settings
+from app.budget import BudgetLedger, BudgetExceeded
+from app.providers import DeepSeekClient, EmbeddingClient, ProviderError
+
+
+def main():
+    settings = Settings.load()
+    settings.runtime_dir.mkdir(parents=True,exist_ok=True)
+    ledger = BudgetLedger(settings.runtime_dir/'usage.sqlite',settings.llm_budget_usd)
+    llm = DeepSeekClient(settings,ledger)
+    result = {'checked_at':datetime.now(timezone.utc).isoformat(),'deepseek_model':settings.deepseek_model,'embedding_model':settings.embedding_model,'deepseek_key':'configured' if settings.deepseek_api_key else 'missing','embedding_key':'configured' if settings.siliconflow_api_key else 'missing'}
+    try:
+        models = llm.list_models()
+        result['authentication'] = 'ok'
+        result['model_available'] = settings.deepseek_model in models
+    except ProviderError:
+        result['authentication'] = 'failed'
+    try:
+        completion = llm.complete([{'role':'user','content':'Return JSON only: {"ok":true}'}],purpose='connectivity_json',response_format={'type':'json_object'},max_tokens=128)
+        result['json_completion'] = 'ok' if json.loads(completion['choices'][0]['message']['content']).get('ok') is True else 'invalid'
+    except (ProviderError,BudgetExceeded,ValueError,KeyError,TypeError,AttributeError):
+        result['json_completion'] = 'failed'
+    try:
+        tools = [{'type':'function','function':{'name':'ping','description':'Connectivity probe returning pong','parameters':{'type':'object','properties':{},'required':[]}}}]
+        messages = [{'role':'user','content':'Call ping exactly once. After its result reply pong.'}]
+        response = llm.complete(messages,purpose='connectivity_tool',tools=tools,tool_choice={'type':'function','function':{'name':'ping'}},max_tokens=128)
+        message = response['choices'][0]['message']
+        calls = message.get('tool_calls',[])
+        if len(calls)!=1 or calls[0]['function']['name']!='ping':
+            raise ProviderError('Unexpected tool response')
+        messages.append(message)
+        messages.append({'role':'tool','tool_call_id':calls[0]['id'],'content':'pong'})
+        final = llm.complete(messages,purpose='connectivity_tool_result',tools=tools,tool_choice='none',max_tokens=128)
+        result['native_tool_roundtrip'] = 'ok' if 'pong' in (final['choices'][0]['message'].get('content') or '').lower() else 'invalid'
+    except (ProviderError,BudgetExceeded,ValueError,KeyError,TypeError):
+        result['native_tool_roundtrip'] = 'failed'
+    if settings.siliconflow_api_key:
+        try:
+            vectors = EmbeddingClient(settings).embed(['Connectivity probe'])
+            result['embedding_probe'] = {'status':'ok','vectors':len(vectors),'dimensions':len(vectors[0])}
+        except ProviderError:
+            result['embedding_probe'] = {'status':'failed'}
+    else:
+        result['embedding_probe'] = {'status':'disabled; lexical retrieval only'}
+    result['budget'] = ledger.report()
+    (settings.runtime_dir/'connectivity.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+    print(json.dumps(result,indent=2))
+
+if __name__ == '__main__':
+    main()
