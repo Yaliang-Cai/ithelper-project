@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, username TEXT UNIQUE NOT N
 CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), csrf_hash TEXT NOT NULL, expires_at REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS conversations(id TEXT PRIMARY KEY, actor_id TEXT NOT NULL REFERENCES users(id), version INTEGER NOT NULL DEFAULT 1, created_at REAL NOT NULL, payload TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES conversations(id), actor_id TEXT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL, created_at REAL NOT NULL, idempotency_key TEXT NOT NULL, UNIQUE(conversation_id,idempotency_key));
+CREATE TABLE IF NOT EXISTS turn_submissions(actor_id TEXT NOT NULL REFERENCES users(id), conversation_id TEXT NOT NULL REFERENCES conversations(id), idempotency_key TEXT NOT NULL, proposal_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(actor_id,conversation_id,idempotency_key));
 CREATE TABLE IF NOT EXISTS issues(id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES conversations(id), actor_id TEXT NOT NULL, status TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, created_at REAL NOT NULL, payload TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS candidate_batches(message_id TEXT PRIMARY KEY REFERENCES messages(id), content_hash TEXT NOT NULL, result TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS observations(id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL, message_id TEXT NOT NULL REFERENCES messages(id), actor_id TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, created_at REAL NOT NULL, payload TEXT NOT NULL);
@@ -89,7 +90,7 @@ class Store:
     def reset_demo(self):
         """Reset only this explicitly selected business DB; never traverse runtime."""
         with self.write() as connection:
-            tables = ['tool_calls','questions','runs','events','handoffs','approvals','confirmations',
+            tables = ['turn_submissions','tool_calls','questions','runs','events','handoffs','approvals','confirmations',
                       'actions','attempts','evidence','hypotheses','relations','observations','candidate_batches',
                       'issues','messages','conversations','sessions','access_grants','resources','accounts',
                       'vpn_sessions','world_records','users']

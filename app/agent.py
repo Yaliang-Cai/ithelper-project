@@ -35,6 +35,14 @@ class RunStop(Exception):
         self.code,self.status=code,status
 
 
+def _turn_result(run_id,event_id,status,error_code,submitted,state,model_calls,tool_calls):
+    cards={k:state[k] for k in ('issues','confirmations','approvals','handoffs','all_resolved')}
+    return {'run_id':run_id,'event_id':event_id,'status':status,'error_code':error_code,
+            'message':submitted['message'] if submitted else None,
+            'guidance_refs':submitted.get('guidance_refs',[]) if submitted else [],
+            'cards':cards,'model_calls':model_calls,'tool_calls':tool_calls}
+
+
 class Agent:
     def __init__(self,domain,client,tools=None,context_builder=None,*,monotonic=time.monotonic,thinking=False):
         from app.tools import ToolExecutor
@@ -57,6 +65,19 @@ class Agent:
         # A duplicate dispatch of a finished run returns the durable result.
         prior=[r for r in state['runs'] if r['event_id']==event['id'] and r.get('result')]
         if prior:return prior[-1]['result']
+        submission_key='agent:'+event['id']
+        submitted=self.domain.get_submitted_turn(actor,chat,submission_key)
+        if submitted is not None:
+            # A submission receipt commits with its state/reply. Recover it
+            # before requesting another stochastic interpretation/decision.
+            current=self.domain.snapshot(actor,chat)
+            owned_event=next(e for e in current['events'] if e['id']==event['id'])
+            require(owned_event['status']=='running' and owned_event['worker_id']==event['worker_id'] and owned_event['lease_until']>self.domain.store.clock(),'CONFLICT','Active claimed event required')
+            incomplete=[r for r in current['runs'] if r['event_id']==event['id']]
+            run=incomplete[-1] if incomplete else self.domain.create_run(actor,chat,event['id'],{'mode':'recovered_submission'})
+            result=_turn_result(run['id'],event['id'],'completed',None,submitted,current,run.get('model_calls',0),run.get('tool_calls',0))
+            self.domain.update_run(actor,run['id'],'completed',{'result':result,'recovered_submission':True,'submission_key':submission_key,'error_code':None})
+            return result
         return _Run(self,event).execute()
 
 
@@ -106,13 +127,15 @@ class _Run:
         remaining=120-(self.agent.monotonic()-self.start)
         if remaining<=0:raise RunStop('RUN_DEADLINE','budget_exhausted')
         self.model_calls+=1
-        entry={'kind':'model','stage':self.stage,'input':redact(copy.deepcopy(self.messages)),'input_estimated_tokens':token_bound(self.messages),'schema_estimated_tokens':token_bound(tools or []),'output_limit':2048}
+        final_only=self.stage=='decision' and self.model_calls==MAX_MODEL_CALLS
+        attempt_tools=[submit_schema()] if final_only else tools
+        entry={'kind':'model','stage':self.stage,'input':redact(copy.deepcopy(self.messages)),'input_estimated_tokens':token_bound(self.messages),'schema_estimated_tokens':token_bound(attempt_tools or []),'output_limit':2048,'finalization_only':final_only}
         self.trace.append(entry);self.persist()
         try:
-            result=self.agent.client.complete(self.messages,purpose='agent_'+self.stage,tools=tools,
+            result=self.agent.client.complete(self.messages,purpose='agent_'+self.stage,tools=attempt_tools,
                 response_format={'type':'json_object'} if self.stage=='interpretation' else None,
                 thinking=self.agent.thinking,max_tokens=2048,timeout_seconds=min(45,remaining),
-                tool_choice={'type':'function','function':{'name':'submit_turn'}} if self.stage=='decision' and self.model_calls==MAX_MODEL_CALLS else None)
+                tool_choice={'type':'function','function':{'name':'submit_turn'}} if final_only else None)
         except ProviderError as exc:
             entry['error_category']=exc.category
             if exc.category!='protocol':raise
@@ -173,8 +196,10 @@ class _Run:
         self.messages=[{'role':'system','content':DECISION},self.fresh_context()]
         schemas=[*self.agent.tools.schemas,refinement_schema(),submit_schema()]
         while True:
-            final_only=self.model_calls==MAX_MODEL_CALLS-1
-            message=self.complete([submit_schema()] if final_only else schemas)
+            message=self.complete(schemas)
+            # Completion can include a bounded internal protocol retry; enforce
+            # dispatch against the request that actually produced this result.
+            final_only=self.model_calls==MAX_MODEL_CALLS
             calls=message.get('tool_calls',[])
             if not calls:
                 self.correction()
@@ -269,9 +294,6 @@ class _Run:
                     submitted={'message':self.domain.append_message(self.actor,self.chat,'assistant',reply,'agent:'+self.event['id']),'guidance_refs':[]}
             except (DomainError,sqlite3.Error,OSError):pass
         state=self.domain.snapshot(self.actor,self.chat)
-        cards={'issues':state['issues'],'confirmations':state['confirmations'],'approvals':state['approvals'],'handoffs':state['handoffs'],'all_resolved':state['all_resolved']}
-        result={'run_id':self.run['id'],'event_id':self.event['id'],'status':status,'error_code':error_code,
-                'message':submitted['message'] if submitted else None,'guidance_refs':submitted.get('guidance_refs',[]) if submitted else [],
-                'cards':cards,'model_calls':self.model_calls,'tool_calls':self.tool_calls}
+        result=_turn_result(self.run['id'],self.event['id'],status,error_code,submitted,state,self.model_calls,self.tool_calls)
         self.persist(status,{'error_code':error_code,'result':result})
         return result

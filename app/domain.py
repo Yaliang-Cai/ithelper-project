@@ -638,14 +638,28 @@ class Domain:
                 result.append(unpack(c.execute('SELECT * FROM relations WHERE id=?',(old['id'],)).fetchone()))
             return result
 
+    def get_submitted_turn(self,actor_id,conversation_id,idempotency_key):
+        """Read an owned committed finalization without generating a new proposal."""
+        text_value(idempotency_key,200)
+        with self.store.read() as c:
+            self._conversation(c,actor_id,conversation_id)
+            row=c.execute('SELECT result FROM turn_submissions WHERE actor_id=? AND conversation_id=? AND idempotency_key=?',(actor_id,conversation_id,idempotency_key)).fetchone()
+            return json.loads(row['result']) if row else None
+
     def submit_turn(self,actor_id,conversation_id,proposal,idempotency_key,*,before_effect=None):
         """Commit all validated internal proposals and reply together, or none."""
         from contextlib import contextmanager
         from app.contracts import Turn
         value=Turn.model_validate(proposal).model_dump(exclude_none=True)
+        text_value(idempotency_key,200);fingerprint=digest(value)
         outer=self.store
         with outer.write() as connection:
             self._conversation(connection,actor_id,conversation_id)
+            old=connection.execute('SELECT proposal_hash,result FROM turn_submissions WHERE actor_id=? AND conversation_id=? AND idempotency_key=?',(actor_id,conversation_id,idempotency_key)).fetchone()
+            if old:
+                require(old['proposal_hash']==fingerprint,'CONFLICT','Turn idempotency key reused with a different proposal')
+                return json.loads(old['result'])
+            require(connection.execute('SELECT 1 FROM messages WHERE conversation_id=? AND idempotency_key=?',(conversation_id,idempotency_key)).fetchone() is None,'CONFLICT','Message key exists without a turn receipt; legacy mutations cannot be safely replayed')
             if before_effect is not None:before_effect()
             # A transaction-bound Domain reuses the existing services and checks.
             # It never escapes this call or gives a model access to a connection.
@@ -677,7 +691,9 @@ class Domain:
             steps=[step for attempt in guidance for step in attempt['reviewed_steps']]
             content=value['reply']+('\n\n'+ '\n\n'.join(steps) if steps else '')
             message=bound.append_message(actor_id,conversation_id,'assistant',content,idempotency_key)
-            return {'message':message,'guidance_refs':[a['id'] for a in guidance]}
+            result={'message':message,'guidance_refs':[a['id'] for a in guidance]}
+            connection.execute('INSERT INTO turn_submissions VALUES(?,?,?,?,?)',(actor_id,conversation_id,idempotency_key,fingerprint,dumps(result)))
+            return result
 
     def create_run(self,actor_id,conversation_id,event_id,metadata=None):
         with self.store.write() as c:

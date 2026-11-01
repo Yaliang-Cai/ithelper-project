@@ -452,3 +452,103 @@ def test_approval_wrappers_cannot_manufacture_or_reuse_authority(env,bad_kind):
     with pytest.raises(DomainError) as error:d.apply_issue_updates('alice.sales',chat,[update])
     assert error.value.code=='PRECONDITION_FAILED' and 'current_approvals' in error.value.data
     assert 'proposed' in error.value.message.lower() or 'no current pending' in error.value.message.lower()
+
+
+def test_submit_turn_replays_whole_transaction_before_versioned_mutations(env):
+    d,chat=env;i=d.create_issue('alice.sales',chat,'Login',['okta'])
+    q=d.save_questions('alice.sales',chat,[{'text':'Which error?','issue_refs':[i['id']],'question_intent':'error_detail'}])[0]
+    msg=d.append_message('alice.sales',chat,'user','Locked','answer')
+    h=d.save_hypotheses('alice.sales',chat,[{'issue_id':i['id'],'claim':'Possibly locked','status':'tentative','support_refs':[msg['id']],'contradict_refs':[]}])[0]
+    proposal=json.loads(final('Need confirmation.',
+        hypotheses=[{'hypothesis_id':h['id'],'expected_version':1,'issue_id':i['id'],'claim':'Lock supported','status':'supported','support_refs':[msg['id']],'contradict_refs':[]},
+                    {'issue_id':i['id'],'claim':'Still tentative','status':'tentative','support_refs':[msg['id']],'contradict_refs':[]}],
+        question_updates=[{'question_id':q['id'],'status':'answered','answer_message_id':msg['id']}],
+        issue_updates=[{'issue_id':i['id'],'expected_version':i['version'],'requested_status':'waiting_user','criterion_id':'application_recovery','evidence_refs':[]}]
+    )['choices'][0]['message']['tool_calls'][0]['function']['arguments'])
+    first=d.submit_turn('alice.sales',chat,proposal,'whole-turn')
+    before=d.snapshot('alice.sales',chat)
+    replay=Domain(Store(d.store.db_path).initialize()).submit_turn('alice.sales',chat,proposal,'whole-turn')
+    after=d.snapshot('alice.sales',chat)
+    assert replay==first and after==before
+    assert len(after['hypotheses'])==2 and next(x for x in after['hypotheses'] if x['id']==h['id'])['version']==2
+    assert after['issues'][0]['version']==i['version']+1 and len(after['questions'][0]['history'])==1
+    assert len([m for m in after['messages'] if m['role']=='assistant'])==1
+    conflicting=copy.deepcopy(proposal);conflicting['hypotheses'][1]['claim']='Changed under same key'
+    with pytest.raises(DomainError,match='CONFLICT'):d.submit_turn('alice.sales',chat,conflicting,'whole-turn')
+    assert d.snapshot('alice.sales',chat)==before
+
+
+def test_submit_turn_key_is_owned_scoped_and_reset_with_business_world(env):
+    d,chat=env
+    proposal=json.loads(final('Saved.')['choices'][0]['message']['tool_calls'][0]['function']['arguments'])
+    first=d.submit_turn('alice.sales',chat,proposal,'scoped')
+    assert d.get_submitted_turn('alice.sales',chat,'scoped')==first
+    other=d.create_conversation('alice.sales')['id']
+    assert d.get_submitted_turn('alice.sales',other,'scoped') is None
+    second=d.submit_turn('alice.sales',other,proposal,'scoped')
+    assert second['message']['id']!=first['message']['id']
+    with pytest.raises(DomainError,match='FORBIDDEN'):d.get_submitted_turn('bo.remote',chat,'scoped')
+    d.store.reset_demo()
+    with d.store.read() as c:assert c.execute('SELECT COUNT(*) FROM turn_submissions').fetchone()[0]==0
+
+
+def test_agent_recovers_committed_submission_after_run_save_crash_without_model(env):
+    import sqlite3
+    from app.agent import Agent
+    d,chat=env;i=d.create_issue('alice.sales',chat,'Login',['okta'])
+    e=event(d,chat,'Locked')
+    msg=e['message_id']
+    model=Scripted(response(json.dumps(candidates())),final('Saved before worker crash.',
+        hypotheses=[{'issue_id':i['id'],'claim':'Possibly locked','status':'tentative','support_refs':[msg],'contradict_refs':[]}],
+        issue_updates=[{'issue_id':i['id'],'expected_version':i['version'],'requested_status':'waiting_user','criterion_id':'application_recovery','evidence_refs':[]}]))
+    with d.store.write() as c:
+        c.execute("""CREATE TRIGGER crash_run_save AFTER UPDATE ON runs
+            WHEN EXISTS(SELECT 1 FROM messages m WHERE m.conversation_id=NEW.conversation_id
+                        AND m.idempotency_key='agent:' || NEW.event_id AND m.role='assistant')
+            BEGIN SELECT RAISE(ABORT,'simulated crash after committed submission'); END""")
+    with pytest.raises(sqlite3.IntegrityError,match='simulated crash'):
+        Agent(d,model).handle(e)
+    before=d.snapshot('alice.sales',chat)
+    assert len(before['hypotheses'])==1 and not before['runs'][0].get('result')
+    with d.store.write() as c:c.execute('DROP TRIGGER crash_run_save')
+    extra=d.create_issue('alice.sales',chat,'Separate current goal',['grafana'])
+    current=d.snapshot('alice.sales',chat)
+    # New process facade and an empty provider: recovery must not need a fresh
+    # stochastic proposal to rediscover the already committed turn fingerprint.
+    restarted=Domain(Store(d.store.db_path).initialize())
+    recovered=Agent(restarted,Scripted()).handle(e)
+    after=restarted.snapshot('alice.sales',chat)
+    assert recovered['status']=='completed' and recovered['run_id']==before['runs'][0]['id']
+    assert recovered['message']['content']=='Saved before worker crash.'
+    assert after['hypotheses']==current['hypotheses'] and after['issues']==current['issues']
+    assert after['messages']==before['messages']
+    assert recovered['cards']['issues']==current['issues'] and any(row['id']==extra['id'] for row in recovered['cards']['issues'])
+    assert after['runs'][0]['result']==recovered and after['runs'][0]['recovered_submission'] is True
+
+
+@pytest.mark.parametrize('ignore_final_choice',[False,True])
+def test_internal_protocol_retry_recomputes_final_schema_and_dispatch(env,ignore_final_choice):
+    from app.providers import ProviderError
+    d,chat=env
+    class NinthFailure:
+        def __init__(self):self.n=0;self.final_request=None
+        def complete(self,messages,**kwargs):
+            self.n+=1
+            if self.n==1:return response(json.dumps(candidates()))
+            if self.n==9:raise ProviderError(category='protocol')
+            if self.n==10:
+                self.final_request=kwargs
+                return response(calls=[tool('get_employee_context',{},'ignored-final')]) if ignore_final_choice else final('Saved at final allowance.')
+            return response(calls=[tool('get_employee_context',{},str(self.n))])
+    model=NinthFailure();result=run(env,model,'help')
+    assert model.n==10 and result['model_calls']==10
+    assert [s['function']['name'] for s in model.final_request['tools']]==['submit_turn']
+    assert model.final_request['tool_choice']=={'type':'function','function':{'name':'submit_turn'}}
+    with d.store.read() as c:
+        actual_calls=[json.loads(row['payload']) for row in c.execute('SELECT payload FROM tool_calls WHERE conversation_id=?',(chat,))]
+    assert len(actual_calls)==7 and all(row['name']=='get_employee_context' for row in actual_calls)
+    assert result['status']==('budget_exhausted' if ignore_final_choice else 'completed')
+    if ignore_final_choice:
+        trace=d.get_run('alice.sales',result['run_id'])['trace']
+        denied=next(t for t in trace if t.get('call_id')=='ignored-final')
+        assert denied['result']['error']['code']=='FINALIZATION_REQUIRED'
