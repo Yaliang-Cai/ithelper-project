@@ -58,7 +58,7 @@ flowchart LR
 .venv/Scripts/python.exe -m evals.runner validate
 ```
 
-当前完整离线套件 **214 passed**，普通检出与精确 Git LF 源码树均通过，案例结构检查 **31 个变体**。其中 5 项新增回归验证历史密封校验的 LF/CRLF 可移植性与内容变化拒绝；应用仍为 v7。GitHub Actions 在 Python 3.12 执行同样的安装、测试与结构验证，不需要 API key，不调用付费模型。[首次托管失败与修正](docs/delivery-evidence.md)另列，修正版仍需实际 CI 验证。另有脚本模型驱动真实 Agent/HTTP/浏览器的 14 项检查、受控时钟 UI 的 3 项检查；模式和复现方式见[演示指南](docs/demo.md)。程序测试不证明自然语言质量。
+当前完整离线套件 **214 passed**，普通检出与精确 Git LF 源码树均通过，案例结构检查 **31 个变体**。其中 5 项新增回归验证历史密封校验的 LF/CRLF 可移植性与内容变化拒绝；应用仍为 v7。GitHub Actions 在 Python 3.12 执行同样的安装、测试与结构验证，不需要 API key，不调用付费模型。[首次托管失败与修正](docs/delivery-evidence.md)另列，实际托管结果见[工作流运行记录](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml)，本地测试不能替代该结果。另有脚本模型驱动真实 Agent/HTTP/浏览器的 14 项检查、受控时钟 UI 的 3 项检查；模式和复现方式见[演示指南](docs/demo.md)。程序测试不证明自然语言质量。
 
 真实模型评估使用独立合成业务世界、用户模拟、程序 oracle 和独立上下文评分。v6 七案中有未完成、无效用户模拟、被拒绝评分以及为保留演示费用而停止的运行；v7 仅针对两个已知失败复测，D09 通过实际确认 API 保存一次重置收据。D05 尚未验证等待后的问答，D09 仍有长回复与内部会话键。两案单次结果不能推出普遍可靠性；同模型 grader 也不能替代人工评审。
 

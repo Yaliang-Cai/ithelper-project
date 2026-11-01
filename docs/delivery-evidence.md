@@ -12,7 +12,7 @@
 
 修正仅在测试内接受原始精确字节或统一 LF 到历史 CRLF 的换行转换，不进行 JSON 重序列化，也不容忍事实、空白、BOM、混合换行或裸 CR 变化。新增 5 项回归；普通检出 **214 passed（24.28 秒）**，逐文件核对原始 Git blob 的 LF 源码树 **214 passed（24.48 秒）**，两边均验证 31 个案例变体。原 209 项历史记录不改写，应用 v7、案例、oracle、密封值和媒体未变，无新增模型调用。
 
-该托管日志还提示 `setup-python@v5` 的 Node 20 兼容警告；仅改为官方 [setup-python v6](https://github.com/actions/setup-python/releases/tag/v6.0.0) 的 Node 24 版本，实际 runner 2.338.2 满足其最低 2.327.1。`checkout@v6` 和 Python 依赖不变。源码包版本为 0.1.1，修正版仍须发布后取得实际托管 CI 结果；本地测试通过不替代该检查。
+该托管日志还提示 `setup-python@v5` 的 Node 20 兼容警告；仅改为官方 [setup-python v6](https://github.com/actions/setup-python/releases/tag/v6.0.0) 的 Node 24 版本，实际 runner 2.338.2 满足其最低 2.327.1。`checkout@v6` 和 Python 依赖不变。源码包版本为 0.1.1，实际托管结果见[工作流运行记录](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml)，本地测试不能替代该结果。
 
 ## 原交付的实际检查
 
