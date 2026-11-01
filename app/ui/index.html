@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IT 服务助手 · 本地演示</title>
+  <link rel="stylesheet" href="/ui/styles.css"><script defer src="/ui/app.js"></script>
+</head>
+<body>
+  <header><a href="/" class="brand">IT 服务助手</a><span class="badge">模拟业务系统 · 本地演示</span><span id="identity"></span><button id="logout" hidden>退出登录</button></header>
+  <main>
+    <div id="error" role="alert" hidden></div>
+    <section id="login-panel" class="panel narrow" hidden>
+      <h1>登录员工服务</h1><p>咨询 IT 问题、跟进处理进度。业务写入只发生在本地模拟系统。</p>
+      <form id="login-form">
+        <label for="username">演示账号</label><select id="username" autocomplete="username">
+          <option>alice.sales</option><option>bo.remote</option><option>chen.data</option><option>dana.platform</option><option>pat.approver</option><option>dev.debug</option>
+        </select>
+        <label for="password">密码</label><input id="password" type="password" autocomplete="current-password" required value="DemoPass123!">
+        <button type="submit">登录</button>
+      </form>
+      <p class="muted">六个公开演示账号均使用 <code>DemoPass123!</code>。Pat 为审批人，Dev 为调试角色；其余为员工。</p>
+    </section>
+    <nav id="navigation" hidden><a href="/">我的聊天</a><a id="approver-link" href="/approver" hidden>资源审批</a><a id="debug-link" href="/debug" hidden>调试记录</a></nav>
+    <section id="employee-panel" hidden>
+      <div class="toolbar"><label for="history">我的聊天</label><select id="history"><option value="">选择聊天</option></select><button id="new-chat">新建聊天</button><button id="close-chat" hidden>收起聊天</button><button id="refresh">刷新</button></div>
+      <div id="welcome" class="panel"><h1>有什么 IT 问题需要帮助？</h1><p>新建或重新打开自己的聊天，描述你遇到的问题。每个问题会分别跟进。</p></div>
+      <div id="chat-layout" hidden>
+        <section class="chat panel" aria-label="聊天">
+          <div id="messages" aria-live="polite" aria-relevant="additions"></div>
+          <p id="progress" role="status"></p>
+          <form id="message-form"><label for="message">描述问题或补充反馈</label><textarea id="message" rows="3" maxlength="32000" required placeholder="例如：VPN 无法连接，客户端提示会话已存在"></textarea><div class="toolbar"><button id="send" type="submit">发送</button><span id="send-note" class="muted">请勿填写真实密码或密钥</span></div></form>
+        </section>
+        <aside id="issues" aria-label="问题进度"></aside>
+      </div>
+    </section>
+    <section id="approver-panel" hidden><h1>资源审批</h1><p>仅列出你有权处理的精确资源申请。审批将自动回到原员工的问题。</p><button id="refresh-approvals">刷新申请</button><div id="approvals"></div></section>
+    <section id="debug-panel" hidden><h1>调试记录</h1><p>实际工具调用、上下文、状态、耗时和计量；不展示模型内部思考或凭据。</p><label for="runs">运行记录</label><select id="runs"></select><button id="refresh-debug">刷新记录</button><pre id="debug-output"></pre></section>
+  </main>
+  <footer>来源为合成演示数据。审批、账号操作与交接均为模拟；交接不会实际联系专家。</footer>
+</body>
+</html>

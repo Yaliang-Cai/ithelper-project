@@ -15,6 +15,7 @@ from app.providers import ProviderError,request_deadline
 
 WRITE_TOOLS={'unlock_account','grant_catalog_access','reset_vpn_session','request_approval','create_handoff'}
 MAX_MODEL_CALLS=10
+SCOPED_EVENTS={'approval_decision','confirmation_decision'}
 
 
 def parse_json(text):
@@ -44,8 +45,10 @@ def _turn_result(run_id,event_id,status,error_code,submitted,state,model_calls,t
 
 
 class Agent:
-    def __init__(self,domain,client,tools=None,context_builder=None,*,monotonic=time.monotonic,thinking=False):
+    def __init__(self,domain,client,tools=None,context_builder=None,*,monotonic=time.monotonic,thinking=False,run_mode='live_agent'):
         from app.tools import ToolExecutor
+        if run_mode not in ('live_agent','scripted_agent'):raise ValueError('Invalid run mode')
+        self.run_mode=run_mode
         self.domain=domain;self.client=client;self.tools=tools or ToolExecutor(domain)
         self.context=context_builder or ContextBuilder(domain)
         self.monotonic=monotonic;self.thinking=thinking
@@ -74,7 +77,7 @@ class Agent:
             owned_event=next(e for e in current['events'] if e['id']==event['id'])
             require(owned_event['status']=='running' and owned_event['worker_id']==event['worker_id'] and owned_event['lease_until']>self.domain.store.clock(),'CONFLICT','Active claimed event required')
             incomplete=[r for r in current['runs'] if r['event_id']==event['id']]
-            run=incomplete[-1] if incomplete else self.domain.create_run(actor,chat,event['id'],{'mode':'recovered_submission'})
+            run=incomplete[-1] if incomplete else self.domain.create_run(actor,chat,event['id'],{'mode':self.run_mode,'recovered_submission':True})
             result=_turn_result(run['id'],event['id'],'completed',None,submitted,current,run.get('model_calls',0),run.get('tool_calls',0))
             self.domain.update_run(actor,run['id'],'completed',{'result':result,'recovered_submission':True,'submission_key':submission_key,'error_code':None})
             return result
@@ -97,7 +100,7 @@ class _Run:
                 if item.get('name')=='get_action_result' and result.get('ok'):self.uncertain.discard(item.get('arguments',{}).get('action_id'))
         from app.seed import WORLD_AS_OF
         from app.tools import POLICY_VERSION
-        self.run=self.domain.create_run(self.actor,self.chat,event['id'],{'prompt_version':PROMPT_VERSION,'mode':'live_agent','model':'deepseek-flash','thinking':agent.thinking,
+        self.run=self.domain.create_run(self.actor,self.chat,event['id'],{'prompt_version':PROMPT_VERSION,'mode':agent.run_mode,'model':'deepseek-flash','thinking':agent.thinking,
             'data_as_of':WORLD_AS_OF,'policy_version':POLICY_VERSION,'limits':{'model_calls':MAX_MODEL_CALLS,'tool_calls':12,'seconds':120,'format_corrections':1}})
 
     def guard(self):
@@ -105,6 +108,38 @@ class _Run:
         state=self.domain.snapshot(self.actor,self.chat)
         e=next((e for e in state['events'] if e['id']==self.event['id']),None)
         if not e or e['status']!='running' or e['worker_id']!=self.event['worker_id'] or e['lease_until']<=self.domain.store.clock():raise RunStop('EVENT_LEASE_LOST')
+        if self.event['kind'] in SCOPED_EVENTS and (not self.event.get('issue_id') or e.get('issue_id')!=self.event['issue_id'] or not any(i['id']==self.event['issue_id'] for i in state['issues'])):
+            raise RunStop('EVENT_SCOPE')
+
+    def guard_resume_mutation(self,name,proposal):
+        """Decision events may mutate only their persisted original issue.
+
+        Shared owned read context/evidence remains available. Resolve indirect
+        targets from current owned records, never model-supplied associations.
+        Employee-message events retain ordinary multi-issue semantics.
+        """
+        if self.event['kind'] not in SCOPED_EVENTS:return
+        if name not in WRITE_TOOLS and name not in ('submit_turn','refine_issue'):return
+        target=self.event.get('issue_id')
+        def bound(ids):
+            require(isinstance(ids,list) and bool(ids) and all(i==target for i in ids),'EVENT_SCOPE','Resume is limited to the original event issue; leave other goals unchanged until an employee message.')
+        if name=='create_handoff':bound(proposal.get('issue_refs'))
+        elif name!='submit_turn':bound([proposal.get('issue_id')])
+        else:
+            state=self.domain.snapshot(self.actor,self.chat)
+            for field in ('issue_updates','refinements','hypotheses','guidance'):
+                for p in proposal.get(field,[]):bound([p.get('issue_id')])
+            for p in proposal.get('hypotheses',[]):
+                if p.get('hypothesis_id'):
+                    old=next((h for h in state['hypotheses'] if h['id']==p['hypothesis_id']),None)
+                    bound([old.get('issue_id') if old else None])
+            for p in proposal.get('questions',[]):bound(p.get('issue_refs'))
+            for p in proposal.get('question_updates',[]):
+                old=next((q for q in state['questions'] if q['id']==p['question_id']),None)
+                bound(old.get('issue_refs') if old else None)
+            for p in proposal.get('relation_updates',[]):
+                old=next((r for r in state['relations'] if r['id']==p['relation_id']),None)
+                bound([old.get('from_issue'),old.get('to_issue')] if old else None)
 
     def persist(self,status='running',extra=None):
         self.domain.update_run(self.actor,self.run['id'],status,{
@@ -179,6 +214,7 @@ class _Run:
 
     def business_call(self,name,args):
         self.guard()
+        self.guard_resume_mutation(name,args)
         key=digest({'name':name,'arguments':args})
         if name in WRITE_TOOLS and (self.uncertain or key in self.failed_writes):return self.envelope('QUERY_BEFORE_WRITE_RETRY')
         if name not in WRITE_TOOLS and self.read_failures.get(key,0)>1:return self.envelope('READ_RETRY_LIMIT')
@@ -232,10 +268,12 @@ class _Run:
                     if name=='submit_turn':
                         proposal=Turn.model_validate(args).model_dump(exclude_none=True)
                         self.guard()
+                        self.guard_resume_mutation(name,proposal)
                         submitted=self.domain.submit_turn(self.actor,self.chat,proposal,'agent:'+self.event['id'],before_effect=self.guard)
                         result={'ok':True,'data':submitted}
                     elif name=='refine_issue':
                         proposal=Refinement.model_validate(args).model_dump(exclude_none=True)
+                        self.guard_resume_mutation(name,proposal)
                         issue=self.domain.refine_issue(self.actor,self.chat,**proposal,before_effect=self.guard)
                         result={'ok':True,'data':{'issue':issue},'evidence':[],'action_id':None,'error':None}
                     else:
