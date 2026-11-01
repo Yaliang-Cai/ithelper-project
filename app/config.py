@@ -21,7 +21,7 @@ class Settings:
             raise ValueError('Only the authorized model IDs are allowed')
         if self.deepseek_base_url.rstrip('/') not in ('https://api.deepseek.com','https://api.deepseek.com/v1') or self.embedding_base_url.rstrip('/') != 'https://api.siliconflow.cn/v1':
             raise ValueError('Only official provider endpoints are allowed')
-        if not math.isfinite(self.llm_budget_usd) or self.llm_budget_usd <= 0:
+        if not math.isfinite(self.llm_budget_usd) or not 0 < self.llm_budget_usd <= 3:
             raise ValueError('Budget must be positive and finite')
         object.__setattr__(self, 'runtime_dir', Path(self.runtime_dir))
 

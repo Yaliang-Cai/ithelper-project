@@ -150,3 +150,104 @@ def test_connectivity_json_bounded_retry(monkeypatch):
     probe=Probe()
     assert probe_json(probe) == ['failed','ok']
     assert probe.calls == 2
+
+@pytest.mark.parametrize('limit',[3.000001,4])
+def test_rejects_unauthorized_limit(tmp_path,limit):
+    from app.config import Settings
+    from app.budget import BudgetLedger
+    with pytest.raises(ValueError):
+        Settings(llm_budget_usd=limit)
+    with pytest.raises(ValueError):
+        BudgetLedger(tmp_path/'cap.sqlite',limit)
+
+
+def test_overrun_is_recorded_and_blocks_cap(tmp_path):
+    from app.budget import BudgetLedger, BudgetExceeded, BudgetOverrun
+    path=tmp_path/'cap.sqlite'
+    ledger=BudgetLedger(path,3)
+    r=ledger.reserve(2.9,purpose='agent')
+    with pytest.raises(BudgetOverrun):
+        ledger.settle(r,3.1)
+    reopened=BudgetLedger(path,3)
+    assert reopened.report()['spent_usd']==3.1
+    assert reopened.report()['accounting_overrun'] is True
+    with pytest.raises(BudgetExceeded):
+        reopened.reserve(.000001,purpose='agent')
+
+
+def test_connections_closed_deterministically(tmp_path,monkeypatch):
+    import sqlite3
+    from app.budget import BudgetLedger
+    original=sqlite3.connect
+    opened=[]
+    def connect(*args,**kwargs):
+        connection=original(*args,**kwargs)
+        opened.append(connection)
+        return connection
+    monkeypatch.setattr(sqlite3,'connect',connect)
+    path=tmp_path/'closed.sqlite'
+    ledger=BudgetLedger(path,3)
+    r=ledger.reserve(.01,purpose='agent')
+    ledger.settle(r,.005)
+    ledger.report()
+    for connection in opened:
+        with pytest.raises(sqlite3.ProgrammingError):
+            connection.execute('SELECT 1')
+    path.unlink()
+    assert not path.exists()
+
+
+@pytest.mark.parametrize('message',['invalid',None,0,[],{'role':'assistant','content':None,'tool_calls':'invalid'}])
+def test_bad_message_shape_stays_inside_provider_boundary(tmp_path,message):
+    from app.providers import ProviderError
+    c,ledger=client(tmp_path,lambda r:httpx.Response(200,json={'choices':[{'message':message}]}))
+    with pytest.raises(ProviderError):
+        c.complete([{'role':'user','content':'hello'}],purpose='agent')
+    assert ledger.report()['reserved_usd']>0
+
+
+def test_reported_output_over_request_bound_is_charged_and_rejected(tmp_path):
+    from app.providers import ProviderError
+    c,ledger=client(tmp_path,lambda r:httpx.Response(200,json={'choices':[{'message':{'role':'assistant','content':'ok'}}],'usage':{'prompt_tokens':1,'completion_tokens':100}}))
+    with pytest.raises(ProviderError):
+        c.complete([{'role':'user','content':'hello'}],purpose='agent',max_tokens=1)
+    assert ledger.report()['spent_usd']==pytest.approx(.0001203)
+
+
+def test_provider_excessive_usage_persists_overrun(tmp_path):
+    from app.budget import BudgetOverrun
+    c,ledger=client(tmp_path,lambda r:httpx.Response(200,json={'choices':[{'message':{'role':'assistant','content':'ok'}}],'usage':{'prompt_tokens':20_000_000,'completion_tokens':1}}))
+    with pytest.raises(BudgetOverrun):
+        c.complete([{'role':'user','content':'hello'}],purpose='agent',max_tokens=1)
+    assert ledger.report()['spent_usd']>6
+    assert ledger.report()['accounting_overrun'] is True
+
+def test_reservation_overrun_blocks_restart_even_below_cap(tmp_path):
+    from app.budget import BudgetLedger, BudgetExceeded, BudgetOverrun
+    path=tmp_path/'overrun.sqlite'
+    ledger=BudgetLedger(path,3)
+    r=ledger.reserve(.001,purpose='agent')
+    with pytest.raises(BudgetOverrun):
+        ledger.settle(r,.002)
+    reopened=BudgetLedger(path,3)
+    assert reopened.report()['spent_usd']==.002
+    assert reopened.report()['accounting_overrun'] is True
+    with pytest.raises(BudgetExceeded):
+        reopened.reserve(.001,purpose='grader')
+
+
+def test_smaller_authorized_limit_and_environment_ceiling(tmp_path):
+    from app.config import Settings
+    from app.budget import BudgetLedger
+    assert Settings(llm_budget_usd=.5).llm_budget_usd==.5
+    assert BudgetLedger(tmp_path/'small.sqlite',.5).report()['limit_usd']==.5
+    env=tmp_path/'ceiling.env'
+    env.write_text('LLM_BUDGET_USD=3.1')
+    with pytest.raises(ValueError):
+        Settings.load(env)
+
+
+def test_ledger_boundary_rejects_above_authorized_limit(tmp_path):
+    from app.budget import BudgetLedger
+    with pytest.raises(ValueError):
+        BudgetLedger(tmp_path/'cap.sqlite',3.01)

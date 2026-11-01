@@ -51,26 +51,44 @@ class DeepSeekClient:
                 payload[name] = value
         # UTF-8 bytes are a conservative upper bound on tokenizer input, with
         # generous protocol overhead per message/tool; output includes reasoning.
-        input_bound = len(json.dumps(payload,ensure_ascii=False).encode('utf-8')) + 1024 + 128 * (len(messages) + len(tools or []))
+        input_bound = 2 * len(json.dumps(payload,ensure_ascii=False).encode('utf-8')) + 4096 + 256 * (len(messages) + len(tools or []))
         reservation = self.budget.reserve((input_bound*.30+max_tokens*1.20)/1e6,purpose=purpose)
         data = _request(self.settings,self.settings.deepseek_base_url,self.settings.deepseek_api_key,'chat/completions',payload,self.transport)
-        valid = False
-        try:
-            message = data['choices'][0]['message']
-            valid = isinstance(message,dict) and message.get('role') == 'assistant' and (isinstance(message.get('content'),str) or bool(message.get('tool_calls')))
-            if 'model' in data and data['model'] != self.settings.deepseek_model:
-                valid = False
-            for call in message.get('tool_calls',[]):
-                valid = valid and isinstance(call['id'],str) and call['type']=='function' and isinstance(call['function']['name'],str) and isinstance(call['function']['arguments'],str)
-        except (KeyError,IndexError,TypeError):
-            valid = False
-        if not valid:
-            raise ProviderError('Invalid completion response')
+        # Account any well-formed usage even when response protocol is malformed.
+        # Provider-reported cost is never clamped to the estimate or allowance.
         usage = data.get('usage')
         if isinstance(usage,dict):
             counts = [usage.get('prompt_tokens'),usage.get('completion_tokens')]
-            if all(isinstance(x,int) and not isinstance(x,bool) and x>=0 for x in counts):
+            if all(isinstance(x,int) and not isinstance(x,bool) and 0 <= x <= 10**15 for x in counts):
                 self.budget.settle(reservation,(counts[0]*.30+counts[1]*1.20)/1e6)
+                if counts[0] > input_bound or counts[1] > max_tokens:
+                    raise ProviderError('Provider usage exceeded request token bounds')
+        valid = False
+        choices = data.get('choices')
+        if isinstance(choices,list) and len(choices) == 1 and isinstance(choices[0],dict):
+            message = choices[0].get('message')
+            if isinstance(message,dict):
+                calls = message.get('tool_calls',[])
+                valid = (message.get('role') == 'assistant'
+                         and (isinstance(message.get('content'),str) or bool(calls))
+                         and isinstance(calls,list)
+                         and ('reasoning_content' not in message or message['reasoning_content'] is None or isinstance(message['reasoning_content'],str)))
+                if valid:
+                    for call in calls:
+                        if not isinstance(call,dict) or not isinstance(call.get('function'),dict):
+                            valid = False
+                            break
+                        function = call['function']
+                        valid = (isinstance(call.get('id'),str) and bool(call['id'])
+                                 and call.get('type') == 'function'
+                                 and isinstance(function.get('name'),str) and bool(function['name'])
+                                 and isinstance(function.get('arguments'),str))
+                        if not valid:
+                            break
+        if 'model' in data and data['model'] != self.settings.deepseek_model:
+            valid = False
+        if not valid:
+            raise ProviderError('Invalid completion response')
         return data
 
 class EmbeddingClient:
