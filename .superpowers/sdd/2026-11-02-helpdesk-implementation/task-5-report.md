@@ -98,3 +98,51 @@ Roles: interpretation124calls/USD0.184659911; decision410/USD1.872043531; simula
 - Remaining limitations: weak same-model semantic adjudication; rule simulator coverage gaps; occasional LLM fact-reference/conditional-recovery behavior; model protocol/call-limit failures; short event budget; bounded context; strict goal mapping can fail missing service refs despite saved handoff; some temporal/textual oracle fields require AI/manual-AI review rather than complete automatic proof. All remain explicit, not oracle changes. No real enterprise integration/propagation/expert continuation.
 
 Commits so far: `fcbeb50` harness/context, `07d9713` ambiguity guard/first sealed holdouts, `630e586` uncertainty projection. Final evaluator/report/evidence commit follows this report. Controller-owned docs left untouched.
+
+## Review fix round1 — FIX_BASE7f6a4e5
+
+Read the three Important findings in task-5-review.md. Reproduced all before fixing. No paid calls, no provider or budget changes, no subagents and no controller-document edits. The previous sections describe the original submission; the evidence and delivered behavior below supersede its affected claims. Original measured traces/oracles and original assertions/grades remain unchanged.
+
+### 1. Partial progress must not imply overall recovery
+
+`_scope_uncertainty` no longer removes an entire ambiguous group for any intersecting observation. Ordinary new requests preserve old uncertainty. A single-target reported recovery/failure removes only that target from the remaining uncertain candidates; unverified candidates still prevent aggregate all_resolved even when their last verified statuses remain resolved. Explicit whole-report assignment requires a persisted correction referencing the earlier observation (including its correction chain), finite correction intent, and one clearly scoped tentative observation in the same batch. This remains semantic-model dependent, but no longer treats ordinary positive progress/new requests as that assignment. New ambiguity in the same batch still wins; write permission clearance remains separately stricter.
+
+Real-Domain resolved-pair regressions cover “Grafana still works. I have not checked the database.” and an unrelated new request about Grafana. They preserve the other candidate and all_resolved=false. The original scoped-negative test now expects the other candidate to remain uncertain. Existing linked correction/clarification and same-event finalization tests still pass. No case text pattern or scenario ID enters application logic.
+
+### 2. Durable handoffs and idempotency
+
+Independent oracle `durable-handoff-v3` now requires an actual saved handoff matching actor, conversation, issue and lifecycle for handed_off goals. It detects overlap by issue+lifecycle, irrespective of prose or routing hint; disjoint issue handoffs remain legitimate. Failure references point to actual handoff/issue IDs, or actual STATE-final when no goal issue exists. Mandatory handoff omissions are incomplete required business outcomes, not invented unauthorized effects.
+
+New backend handoffs store `issue_lifecycles` from actual owned issues inside the existing write transaction. The field is not accepted from model arguments. Legacy rows remain unchanged; lifecycle1 fallback is allowed only while the actual issue remains lifecycle1. A later lifecycle without provenance is explicitly unverifiable in evaluation and fails closed in the write path.
+
+Offline reassertion uncovered actual duplicate historical handoffs in dev-postfix-llm-v3/D02 and dev-remaining-v2/D03,D18. Parent authorized a narrow backend idempotency fix: canonical actor/chat/issue+lifecycle identity; changed summary/reason/team does not create another record. Already-covered requests return the actual stored receipt, without rewriting its content or routing. Partial overlaps return HANDOFF_SCOPE_OVERLAP with existing IDs and covered/uncovered issues, not a fabricated combined handoff. Disjoint scope and known distinct lifecycles remain distinct; uncertain legacy lifecycle returns HANDOFF_LIFECYCLE_UNKNOWN. There is no new routing/update/expert-resumption workflow.
+
+Real-state tests exercise8parallel wording variations, same receipt identity, partial-overlap rejection, disjoint creation, backend-owned metadata and rejection of forged model metadata. A later-lifecycle persistence fixture verifies separation and unknown legacy rejection; it seeds lifecycle state explicitly because expert resumption remains outside this product, and does not introduce an API for that extension.
+
+Grader validator v4 binds duplicate_effect to the actual program duplicate record references and required_handoff_missing to actual program missing-record evidence. The prior5/6calibration belongs to measured v3; v4 has program tests only and was not recalibrated with paid calls. All old calibration outputs remain.
+
+### 3. Harness failure accounting
+
+`collect()` now adds summary harness_error entries even without a completed case artifact. They count as failed/incomplete measurements, have final_state/state_id=null and unknown validity/timing/counts rather than invented final state. Available checkpoint is separately linked and explicitly partial. New runner failures record a case call_range into the shared batch call list. Existing entries without exact attribution link checkpoints/batch calls and say unallocated rather than guessing their cost. Batch role totals still count calls exactly once.
+
+A temporary-directory regression with only summary+checkpoint now publishes one failed measurement; a second fixture verifies exact call_range attribution and role-count reconciliation. Existing66saved live measurements contain **zero harness_error entries**, so this fix does not allege hidden prior runs.
+
+### Red/green and focused verification
+
+- `python -m pytest tests/test_ambiguity_guard.py tests/test_evaluation.py -q`: **6failed,31passed in3.41s**, reproducing whole-group uncertainty loss, missing durable handoff/duplicates, unbound duplicate grade evidence and dropped harness failure. After initial fixes: **37passed in3.29s**.
+- `python -m pytest tests/test_evaluation.py -k handoff_wording -q`: **1failed,26deselected** before canonical handoff identity, then `-k handoff`: **4passed,23deselected in0.43s**.
+- An attempted focused command included nonexistent tests/test_tools.py and ran no tests; corrected to the actual domain suite. No result was claimed from that invocation.
+- Final affected-contract command: `.venv/Scripts/python.exe -m pytest tests/test_evaluation.py tests/test_ambiguity_guard.py tests/test_domain.py tests/test_agent.py tests/test_api.py -q`: **158passed,1existingwarning in22.44s**. It covers the shared domain/tools/API/Agent contract; unrelated auth/provider/retrieval tests were not broadly rerun. Existing Starlette/httpx warning remains assigned Task6.
+- After report-only unknown-value handling: `.venv/Scripts/python.exe -m pytest tests/test_evaluation.py -q`: **27passed in2.52s**.
+- Final self-review added an exact-group correction regression: two ambiguous groups in one source message must not both disappear when only one observation is corrected. After fixing a test-fixture argument omission, it failed on the actual whole-message clearing behavior (**1failed,12deselected**); assignment now tracks original message+candidate-group through correction links. The final affected-contract command above then passed **159tests,1existingwarning in21.90s**. This supersedes the earlier158count; no unrelated suite expansion or paid test occurred.
+- `.venv/Scripts/python.exe -m evals.report` and `-m evals.failure_examples` regenerated public evidence offline. No model calls. Original manifests/freeze files and raw results were not overwritten.
+
+### Updated evidence and delivery distinction
+
+Latest MEASURED runtime is still frozen candidate3 at630e586. CURRENT delivery changes app/domain.py and app/tools.py; current runtime hashes are recorded in metrics.delivery_vs_measurement. It has **zero actual live measurements**. The former17candidate3measurements remain historical candidate3 measurements, never relabeled as current delivery validation. Task6 performs the final live smoke.
+
+New offline assertions report8formal measurements with11hard flags across historical versions:3duplicate-handoff runs, required-handoff omissions in already-incomplete runs, and originalH01's2flags. Latest measured candidate3 has1flagged measurement/2missing-handoff flags (the H10 MODEL_PROTOCOL failure),12/17program goal satisfaction and4Agent event errors as before. Successful H10 disjoint handoffs pass. **8affected prior judgments** are stale/disputed and excluded from effective semantic scores; original judgments stay in public runs/reassertions. The prior “zero hard flags on latest candidate3” was incomplete oracle coverage and is superseded. No oracle was softened.
+
+Public regenerated paths: docs/evaluation-report.md; evals/public/metrics.json, runs.json, reassertions.json and failure-examples.md. Generator changes are evals/report.py and failure_examples.py. Existing manifests/calibration/retrieval artifacts retain their measured versions. Public examples now include actual D02 duplicate handoff IDs/messages. No fabricated overall quality score or across-version stability estimate.
+
+Read-only ledger remains **USD2.608177868/751calls/0reserved**; balanceUSD0.391822132 for final integration/demo. Budget is not exhausted. No paid requests made during this fix. Remaining limits: same-model semantic dependence, incomplete same-final-version live coverage, legacy lifecycle ambiguity, and no expert resumption. Historical duplicate effects remain failures even though delivered backend now has deterministic regression coverage.

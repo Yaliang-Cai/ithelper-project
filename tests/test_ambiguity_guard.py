@@ -103,7 +103,18 @@ def test_ambiguous_negative_feedback_preserves_verified_goals_and_flags_uncertai
     s=d.snapshot('alice.sales',chat);byid={i['id']:i for i in s['issues']}
     assert byid[issues[0]['id']]['status']=='investigating' and byid[issues[0]['id']]['lifecycle']==2
     assert byid[issues[1]['id']]['status']=='resolved' and byid[issues[1]['id']]['lifecycle']==1
-    assert not s['unassigned_feedback'] and not s['all_resolved']
+    assert s['unassigned_feedback'][0]['candidate_issue_ids']==[issues[1]['id']] and not s['all_resolved']
+
+
+@pytest.mark.parametrize('category,intents,text',[('reported_recovery',['progress_report'],'Grafana still works. I have not checked the database.'),('request',['new_request'],'Show me Grafana access details. I have not checked the database.')])
+def test_scoped_progress_or_new_request_keeps_other_candidate_uncertain(tmp_path,category,intents,text):
+    d,chat,issues=resolved_pair(tmp_path)
+    interpret(d,chat,'That one failed again.',[{'candidate_key':'o','target_refs':[i['id'] for i in issues],'category':'reported_failure','claim':'Unassigned failure','quote':'That one failed again.','mapping_status':'needs_clarification'}])
+    interpret(d,chat,text,[{'candidate_key':'p','target_refs':[issues[0]['id']],'category':category,'claim':text,'quote':text,'mapping_status':'tentative'}],intents=intents)
+    state=d.snapshot('alice.sales',chat)
+    assert all(i['status']=='resolved' and i['lifecycle']==1 for i in state['issues'])
+    assert not state['all_resolved']
+    assert issues[1]['id'] in state['unassigned_feedback'][0]['candidate_issue_ids']
 
 
 @pytest.mark.parametrize('new_ambiguity',[False,True])
@@ -119,3 +130,17 @@ def test_inherited_correction_cannot_relatch_valid_same_batch_clarification(ambi
     result=t.call('unlock_account',{'issue_id':okta['id'],'service_id':'okta','evidence_refs':[]},'alice.sales',chat)
     assert result['ok'] is (not new_ambiguity)
     assert bool(d.snapshot('alice.sales',chat)['unassigned_feedback']) is new_ambiguity
+
+
+def test_linked_correction_only_assigns_its_exact_ambiguous_group(ambiguity):
+    d,chat,okta,prod,grafana,t=ambiguity
+    interpret(d,chat,'Two unclear references.',[
+        {'candidate_key':'a','target_refs':[okta['id'],prod['id']],'category':'reported_failure','claim':'First unclear report','quote':'Two unclear references.','mapping_status':'needs_clarification'},
+        {'candidate_key':'b','target_refs':[okta['id'],grafana['id']],'category':'reported_failure','claim':'Second unclear report','quote':'Two unclear references.','mapping_status':'needs_clarification'}])
+    s=d.snapshot('alice.sales',chat);old=next(o for o in s['observations'] if o['claim']=='First unclear report')
+    m=d.append_message('alice.sales',chat,'user','The first report meant Okta; please unlock it.','linked-first-only')
+    p={k:[] for k in ('message_intents','new_issue_candidates','observations','corrections','relation_candidates','unresolved_references')};p['message_intents']=['correction','new_request']
+    p['corrections']=[{'candidate_key':'c','observation_id':old['id'],'expected_version':old['version'],'claim':'First report assigned','quote':'The first report meant Okta'}]
+    p['observations']=[{'candidate_key':'specific','target_refs':[okta['id']],'category':'request','claim':'Okta unlock','quote':'please unlock it.','mapping_status':'tentative'}]
+    d.apply_candidates('alice.sales',chat,m['id'],p,d.snapshot('alice.sales',chat)['conversation']['version'])
+    assert any(set(u['candidate_issue_ids'])=={okta['id'],grafana['id']} for u in d.snapshot('alice.sales',chat)['unassigned_feedback'])

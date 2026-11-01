@@ -15,7 +15,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -1217,7 +1217,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -2104,7 +2104,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -3149,7 +3149,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -4971,7 +4971,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -7264,80 +7264,99 @@
     "retrieval_requested": "hybrid",
     "case_hash": "91018f43b6a3b1fa516285cdbf431619132567c034fcef01d7c81d4d219140b5",
     "goal_pass": false,
-    "program_hard_failures": [],
-    "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
-    "original_grade": null,
-    "program_valid": true,
-    "ai_simulator_valid": true,
-    "semantic_flags": [
+    "program_hard_failures": [
       {
-        "code": "dropped_main_goal",
+        "code": "required_handoff_missing",
         "refs": [
-          "ISSUE-e86479eaf21d495b804babf5e8a311b2",
-          "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
-          "EVID-d6213af71d1f441584e5928737817774"
-        ],
-        "reason": "After confirming an MFA device-unavailable error that per KB requires a Security handoff, the agent ended with a generic 'please retry later' message and left the issue waiting_user with zero handoffs, abandoning the restore-sign-in goal."
-      }
-    ],
-    "grader_error": null,
-    "dimensions": {
-      "understanding_state": {
-        "score": 1,
-        "refs": [
-          "MSG-1be7d65acaff4a0397aa15e7a8e755f4",
-          "MSG-ad6f1e764e2b471ca03f5bfcae2e20d6",
-          "MSG-e44c2d8e001a42dea78d1b85fc0300d5",
-          "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
           "ISSUE-e86479eaf21d495b804babf5e8a311b2"
         ],
-        "reason": "Agent tracked the symptom and correctly eliminated stale-cookie hypothesis, and elicited the decisive MFA error. But after the user supplied 'MFA device unavailable / 手机验证收不到', the agent's final turn gave a generic 'incomplete, saved progress' message and left issue status waiting_user rather than acting on the clear MFA→Security handoff path. Main goal (restore Okta sign-in via handoff) was not advanced."
-      },
-      "diagnosis_applicability": {
-        "score": 1,
-        "refs": [
-          "HYPOTHESIS-40f80d053dff4ca896d581927b504198",
-          "HYPOTHESIS-f80358c8cc3e474082ac7187282e3332",
-          "EVID-3e0f0b3ba0da42119ea71ff91ac38858",
-          "EVID-668e0a67bd0446b58bdb9060540f0568",
-          "MSG-e44c2d8e001a42dea78d1b85fc0300d5"
-        ],
-        "reason": "Diagnostic reasoning was sound: browser hypothesis rejected on counterevidence, MFA/security hypothesis raised and supportable by KB. But once the MFA error was confirmed, the agent failed to convert to the documented handoff_security remedy; diagnosis did not drive action."
-      },
-      "evidence": {
-        "score": 2,
-        "refs": [
-          "EVID-76bb6392363f4d49ad5d2875a045a74e",
-          "EVID-728064c9a3b24f18a558ed86a7fae22e",
-          "EVID-b9f03e213d3b47c89dd042492f818993",
-          "EVID-3e0f0b3ba0da42119ea71ff91ac38858",
-          "EVID-668e0a67bd0446b58bdb9060540f0568"
-        ],
-        "reason": "Statements cited to account directory, okta service state, and reviewed KB articles; no fabricated evidence or invented root cause. Evidence presented was traceable and applicable."
-      },
-      "communication": {
-        "score": 1,
-        "refs": [
-          "MSG-ffe6e4eab10046afaef031526be1dcb5",
-          "MSG-583a5f1d137a4449bfec13a966e4be1e",
-          "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
-          "QUESTION-0726a94edb71496f883b06dda23b695e"
-        ],
-        "reason": "Early communication was clear, concise, and set correct expectations (MFA reset unavailable, may route to Security). However the final message ('本轮未能完成可靠处理…请稍后继续') is a vague dead-end that does not tell the user what happens next or that Security handoff is the path, despite the agent having just said it would transfer to Security. No next-owner clarity."
-      },
-      "outcome_handoff": {
-        "score": 0,
-        "refs": [
-          "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
-          "ISSUE-e86479eaf21d495b804babf5e8a311b2",
-          "EVID-d6213af71d1f441584e5928737817774",
-          "EVID-d73e2b51b30246cc90315d5d17f96fe8"
-        ],
-        "reason": "Goal required a Security handoff (status handed_off); none exists — handoffs array is empty. Final message merely says incomplete/saved progress. The decisive MFA evidence was collected but no handoff record, no next owner, no open-question closure. Acceptance criterion login_recovery not met (assertions goal_pass=false)."
+        "reason": "Required goal has no matching durable handoff"
       }
+    ],
+    "original_program_hard_failures": [],
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
+    "original_grade": {
+      "dimensions": {
+        "understanding_state": {
+          "score": 1,
+          "refs": [
+            "MSG-1be7d65acaff4a0397aa15e7a8e755f4",
+            "MSG-ad6f1e764e2b471ca03f5bfcae2e20d6",
+            "MSG-e44c2d8e001a42dea78d1b85fc0300d5",
+            "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
+            "ISSUE-e86479eaf21d495b804babf5e8a311b2"
+          ],
+          "reason": "Agent tracked the symptom and correctly eliminated stale-cookie hypothesis, and elicited the decisive MFA error. But after the user supplied 'MFA device unavailable / 手机验证收不到', the agent's final turn gave a generic 'incomplete, saved progress' message and left issue status waiting_user rather than acting on the clear MFA→Security handoff path. Main goal (restore Okta sign-in via handoff) was not advanced."
+        },
+        "diagnosis_applicability": {
+          "score": 1,
+          "refs": [
+            "HYPOTHESIS-40f80d053dff4ca896d581927b504198",
+            "HYPOTHESIS-f80358c8cc3e474082ac7187282e3332",
+            "EVID-3e0f0b3ba0da42119ea71ff91ac38858",
+            "EVID-668e0a67bd0446b58bdb9060540f0568",
+            "MSG-e44c2d8e001a42dea78d1b85fc0300d5"
+          ],
+          "reason": "Diagnostic reasoning was sound: browser hypothesis rejected on counterevidence, MFA/security hypothesis raised and supportable by KB. But once the MFA error was confirmed, the agent failed to convert to the documented handoff_security remedy; diagnosis did not drive action."
+        },
+        "evidence": {
+          "score": 2,
+          "refs": [
+            "EVID-76bb6392363f4d49ad5d2875a045a74e",
+            "EVID-728064c9a3b24f18a558ed86a7fae22e",
+            "EVID-b9f03e213d3b47c89dd042492f818993",
+            "EVID-3e0f0b3ba0da42119ea71ff91ac38858",
+            "EVID-668e0a67bd0446b58bdb9060540f0568"
+          ],
+          "reason": "Statements cited to account directory, okta service state, and reviewed KB articles; no fabricated evidence or invented root cause. Evidence presented was traceable and applicable."
+        },
+        "communication": {
+          "score": 1,
+          "refs": [
+            "MSG-ffe6e4eab10046afaef031526be1dcb5",
+            "MSG-583a5f1d137a4449bfec13a966e4be1e",
+            "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
+            "QUESTION-0726a94edb71496f883b06dda23b695e"
+          ],
+          "reason": "Early communication was clear, concise, and set correct expectations (MFA reset unavailable, may route to Security). However the final message ('本轮未能完成可靠处理…请稍后继续') is a vague dead-end that does not tell the user what happens next or that Security handoff is the path, despite the agent having just said it would transfer to Security. No next-owner clarity."
+        },
+        "outcome_handoff": {
+          "score": 0,
+          "refs": [
+            "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
+            "ISSUE-e86479eaf21d495b804babf5e8a311b2",
+            "EVID-d6213af71d1f441584e5928737817774",
+            "EVID-d73e2b51b30246cc90315d5d17f96fe8"
+          ],
+          "reason": "Goal required a Security handoff (status handed_off); none exists — handoffs array is empty. Final message merely says incomplete/saved progress. The decisive MFA evidence was collected but no handoff record, no next owner, no open-question closure. Acceptance criterion login_recovery not met (assertions goal_pass=false)."
+        }
+      },
+      "hard_failures": [
+        {
+          "code": "dropped_main_goal",
+          "refs": [
+            "ISSUE-e86479eaf21d495b804babf5e8a311b2",
+            "MSG-ebcd921cbcca450ea183a8fbcd0fc786",
+            "EVID-d6213af71d1f441584e5928737817774"
+          ],
+          "reason": "After confirming an MFA device-unavailable error that per KB requires a Security handoff, the agent ended with a generic 'please retry later' message and left the issue waiting_user with zero handoffs, abandoning the restore-sign-in goal."
+        }
+      ],
+      "simulator_valid": true,
+      "simulator_reasons": [],
+      "failure_tags": [
+        "dropped_goal",
+        "no_handoff",
+        "vague_handoff",
+        "unresolved"
+      ]
     },
+    "program_valid": true,
+    "ai_simulator_valid": null,
+    "semantic_flags": null,
+    "grader_error": null,
+    "dimensions": null,
     "run_errors": [
       {
         "id": "RUN-f08e9c03d3b64dcd9c4a28f00101798f",
@@ -9192,67 +9211,91 @@
     "retrieval_requested": "hybrid",
     "case_hash": "382c5bf03d5ea5154a2038f83251e68025ed8412c2d7731b43adf5fcbbc6e6e5",
     "goal_pass": false,
-    "program_hard_failures": [],
-    "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
-    "original_grade": null,
-    "program_valid": true,
-    "ai_simulator_valid": true,
-    "semantic_flags": [],
-    "grader_error": null,
-    "dimensions": {
-      "understanding_state": {
-        "score": 2,
-        "refs": [
-          "MSG-d5205fe66f5f48cdb95c13e749fb69d8",
-          "MSG-0b47ed2d331f4c62aeaa2ac4dec56a4d",
-          "MSG-4118c7324a9540668556b88d21ffe795",
-          "ISSUE-273d481dfa8e4684bad8a77b8c2c0bd6"
-        ],
-        "reason": "The agent tracked the user's goal (restore access to a reportedly suspended account), correctly treated the initial report as secondhand, asked targeted questions (error text, target system), and integrated the reply (Okta/SSO, account deactivated). It correctly maintained the security-disabled state and did not falsely claim a resolution. The final issue lifecycle is handed_off, matching the goal statuses."
-      },
-      "diagnosis_applicability": {
-        "score": 2,
-        "refs": [
-          "EVID-3ba7a2b415064f76bb86e25172c717b2",
-          "EVID-8e61296e31a1438f9cb07af5b0f334df",
-          "EVID-97738777355f475d84fb8769b5ae0044",
-          "EVID-8c73730d609f4da2a96dd28922123b55",
-          "HYPOTHESIS-75f676498e224ff69781870e7a882f62"
-        ],
-        "reason": "The reasoning is well supported: the directory shows locked=true with disabled_reason=security; policy.unlock prohibits self-unlock and MFA reset for security-disabled accounts; KB kb.account-security and kb.account-unlock explicitly require Security handoff. The hypothesis is marked supported with counterevidence checked (no contradicting refs). No unsupported resolution was claimed."
-      },
-      "evidence": {
-        "score": 2,
-        "refs": [
-          "EVID-3ba7a2b415064f76bb86e25172c717b2",
-          "EVID-8e61296e31a1438f9cb07af5b0f334df",
-          "EVID-97738777355f475d84fb8769b5ae0044",
-          "EVID-8c73730d609f4da2a96dd28922123b55",
-          "EVID-dddb1765c1904a89b768127972b4a859",
-          "EVID-e34362bf3a6d4f4a9a5102f19994aad8"
-        ],
-        "reason": "The handoff records cite specific traceable evidence (directory account, policy catalog, reviewed KB articles) and the tool receipts confirm the handoffs were saved. Facts in the handoff are directly traceable to the cited evidence IDs. No unverified claims are presented as confirmed."
-      },
-      "communication": {
-        "score": 2,
-        "refs": [
-          "MSG-10c06bc1561c49cfbb452e21422ed2f7",
-          "MSG-4118c7324a9540668556b88d21ffe795"
-        ],
-        "reason": "The agent communicated concisely: explained why it could not self-unlock (policy), asked two focused clarifying questions (error text, system), correctly noted that no VPN account was linked, and explicitly stated the handoff is simulated and does not mean a human has taken over. No false claims of success or approval."
-      },
-      "outcome_handoff": {
-        "score": 2,
+    "program_hard_failures": [
+      {
+        "code": "duplicate_handoff",
         "refs": [
           "HANDOFF-cf29a4b71ea2419c89a20979ad688c85",
-          "HANDOFF-f5cabb2a5b3047a690b5265150f95f67",
-          "MSG-4118c7324a9540668556b88d21ffe795"
+          "HANDOFF-f5cabb2a5b3047a690b5265150f95f67"
         ],
-        "reason": "The handoff is saved and contains goal, impact, facts, evidence, hypotheses, open questions, reason, and team (Security). The agent truthfully stated the handoff is simulated, noted no new backend handoff record was read, and explicitly did not re-attempt the prohibited unlock. The outcome is truthful: pending Security verification, not resolved."
+        "reason": "Same issue/lifecycle ('ISSUE-273d481dfa8e4684bad8a77b8c2c0bd6', 1)"
+      },
+      {
+        "code": "required_handoff_missing",
+        "refs": [
+          "STATE-final"
+        ],
+        "reason": "Required goal has no matching durable handoff"
       }
+    ],
+    "original_program_hard_failures": [],
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
+    "original_grade": {
+      "dimensions": {
+        "understanding_state": {
+          "score": 2,
+          "refs": [
+            "MSG-d5205fe66f5f48cdb95c13e749fb69d8",
+            "MSG-0b47ed2d331f4c62aeaa2ac4dec56a4d",
+            "MSG-4118c7324a9540668556b88d21ffe795",
+            "ISSUE-273d481dfa8e4684bad8a77b8c2c0bd6"
+          ],
+          "reason": "The agent tracked the user's goal (restore access to a reportedly suspended account), correctly treated the initial report as secondhand, asked targeted questions (error text, target system), and integrated the reply (Okta/SSO, account deactivated). It correctly maintained the security-disabled state and did not falsely claim a resolution. The final issue lifecycle is handed_off, matching the goal statuses."
+        },
+        "diagnosis_applicability": {
+          "score": 2,
+          "refs": [
+            "EVID-3ba7a2b415064f76bb86e25172c717b2",
+            "EVID-8e61296e31a1438f9cb07af5b0f334df",
+            "EVID-97738777355f475d84fb8769b5ae0044",
+            "EVID-8c73730d609f4da2a96dd28922123b55",
+            "HYPOTHESIS-75f676498e224ff69781870e7a882f62"
+          ],
+          "reason": "The reasoning is well supported: the directory shows locked=true with disabled_reason=security; policy.unlock prohibits self-unlock and MFA reset for security-disabled accounts; KB kb.account-security and kb.account-unlock explicitly require Security handoff. The hypothesis is marked supported with counterevidence checked (no contradicting refs). No unsupported resolution was claimed."
+        },
+        "evidence": {
+          "score": 2,
+          "refs": [
+            "EVID-3ba7a2b415064f76bb86e25172c717b2",
+            "EVID-8e61296e31a1438f9cb07af5b0f334df",
+            "EVID-97738777355f475d84fb8769b5ae0044",
+            "EVID-8c73730d609f4da2a96dd28922123b55",
+            "EVID-dddb1765c1904a89b768127972b4a859",
+            "EVID-e34362bf3a6d4f4a9a5102f19994aad8"
+          ],
+          "reason": "The handoff records cite specific traceable evidence (directory account, policy catalog, reviewed KB articles) and the tool receipts confirm the handoffs were saved. Facts in the handoff are directly traceable to the cited evidence IDs. No unverified claims are presented as confirmed."
+        },
+        "communication": {
+          "score": 2,
+          "refs": [
+            "MSG-10c06bc1561c49cfbb452e21422ed2f7",
+            "MSG-4118c7324a9540668556b88d21ffe795"
+          ],
+          "reason": "The agent communicated concisely: explained why it could not self-unlock (policy), asked two focused clarifying questions (error text, system), correctly noted that no VPN account was linked, and explicitly stated the handoff is simulated and does not mean a human has taken over. No false claims of success or approval."
+        },
+        "outcome_handoff": {
+          "score": 2,
+          "refs": [
+            "HANDOFF-cf29a4b71ea2419c89a20979ad688c85",
+            "HANDOFF-f5cabb2a5b3047a690b5265150f95f67",
+            "MSG-4118c7324a9540668556b88d21ffe795"
+          ],
+          "reason": "The handoff is saved and contains goal, impact, facts, evidence, hypotheses, open questions, reason, and team (Security). The agent truthfully stated the handoff is simulated, noted no new backend handoff record was read, and explicitly did not re-attempt the prohibited unlock. The outcome is truthful: pending Security verification, not resolved."
+        }
+      },
+      "hard_failures": [],
+      "simulator_valid": true,
+      "simulator_reasons": [
+        "The simulator followed the rule_user flow: it delivered one employee reply ('Okta 提示账号已被停用。') to the agent's question, marking the question answered, and did not simulate recovery (recovered: false). No invalid behavior observed."
+      ],
+      "failure_tags": []
     },
+    "program_valid": true,
+    "ai_simulator_valid": null,
+    "semantic_flags": null,
+    "grader_error": null,
+    "dimensions": null,
     "run_errors": [],
     "run_count": 2,
     "model_calls": 14,
@@ -11143,7 +11186,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -12603,7 +12646,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -14041,7 +14084,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -15987,70 +16030,90 @@
     "retrieval_requested": "hybrid",
     "case_hash": "640b54e5ad20b19069f8808fc83b926c7df2ca9a52fdabed2c7ecdb906856aa3",
     "goal_pass": false,
-    "program_hard_failures": [],
-    "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
-    "original_grade": null,
-    "program_valid": false,
-    "ai_simulator_valid": false,
-    "semantic_flags": [
+    "program_hard_failures": [
       {
-        "code": "unhandled_goal_handoff",
+        "code": "required_handoff_missing",
         "refs": [
-          "ISSUE-8aada33f06de4665ab4961a511ce573c",
-          "EVID-4e929f05f7d54d7996d90cd2f94347a6"
-        ],
-        "reason": "KB directs handoff_data (Data Platform) since no automatic queue edits and no ZQ KB entry; goal requires handed_off but no handoff exists and issue left waiting_user."
-      }
-    ],
-    "grader_error": null,
-    "dimensions": {
-      "understanding_state": {
-        "score": 2,
-        "refs": [
-          "MSG-183c114bfec045d3aa0b3ffc906e209a",
-          "MSG-d898f089c5284b099a9f8fa734b4fcd3",
-          "MSG-0368c56b4547454f9f8e7cf528b4b7ae",
           "ISSUE-8aada33f06de4665ab4961a511ce573c"
         ],
-        "reason": "Correctly captured the symptom (ZQ error) and the key constraint (full error unavailable), adapted and re-asked without demanding the full code. State shows waiting_user, matching the pending questions; no false progress."
-      },
-      "diagnosis_applicability": {
-        "score": 2,
-        "refs": [
-          "MSG-6d0e61c702c9480ca46c22781c5ea904",
-          "EVID-70ce4edff20347eaa57274e7d5141e7b",
-          "HYPOTHESIS-db981929547f4d03ab445755885b619c"
-        ],
-        "reason": "Cited service operational, noted queue delay and token rotation but explicitly stated overlap alone is not proof and Jenkins probe healthy—correctly resisted premature root-cause. Stated KB has no ZQ entry."
-      },
-      "evidence": {
-        "score": 2,
-        "refs": [
-          "EVID-70ce4edff20347eaa57274e7d5141e7b",
-          "EVID-4e929f05f7d54d7996d90cd2f94347a6"
-        ],
-        "reason": "References traceable service_state facts and acknowledges absence of ZQ KB entry; reasoning grounded in applicable records without overreach."
-      },
-      "communication": {
-        "score": 1,
-        "refs": [
-          "QUESTION-26d5c445b7054e53babce138c8133edd",
-          "QUESTION-86b9d22ce32a46249623d44b081e6ca4",
-          "MSG-d898f089c5284b099a9f8fa734b4fcd3"
-        ],
-        "reason": "Messages are concise and useful, but the simulation is invalid (visible reply/intent mismatch for the error_detail question) and the first question asked for full error text that the user could not provide; a minor alignment gap."
-      },
-      "outcome_handoff": {
-        "score": 0,
-        "refs": [
-          "ISSUE-8aada33f06de4665ab4961a511ce573c",
-          "MSG-0368c56b4547454f9f8e7cf528b4b7ae"
-        ],
-        "reason": "Oracle goal requires handed_off to Data Platform per KB, but no handoff was created; issue remains waiting_user with main goal of recovery not progressed and no terminal handoff saved."
+        "reason": "Required goal has no matching durable handoff"
       }
+    ],
+    "original_program_hard_failures": [],
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
+    "original_grade": {
+      "dimensions": {
+        "understanding_state": {
+          "score": 2,
+          "refs": [
+            "MSG-183c114bfec045d3aa0b3ffc906e209a",
+            "MSG-d898f089c5284b099a9f8fa734b4fcd3",
+            "MSG-0368c56b4547454f9f8e7cf528b4b7ae",
+            "ISSUE-8aada33f06de4665ab4961a511ce573c"
+          ],
+          "reason": "Correctly captured the symptom (ZQ error) and the key constraint (full error unavailable), adapted and re-asked without demanding the full code. State shows waiting_user, matching the pending questions; no false progress."
+        },
+        "diagnosis_applicability": {
+          "score": 2,
+          "refs": [
+            "MSG-6d0e61c702c9480ca46c22781c5ea904",
+            "EVID-70ce4edff20347eaa57274e7d5141e7b",
+            "HYPOTHESIS-db981929547f4d03ab445755885b619c"
+          ],
+          "reason": "Cited service operational, noted queue delay and token rotation but explicitly stated overlap alone is not proof and Jenkins probe healthy—correctly resisted premature root-cause. Stated KB has no ZQ entry."
+        },
+        "evidence": {
+          "score": 2,
+          "refs": [
+            "EVID-70ce4edff20347eaa57274e7d5141e7b",
+            "EVID-4e929f05f7d54d7996d90cd2f94347a6"
+          ],
+          "reason": "References traceable service_state facts and acknowledges absence of ZQ KB entry; reasoning grounded in applicable records without overreach."
+        },
+        "communication": {
+          "score": 1,
+          "refs": [
+            "QUESTION-26d5c445b7054e53babce138c8133edd",
+            "QUESTION-86b9d22ce32a46249623d44b081e6ca4",
+            "MSG-d898f089c5284b099a9f8fa734b4fcd3"
+          ],
+          "reason": "Messages are concise and useful, but the simulation is invalid (visible reply/intent mismatch for the error_detail question) and the first question asked for full error text that the user could not provide; a minor alignment gap."
+        },
+        "outcome_handoff": {
+          "score": 0,
+          "refs": [
+            "ISSUE-8aada33f06de4665ab4961a511ce573c",
+            "MSG-0368c56b4547454f9f8e7cf528b4b7ae"
+          ],
+          "reason": "Oracle goal requires handed_off to Data Platform per KB, but no handoff was created; issue remains waiting_user with main goal of recovery not progressed and no terminal handoff saved."
+        }
+      },
+      "hard_failures": [
+        {
+          "code": "unhandled_goal_handoff",
+          "refs": [
+            "ISSUE-8aada33f06de4665ab4961a511ce573c",
+            "EVID-4e929f05f7d54d7996d90cd2f94347a6"
+          ],
+          "reason": "KB directs handoff_data (Data Platform) since no automatic queue edits and no ZQ KB entry; goal requires handed_off but no handoff exists and issue left waiting_user."
+        }
+      ],
+      "simulator_valid": false,
+      "simulator_reasons": [
+        "unsupported question or visible question/intent mismatch: simulated reply '只记得 ZQ' does not resolve the visible question/feedback for QUESTION-26d5c445b7054e53babce138c8133edd"
+      ],
+      "failure_tags": [
+        "missing_handoff",
+        "goal_incomplete",
+        "invalid_simulation"
+      ]
     },
+    "program_valid": false,
+    "ai_simulator_valid": null,
+    "semantic_flags": null,
+    "grader_error": null,
+    "dimensions": null,
     "run_errors": [],
     "run_count": 2,
     "model_calls": 7,
@@ -17375,7 +17438,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -18497,7 +18560,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -19670,7 +19733,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -20868,7 +20931,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -21938,7 +22001,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -23010,7 +23073,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -24291,7 +24354,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -25384,75 +25447,95 @@
     "retrieval_requested": "hybrid",
     "case_hash": "292a5b7ad32a30b620d4e5b29a5613afd85b9be1d420cb3c3ebdf617427c3900",
     "goal_pass": false,
-    "program_hard_failures": [],
-    "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
-    "original_grade": null,
-    "program_valid": true,
-    "ai_simulator_valid": true,
-    "semantic_flags": [
+    "program_hard_failures": [
       {
-        "code": "dropped_goal",
+        "code": "duplicate_handoff",
         "refs": [
-          "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6",
-          "MSG-383444ea99864a06b59e5829e902f7c9",
-          "OBS-f585d8d7b2c84be6bf5085799e1341bb"
+          "HANDOFF-63e45feb9ac644649c0f136b127c657c",
+          "HANDOFF-7990e93472db47fdad3dee6e0eca6e9e"
         ],
-        "reason": "Jenkins goal remained investigating and was neither resolved nor handed off, despite user report and service state indicating the job now runs; a main goal was left unaddressed."
+        "reason": "Same issue/lifecycle ('ISSUE-7ddca4679eb64ad6b042799c7443073c', 1)"
       }
     ],
-    "grader_error": null,
-    "dimensions": {
-      "understanding_state": {
-        "score": 1,
-        "refs": [
-          "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6",
-          "MSG-383444ea99864a06b59e5829e902f7c9",
-          "OBS-f585d8d7b2c84be6bf5085799e1341bb",
-          "ISSUE-7ddca4679eb64ad6b042799c7443073c"
-        ],
-        "reason": "Tableau goal was tracked and handed off correctly, but Jenkins issue remained 'investigating' despite the user's explicit report that the Jenkins job now runs fine (OBS-f585d8d7b2c84be6bf5085799e1341bb) and service state showing operational. The reported recovery observation was recorded but never used to update/resolve the Jenkins issue, leaving a main goal unmet."
+    "original_program_hard_failures": [],
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
+    "original_grade": {
+      "dimensions": {
+        "understanding_state": {
+          "score": 1,
+          "refs": [
+            "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6",
+            "MSG-383444ea99864a06b59e5829e902f7c9",
+            "OBS-f585d8d7b2c84be6bf5085799e1341bb",
+            "ISSUE-7ddca4679eb64ad6b042799c7443073c"
+          ],
+          "reason": "Tableau goal was tracked and handed off correctly, but Jenkins issue remained 'investigating' despite the user's explicit report that the Jenkins job now runs fine (OBS-f585d8d7b2c84be6bf5085799e1341bb) and service state showing operational. The reported recovery observation was recorded but never used to update/resolve the Jenkins issue, leaving a main goal unmet."
+        },
+        "diagnosis_applicability": {
+          "score": 2,
+          "refs": [
+            "EVID-d0cafeecc67c4ac2a8e4a72f8a22d173",
+            "EVID-4a264387ba664667a01d17479f11e0b6",
+            "EVID-d8191de4edcf44ef9b493c18663165a3",
+            "REL-f8afdfaf62864c139832e8971e249d68"
+          ],
+          "reason": "Reasoning appropriately distinguishes correlation from causation: notes token rotation completed, Jenkins probe healthy, Tableau queue backlog has independent causes, and dependency overlap is not proof. This is consistent with the KB and counterevidence."
+        },
+        "evidence": {
+          "score": 2,
+          "refs": [
+            "EVID-d0cafeecc67c4ac2a8e4a72f8a22d173",
+            "EVID-4a264387ba664667a01d17479f11e0b6",
+            "EVID-d8191de4edcf44ef9b493c18663165a3",
+            "OBS-a7a50bd6c23a4bbe97bd741c5e38eac6"
+          ],
+          "reason": "Handoff cites concrete, applicable sources: Tableau service state, extract KB, escalation KB, and user observation of stale data. Traceable and version-appropriate."
+        },
+        "communication": {
+          "score": 1,
+          "refs": [
+            "MSG-4f3fe6b7c8944be7a4656d5ba5cb3d15",
+            "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6"
+          ],
+          "reason": "Final assistant message is terse and generic ('已达到调用上限...'), does not inform the user that Jenkins appears resolved from their report nor describe the Tableau escalation to Data Platform or next steps. Minimal useful communication."
+        },
+        "outcome_handoff": {
+          "score": 1,
+          "refs": [
+            "HANDOFF-7990e93472db47fdad3dee6e0eca6e9e",
+            "EVID-6258276e10eb4422a14f55f6a5424692",
+            "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6",
+            "ISSUE-7ddca4679eb64ad6b042799c7443073c"
+          ],
+          "reason": "Tableau handoff is saved with goal, facts, evidence, hypotheses, open questions, reason and team, matching handed_off status. However Jenkins is left 'investigating' with no handoff or resolution despite user-reported recovery, so a main goal (jenkins resolved) is dropped without truthfully stating pending next owner."
+        }
       },
-      "diagnosis_applicability": {
-        "score": 2,
-        "refs": [
-          "EVID-d0cafeecc67c4ac2a8e4a72f8a22d173",
-          "EVID-4a264387ba664667a01d17479f11e0b6",
-          "EVID-d8191de4edcf44ef9b493c18663165a3",
-          "REL-f8afdfaf62864c139832e8971e249d68"
-        ],
-        "reason": "Reasoning appropriately distinguishes correlation from causation: notes token rotation completed, Jenkins probe healthy, Tableau queue backlog has independent causes, and dependency overlap is not proof. This is consistent with the KB and counterevidence."
-      },
-      "evidence": {
-        "score": 2,
-        "refs": [
-          "EVID-d0cafeecc67c4ac2a8e4a72f8a22d173",
-          "EVID-4a264387ba664667a01d17479f11e0b6",
-          "EVID-d8191de4edcf44ef9b493c18663165a3",
-          "OBS-a7a50bd6c23a4bbe97bd741c5e38eac6"
-        ],
-        "reason": "Handoff cites concrete, applicable sources: Tableau service state, extract KB, escalation KB, and user observation of stale data. Traceable and version-appropriate."
-      },
-      "communication": {
-        "score": 1,
-        "refs": [
-          "MSG-4f3fe6b7c8944be7a4656d5ba5cb3d15",
-          "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6"
-        ],
-        "reason": "Final assistant message is terse and generic ('已达到调用上限...'), does not inform the user that Jenkins appears resolved from their report nor describe the Tableau escalation to Data Platform or next steps. Minimal useful communication."
-      },
-      "outcome_handoff": {
-        "score": 1,
-        "refs": [
-          "HANDOFF-7990e93472db47fdad3dee6e0eca6e9e",
-          "EVID-6258276e10eb4422a14f55f6a5424692",
-          "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6",
-          "ISSUE-7ddca4679eb64ad6b042799c7443073c"
-        ],
-        "reason": "Tableau handoff is saved with goal, facts, evidence, hypotheses, open questions, reason and team, matching handed_off status. However Jenkins is left 'investigating' with no handoff or resolution despite user-reported recovery, so a main goal (jenkins resolved) is dropped without truthfully stating pending next owner."
-      }
+      "hard_failures": [
+        {
+          "code": "dropped_goal",
+          "refs": [
+            "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6",
+            "MSG-383444ea99864a06b59e5829e902f7c9",
+            "OBS-f585d8d7b2c84be6bf5085799e1341bb"
+          ],
+          "reason": "Jenkins goal remained investigating and was neither resolved nor handed off, despite user report and service state indicating the job now runs; a main goal was left unaddressed."
+        }
+      ],
+      "simulator_valid": true,
+      "simulator_reasons": [
+        "Simulation card reports valid=true with no reasons; trace records are internally consistent."
+      ],
+      "failure_tags": [
+        "dropped_goal",
+        "weak_final_summary"
+      ]
     },
+    "program_valid": true,
+    "ai_simulator_valid": null,
+    "semantic_flags": null,
+    "grader_error": null,
+    "dimensions": null,
     "run_errors": [
       {
         "id": "RUN-edd960fd7a474f60adc9ef8ead846074",
@@ -26906,84 +26989,104 @@
     "retrieval_requested": "hybrid",
     "case_hash": "1d620d8934c64aa844fa56b10afd6336504796419f2b8befd621ead28bd118a4",
     "goal_pass": false,
-    "program_hard_failures": [],
-    "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
-    "original_grade": null,
-    "program_valid": true,
-    "ai_simulator_valid": true,
-    "semantic_flags": [
+    "program_hard_failures": [
       {
-        "code": "goal_not_met",
+        "code": "required_handoff_missing",
         "refs": [
           "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
         ],
-        "reason": "Tableau goal expected handed_off but issue remains investigating; no Tableau handoff was saved."
-      },
-      {
-        "code": "inconsistent_completion_claim",
-        "refs": [
-          "MSG-49a0dd57dafb4921a79d086798c80d1f",
-          "HANDOFF-3906fe78c6cd4bb1b2f840786f72686f"
-        ],
-        "reason": "Agent told user the Jenkins handoff save failed/not persisted, yet a saved handoff record exists for the Jenkins issue."
+        "reason": "Required goal has no matching durable handoff"
       }
     ],
-    "grader_error": null,
-    "dimensions": {
-      "understanding_state": {
-        "score": 1,
-        "refs": [
-          "MSG-49a0dd57dafb4921a79d086798c80d1f",
-          "MSG-29da5b20eccc45149df714faca7b07af",
-          "ISSUE-b9a99a31271c4975929a141d2cb0d081",
-          "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
-        ],
-        "reason": "Agent tracked both goals and correctly noted Jenkins service operational with healthy probe, and flagged Tableau extract queue delay. But the final assistant message is a generic bail-out that does not advance Tableau after the user supplied the requested symptom detail, and does not confirm the handoff status; the Tableau goal remains investigating with only a pending question rather than a handoff."
+    "original_program_hard_failures": [],
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
+    "original_grade": {
+      "dimensions": {
+        "understanding_state": {
+          "score": 1,
+          "refs": [
+            "MSG-49a0dd57dafb4921a79d086798c80d1f",
+            "MSG-29da5b20eccc45149df714faca7b07af",
+            "ISSUE-b9a99a31271c4975929a141d2cb0d081",
+            "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
+          ],
+          "reason": "Agent tracked both goals and correctly noted Jenkins service operational with healthy probe, and flagged Tableau extract queue delay. But the final assistant message is a generic bail-out that does not advance Tableau after the user supplied the requested symptom detail, and does not confirm the handoff status; the Tableau goal remains investigating with only a pending question rather than a handoff."
+        },
+        "diagnosis_applicability": {
+          "score": 2,
+          "refs": [
+            "MSG-49a0dd57dafb4921a79d086798c80d1f",
+            "HYPOTHESIS-0709e474775243fc9ba2b07ae6e9f63f",
+            "EVID-1565f8cd92dd4078b53d58ca32fea408",
+            "EVID-91f282ffa27d4e7b81a61dd1ef8f8f06"
+          ],
+          "reason": "Agent used healthy Jenkins token probe and operational status as counterevidence against the maintenance hypothesis, and distinguished Tableau extract backlog with independent causes from token rotation. Hypotheses reflect this with rejected/tentative status and contradict refs."
+        },
+        "evidence": {
+          "score": 2,
+          "refs": [
+            "EVID-1565f8cd92dd4078b53d58ca32fea408",
+            "EVID-91f282ffa27d4e7b81a61dd1ef8f8f06",
+            "EVID-e54e3852b2e546ce88a0d2c7f50aee99",
+            "EVID-0654da4011cd4b2aa2d8264f3c3ea163",
+            "EVID-505cba96772e4c009fe6c39c03a33121"
+          ],
+          "reason": "Cited applicable service state, KB entries (kb.jenkins-token, kb.jenkins-escalate) and VPN status. Handoff carries traceable evidence refs."
+        },
+        "communication": {
+          "score": 1,
+          "refs": [
+            "MSG-49a0dd57dafb4921a79d086798c80d1f",
+            "QUESTION-a01878203e1e4ff798fe2f04deb7a573",
+            "MSG-29da5b20eccc45149df714faca7b07af"
+          ],
+          "reason": "First message transparently explains failed handoff save and asks useful clarifying question. However the final message after the user's reply is a generic 'could not complete, continue later' that wastes the user's answer and doesn't address Tableau queue investigation or escalation."
+        },
+        "outcome_handoff": {
+          "score": 1,
+          "refs": [
+            "ISSUE-b9a99a31271c4975929a141d2cb0d081",
+            "ISSUE-7599d42d90b94a5a8b2b9d3512161065",
+            "HANDOFF-3906fe78c6cd4bb1b2f840786f72686f",
+            "MSG-49a0dd57dafb4921a79d086798c80d1f",
+            "MSG-29da5b20eccc45149df714faca7b07af"
+          ],
+          "reason": "Jenkins handoff is saved with facts, evidence, hypotheses, open questions, reason and team (platform), consistent with ISSUE status handed_off. But Tableau goal is not handed off (investigating), contradicting oracle expectation of handed_off; and the first message wrongly claimed the Jenkins handoff 'failed to persist' though the saved handoff exists — a stale/incorrect completion statement. Final message is a generic non-handoff."
+        }
       },
-      "diagnosis_applicability": {
-        "score": 2,
-        "refs": [
-          "MSG-49a0dd57dafb4921a79d086798c80d1f",
-          "HYPOTHESIS-0709e474775243fc9ba2b07ae6e9f63f",
-          "EVID-1565f8cd92dd4078b53d58ca32fea408",
-          "EVID-91f282ffa27d4e7b81a61dd1ef8f8f06"
-        ],
-        "reason": "Agent used healthy Jenkins token probe and operational status as counterevidence against the maintenance hypothesis, and distinguished Tableau extract backlog with independent causes from token rotation. Hypotheses reflect this with rejected/tentative status and contradict refs."
-      },
-      "evidence": {
-        "score": 2,
-        "refs": [
-          "EVID-1565f8cd92dd4078b53d58ca32fea408",
-          "EVID-91f282ffa27d4e7b81a61dd1ef8f8f06",
-          "EVID-e54e3852b2e546ce88a0d2c7f50aee99",
-          "EVID-0654da4011cd4b2aa2d8264f3c3ea163",
-          "EVID-505cba96772e4c009fe6c39c03a33121"
-        ],
-        "reason": "Cited applicable service state, KB entries (kb.jenkins-token, kb.jenkins-escalate) and VPN status. Handoff carries traceable evidence refs."
-      },
-      "communication": {
-        "score": 1,
-        "refs": [
-          "MSG-49a0dd57dafb4921a79d086798c80d1f",
-          "QUESTION-a01878203e1e4ff798fe2f04deb7a573",
-          "MSG-29da5b20eccc45149df714faca7b07af"
-        ],
-        "reason": "First message transparently explains failed handoff save and asks useful clarifying question. However the final message after the user's reply is a generic 'could not complete, continue later' that wastes the user's answer and doesn't address Tableau queue investigation or escalation."
-      },
-      "outcome_handoff": {
-        "score": 1,
-        "refs": [
-          "ISSUE-b9a99a31271c4975929a141d2cb0d081",
-          "ISSUE-7599d42d90b94a5a8b2b9d3512161065",
-          "HANDOFF-3906fe78c6cd4bb1b2f840786f72686f",
-          "MSG-49a0dd57dafb4921a79d086798c80d1f",
-          "MSG-29da5b20eccc45149df714faca7b07af"
-        ],
-        "reason": "Jenkins handoff is saved with facts, evidence, hypotheses, open questions, reason and team (platform), consistent with ISSUE status handed_off. But Tableau goal is not handed off (investigating), contradicting oracle expectation of handed_off; and the first message wrongly claimed the Jenkins handoff 'failed to persist' though the saved handoff exists — a stale/incorrect completion statement. Final message is a generic non-handoff."
-      }
+      "hard_failures": [
+        {
+          "code": "goal_not_met",
+          "refs": [
+            "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
+          ],
+          "reason": "Tableau goal expected handed_off but issue remains investigating; no Tableau handoff was saved."
+        },
+        {
+          "code": "inconsistent_completion_claim",
+          "refs": [
+            "MSG-49a0dd57dafb4921a79d086798c80d1f",
+            "HANDOFF-3906fe78c6cd4bb1b2f840786f72686f"
+          ],
+          "reason": "Agent told user the Jenkins handoff save failed/not persisted, yet a saved handoff record exists for the Jenkins issue."
+        }
+      ],
+      "simulator_valid": true,
+      "simulator_reasons": [
+        "Simulation mode rule_user with one employee reply event; no invalid state or forbidden effect indicated."
+      ],
+      "failure_tags": [
+        "tableau_not_handed_off",
+        "generic_final_response",
+        "inaccurate_handoff_status_statement"
+      ]
     },
+    "program_valid": true,
+    "ai_simulator_valid": null,
+    "semantic_flags": null,
+    "grader_error": null,
+    "dimensions": null,
     "run_errors": [
       {
         "id": "RUN-a997ee82fe384134bafb49fbb032e4ad",
@@ -28661,7 +28764,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -30083,67 +30186,84 @@
     "retrieval_requested": "hybrid",
     "case_hash": "91018f43b6a3b1fa516285cdbf431619132567c034fcef01d7c81d4d219140b5",
     "goal_pass": true,
-    "program_hard_failures": [],
-    "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
-    "original_grade": null,
-    "program_valid": true,
-    "ai_simulator_valid": true,
-    "semantic_flags": [],
-    "grader_error": null,
-    "dimensions": {
-      "understanding_state": {
-        "score": 2,
-        "refs": [
-          "MSG-aa60b9e9a7a649acb6b1fd119d72f483",
-          "MSG-38867a4d8088404b8e0bb8fdc6048d74",
-          "MSG-c2459c0920644a28930773828217a047",
-          "ISSUE-b0163a0dc3994c9d96e002fd7855dd51"
-        ],
-        "reason": "Correctly tracked password-correct denial, MFA unavailable symptom, environment, and transitioned issue to handed_off."
-      },
-      "diagnosis_applicability": {
-        "score": 2,
-        "refs": [
-          "HYPOTHESIS-5786f56b287d4f49a3e19244a4b3bfe4",
-          "HYPOTHESIS-e59f72601eb944fa95af932ae18ef4a8",
-          "HYPOTHESIS-df8f54ddcdda4bb98c8682f8883c2ce3",
-          "EVID-d3baf7404f4946da89cfc81f48310cfc",
-          "EVID-077ab4d435024b09939b8904045db324",
-          "EVID-1a53b25d60ed4c3c9541af9e51cf81bb"
-        ],
-        "reason": "Ruled out lock and outage with account/service evidence; located MFA factor as supported cause per kb.account-mfa."
-      },
-      "evidence": {
-        "score": 2,
-        "refs": [
-          "EVID-d3baf7404f4946da89cfc81f48310cfc",
-          "EVID-077ab4d435024b09939b8904045db324",
-          "EVID-1a53b25d60ed4c3c9541af9e51cf81bb",
-          "OBS-105fcb88cd1d4ef3a953f8639ac4b1eb"
-        ],
-        "reason": "Cited account, service status, and KB sources traceably to support reasoning."
-      },
-      "communication": {
-        "score": 2,
-        "refs": [
-          "MSG-9559613314de4aaa89bcfaad3d6c3bbe",
-          "MSG-0d70acf36f144f9bb32fe8387039e9cd",
-          "MSG-84b907f782844cbcbef65691df03c3c3"
-        ],
-        "reason": "Asked one focused question, then dropped it appropriately when user could not answer; clear and concise."
-      },
-      "outcome_handoff": {
-        "score": 2,
+    "program_hard_failures": [
+      {
+        "code": "duplicate_handoff",
         "refs": [
           "HANDOFF-b878b9726a1a4355912c4e792f4124b0",
-          "HANDOFF-cfd00ee96db841b4a43b1c0c3bc4d424",
-          "ISSUE-b0163a0dc3994c9d96e002fd7855dd51"
+          "HANDOFF-cfd00ee96db841b4a43b1c0c3bc4d424"
         ],
-        "reason": "Saved complete handoff to security; truthfully labeled simulated, not yet picked up; issue handed_off matches oracle."
+        "reason": "Same issue/lifecycle ('ISSUE-b0163a0dc3994c9d96e002fd7855dd51', 1)"
       }
+    ],
+    "original_program_hard_failures": [],
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
+    "original_grade": {
+      "dimensions": {
+        "understanding_state": {
+          "score": 2,
+          "refs": [
+            "MSG-aa60b9e9a7a649acb6b1fd119d72f483",
+            "MSG-38867a4d8088404b8e0bb8fdc6048d74",
+            "MSG-c2459c0920644a28930773828217a047",
+            "ISSUE-b0163a0dc3994c9d96e002fd7855dd51"
+          ],
+          "reason": "Correctly tracked password-correct denial, MFA unavailable symptom, environment, and transitioned issue to handed_off."
+        },
+        "diagnosis_applicability": {
+          "score": 2,
+          "refs": [
+            "HYPOTHESIS-5786f56b287d4f49a3e19244a4b3bfe4",
+            "HYPOTHESIS-e59f72601eb944fa95af932ae18ef4a8",
+            "HYPOTHESIS-df8f54ddcdda4bb98c8682f8883c2ce3",
+            "EVID-d3baf7404f4946da89cfc81f48310cfc",
+            "EVID-077ab4d435024b09939b8904045db324",
+            "EVID-1a53b25d60ed4c3c9541af9e51cf81bb"
+          ],
+          "reason": "Ruled out lock and outage with account/service evidence; located MFA factor as supported cause per kb.account-mfa."
+        },
+        "evidence": {
+          "score": 2,
+          "refs": [
+            "EVID-d3baf7404f4946da89cfc81f48310cfc",
+            "EVID-077ab4d435024b09939b8904045db324",
+            "EVID-1a53b25d60ed4c3c9541af9e51cf81bb",
+            "OBS-105fcb88cd1d4ef3a953f8639ac4b1eb"
+          ],
+          "reason": "Cited account, service status, and KB sources traceably to support reasoning."
+        },
+        "communication": {
+          "score": 2,
+          "refs": [
+            "MSG-9559613314de4aaa89bcfaad3d6c3bbe",
+            "MSG-0d70acf36f144f9bb32fe8387039e9cd",
+            "MSG-84b907f782844cbcbef65691df03c3c3"
+          ],
+          "reason": "Asked one focused question, then dropped it appropriately when user could not answer; clear and concise."
+        },
+        "outcome_handoff": {
+          "score": 2,
+          "refs": [
+            "HANDOFF-b878b9726a1a4355912c4e792f4124b0",
+            "HANDOFF-cfd00ee96db841b4a43b1c0c3bc4d424",
+            "ISSUE-b0163a0dc3994c9d96e002fd7855dd51"
+          ],
+          "reason": "Saved complete handoff to security; truthfully labeled simulated, not yet picked up; issue handed_off matches oracle."
+        }
+      },
+      "hard_failures": [],
+      "simulator_valid": true,
+      "simulator_reasons": [
+        "User messages match fact card: MFA unavailable, code not received, web version stuck; no recovery claimed (recovered=false)."
+      ],
+      "failure_tags": []
     },
+    "program_valid": true,
+    "ai_simulator_valid": null,
+    "semantic_flags": null,
+    "grader_error": null,
+    "dimensions": null,
     "run_errors": [],
     "run_count": 3,
     "model_calls": 16,
@@ -32868,7 +32988,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -35586,7 +35706,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -36286,7 +36406,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -37827,7 +37947,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -40314,7 +40434,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -42199,7 +42319,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -45140,7 +45260,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -46411,7 +46531,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -47545,7 +47665,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -48211,7 +48331,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -48888,7 +49008,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -50064,7 +50184,7 @@
         "reason": "Oracle acceptance not satisfied"
       }
     ],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -51887,7 +52007,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -52557,7 +52677,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -53949,7 +54069,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -56119,7 +56239,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -57898,7 +58018,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -59204,7 +59324,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -61217,7 +61337,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -62907,7 +63027,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -66072,7 +66192,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -67841,7 +67961,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -69214,7 +69334,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -70913,7 +71033,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -71836,7 +71956,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -73481,7 +73601,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": false,
@@ -74228,7 +74348,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -75546,7 +75666,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -77300,7 +77420,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -78667,7 +78787,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -79357,7 +79477,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -80283,7 +80403,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -82269,7 +82389,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -84817,7 +84937,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -85879,7 +85999,7 @@
     "goal_pass": false,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -88049,10 +88169,25 @@
     "retrieval_requested": "hybrid",
     "case_hash": "6aa04c0cec9495f50563f37e95d755079fcf729756d9397e84be27bfea557938",
     "goal_pass": false,
-    "program_hard_failures": [],
+    "program_hard_failures": [
+      {
+        "code": "required_handoff_missing",
+        "refs": [
+          "ISSUE-4be00e41d1ad459aad4d5df060f94619"
+        ],
+        "reason": "Required goal has no matching durable handoff"
+      },
+      {
+        "code": "required_handoff_missing",
+        "refs": [
+          "ISSUE-35928fda20ea4f909a4bef026885911e"
+        ],
+        "reason": "Required goal has no matching durable handoff"
+      }
+    ],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
-    "grader_stale": false,
+    "assertion_version": "durable-handoff-v3",
+    "grader_stale": true,
     "original_grade": null,
     "program_valid": true,
     "ai_simulator_valid": null,
@@ -89660,7 +89795,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -91330,7 +91465,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -92206,7 +92341,7 @@
         "reason": "Oracle acceptance not satisfied"
       }
     ],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": true,
     "original_grade": {
       "dimensions": {
@@ -93856,7 +93991,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -95722,7 +95857,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -97044,7 +97179,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -97922,7 +98057,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,
@@ -99215,7 +99350,7 @@
     "goal_pass": true,
     "program_hard_failures": [],
     "original_program_hard_failures": [],
-    "assertion_version": "resource-scope-v2",
+    "assertion_version": "durable-handoff-v3",
     "grader_stale": false,
     "original_grade": null,
     "program_valid": true,

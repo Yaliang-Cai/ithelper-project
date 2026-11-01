@@ -267,7 +267,22 @@ class ToolExecutor:
 
     def _handoff(self,c,a,actor,chat):
         require(0<len(a['issue_refs'])<=8,'INVALID_ARGUMENT','Handoff needs owned issues')
-        for iid in a['issue_refs']:self.domain._issue(c,actor,chat,iid)
+        owned_issues={iid:self.domain._issue(c,actor,chat,iid) for iid in a['issue_refs']}
+        requested={(iid,i['lifecycle']) for iid,i in owned_issues.items()}
+        overlap=[];covered=set();replay=None;unknown=[]
+        for row in c.execute('SELECT * FROM handoffs WHERE actor_id=? AND conversation_id=? ORDER BY created_at,id',(actor,chat)):
+            saved=unpack(row);scope=set()
+            for iid in set(saved['issue_refs'])&set(owned_issues):
+                lifecycle=saved.get('issue_lifecycles',{}).get(iid)
+                if lifecycle is None and owned_issues[iid]['lifecycle']==1:lifecycle=1
+                if lifecycle is None:unknown.append(saved['id'])
+                else:scope.add((iid,lifecycle))
+            shared=scope&requested
+            if shared:overlap.append(saved['id']);covered.update(shared)
+            if requested<=scope and replay is None:replay=saved
+        if unknown:raise DomainError('HANDOFF_LIFECYCLE_UNKNOWN','Existing legacy handoff has no lifecycle provenance; review existing records before creating another.',{'existing_handoff_ids':sorted(set(unknown))})
+        if replay:return self._read(c,actor,chat,'tool_receipt',replay['id'],1,{'handoff':replay},{'actor_id':actor,'issue_refs':replay['issue_refs']})
+        if overlap:raise DomainError('HANDOFF_SCOPE_OVERLAP','Some requested issue lifecycles already have saved handoffs. Inspect those receipts; submit only the uncovered scope as a separate request.',{'existing_handoff_ids':overlap,'covered_issue_ids':sorted(i for i,_ in covered),'uncovered_issue_ids':sorted(i for i,_ in requested-covered)})
         refs=self.domain._validate_refs(c,actor,chat,a['evidence_refs']+a['attempt_refs'])
         require(all(t=='attempts' for t,r in refs[len(a['evidence_refs']):]),'INVALID_ARGUMENT','Attempt references must be actual attempts')
         for item in a['facts']+a['hypotheses']:
@@ -277,8 +292,8 @@ class ToolExecutor:
                     if key in item:self.domain._validate_refs(c,actor,chat,item[key])
         # Facts and assumptions are retained separately; the tool does not certify their semantics.
         team=a['team_hint'] if a['team_hint'] in TEAM_DIRECTORY else 'general_it'
-        payload={**a,'team':team,'simulated':True,'status':'simulated_handoff_saved'}
-        fingerprint=digest({'actor':actor,'chat':chat,'issues':sorted(a['issue_refs']),'summary':a['summary'],'reason':a['reason']})
+        payload={**a,'team':team,'simulated':True,'status':'simulated_handoff_saved','issue_lifecycles':{iid:i['lifecycle'] for iid,i in owned_issues.items()}}
+        fingerprint=digest({'actor':actor,'chat':chat,'issue_lifecycles':sorted(requested)})
         old=unpack(c.execute('SELECT * FROM handoffs WHERE fingerprint=?',(fingerprint,)).fetchone())
         if old:item=old
         else:

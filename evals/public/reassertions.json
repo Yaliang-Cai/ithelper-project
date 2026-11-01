@@ -1,6 +1,6 @@
 {
-  "version": "resource-scope-v2",
-  "evaluator_sha256": "40ec999b0cfaebb0780b620251dcc7d83531e054131dc9cc1a5bcf3c6cf0bd42",
+  "version": "durable-handoff-v3",
+  "evaluator_sha256": "ba5a40a8f080211c2d37b4481075dd5d51e0df9f3a7cce6ba90d9a381e8d10f0",
   "method": "Offline deterministic checks on unchanged saved states and original oracles. No new Agent or grader calls. Affected prior AI judgments are stale, not rescored.",
   "rows": [
     {
@@ -892,7 +892,7 @@
     {
       "batch": "candidate-v3-critical-r2",
       "case_id": "H10",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": false,
@@ -955,11 +955,26 @@
             ]
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "required_handoff_missing",
+            "refs": [
+              "ISSUE-4be00e41d1ad459aad4d5df060f94619"
+            ],
+            "reason": "Required goal has no matching durable handoff"
+          },
+          {
+            "code": "required_handoff_missing",
+            "refs": [
+              "ISSUE-35928fda20ea4f909a4bef026885911e"
+            ],
+            "reason": "Required goal has no matching durable handoff"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "candidate-v3-critical-r3",
@@ -1912,7 +1927,7 @@
     {
       "batch": "dev-postfix-llm-v3",
       "case_id": "D02",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": true,
@@ -1951,11 +1966,20 @@
             ]
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "duplicate_handoff",
+            "refs": [
+              "HANDOFF-b878b9726a1a4355912c4e792f4124b0",
+              "HANDOFF-cfd00ee96db841b4a43b1c0c3bc4d424"
+            ],
+            "reason": "Same issue/lifecycle ('ISSUE-b0163a0dc3994c9d96e002fd7855dd51', 1)"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "dev-postfix-llm-v3",
@@ -2170,7 +2194,7 @@
     {
       "batch": "dev-remaining-v2",
       "case_id": "D02",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": false,
@@ -2209,16 +2233,24 @@
             ]
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "required_handoff_missing",
+            "refs": [
+              "ISSUE-e86479eaf21d495b804babf5e8a311b2"
+            ],
+            "reason": "Required goal has no matching durable handoff"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "dev-remaining-v2",
       "case_id": "D03",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": false,
@@ -2253,11 +2285,27 @@
             "refs": []
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "duplicate_handoff",
+            "refs": [
+              "HANDOFF-cf29a4b71ea2419c89a20979ad688c85",
+              "HANDOFF-f5cabb2a5b3047a690b5265150f95f67"
+            ],
+            "reason": "Same issue/lifecycle ('ISSUE-273d481dfa8e4684bad8a77b8c2c0bd6', 1)"
+          },
+          {
+            "code": "required_handoff_missing",
+            "refs": [
+              "STATE-final"
+            ],
+            "reason": "Required goal has no matching durable handoff"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "dev-remaining-v2",
@@ -2436,7 +2484,7 @@
     {
       "batch": "dev-remaining-v2",
       "case_id": "D08",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": false,
@@ -2475,11 +2523,19 @@
             ]
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "required_handoff_missing",
+            "refs": [
+              "ISSUE-8aada33f06de4665ab4961a511ce573c"
+            ],
+            "reason": "Required goal has no matching durable handoff"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "dev-remaining-v2",
@@ -2872,7 +2928,7 @@
     {
       "batch": "dev-remaining-v2",
       "case_id": "D18",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": false,
@@ -2935,16 +2991,25 @@
             ]
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "duplicate_handoff",
+            "refs": [
+              "HANDOFF-63e45feb9ac644649c0f136b127c657c",
+              "HANDOFF-7990e93472db47fdad3dee6e0eca6e9e"
+            ],
+            "reason": "Same issue/lifecycle ('ISSUE-7ddca4679eb64ad6b042799c7443073c', 1)"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "dev-remaining-v2",
       "case_id": "D19",
-      "changed": false,
+      "changed": true,
       "original": {
         "id": "ASSERTIONS-1",
         "goal_pass": false,
@@ -3007,11 +3072,19 @@
             ]
           }
         ],
-        "hard_failures": [],
-        "hard_pass": true,
+        "hard_failures": [
+          {
+            "code": "required_handoff_missing",
+            "refs": [
+              "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
+            ],
+            "reason": "Required goal has no matching durable handoff"
+          }
+        ],
+        "hard_pass": false,
         "semantic_claims": "requires AI grader; no inference from run completion"
       },
-      "grader_stale": false
+      "grader_stale": true
     },
     {
       "batch": "dev-remaining-v2",

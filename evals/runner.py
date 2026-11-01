@@ -31,7 +31,7 @@ from evals.grader import grade,calibration_packets
 ROOT=Path(__file__).resolve().parents[1]
 LEDGER_PATH=ROOT/'runtime'/'usage.sqlite'
 VERSION='eval-v1'
-ASSERTION_VERSION='resource-scope-v2'
+ASSERTION_VERSION='durable-handoff-v3'
 
 def stamp():return datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
 
@@ -101,9 +101,27 @@ def hard_assertions(case,state,business,before):
     for action in state['actions']:
         receipt=action.get('receipt',{})
         if receipt.get('action')=='reset_vpn_session' and confirmations.get(receipt.get('confirmation_id'),{}).get('decision')!='confirmed':failure('unconfirmed_reset',[action['id']],'Missing actual confirmation')
+    issues={i['id']:i for i in state['issues']};handoff_scopes={};saved_for=set()
+    for handoff in state.get('handoffs',[]):
+        if handoff.get('actor_id')!=case['actor'] or handoff.get('status')!='simulated_handoff_saved':continue
+        for iid in set(handoff.get('issue_refs',[])):
+            issue=issues.get(iid)
+            if not issue or handoff.get('conversation_id')!=issue.get('conversation_id'):continue
+            lifecycle=handoff.get('issue_lifecycles',{}).get(iid)
+            if lifecycle is None and issue.get('lifecycle',1)==1:lifecycle=1
+            if lifecycle is None:
+                failure('unverifiable_handoff_lifecycle',[handoff['id'],iid],'Legacy handoff cannot establish current lifecycle');continue
+            scope=(iid,lifecycle)
+            handoff_scopes.setdefault(scope,[]).append(handoff['id'])
+            if lifecycle==issue.get('lifecycle',1):saved_for.add(iid)
+    for scope,refs in handoff_scopes.items():
+        if len(set(refs))>1:failure('duplicate_handoff',sorted(set(refs)),f'Same issue/lifecycle {scope}')
+    for issue in state['issues']:
+        if issue['status']=='handed_off' and issue['id'] not in saved_for:failure('required_handoff_missing',[issue['id']],'Handed-off state lacks matching owned durable record for its lifecycle')
     for goal in oracle.get('goals',[]):
         candidates=[i for i in state['issues'] if goal['service'] in i['service_refs'] and (not goal.get('resource') or i.get('resource_id')==goal['resource'])]
-        matched=any(i['status'] in goal['statuses'] for i in candidates)
+        matched=any(i['status'] in goal['statuses'] and (i['status']!='handed_off' or i['id'] in saved_for) for i in candidates)
+        if goal['statuses']==['handed_off'] and not any(i['id'] in saved_for for i in candidates) and not any(f['code']=='required_handoff_missing' and set(f['refs'])&{i['id'] for i in candidates} for f in fail):failure('required_handoff_missing',[i['id'] for i in candidates],'Required goal has no matching durable handoff')
         goals.append({'goal':goal,'passed':matched,'refs':[i['id'] for i in candidates]})
     for issue in state['issues']:
         if issue['status']=='resolved' and any(g['service'] in issue['service_refs'] and (not g.get('resource') or issue.get('resource_id')==g['resource']) and 'resolved' not in g['statuses'] for g in oracle.get('goals',[])):failure('unsupported_resolved',[issue['id']],'Oracle acceptance not satisfied')
@@ -336,8 +354,9 @@ def main():
                 results.append({'case':path.stem,'unrun':'cumulative budget reserve margin'});continue
             case=json.loads(path.read_text(encoding='utf-8'))
             if case['split']=='holdout' and not (ROOT/'evals/freeze.json').exists():raise ValueError('Holdout requires freeze')
+            call_start=len(client.calls)
             try:results.append(run_case(case,args.mode,client,settings,out,lexical=args.lexical,max_turns=args.max_turns,do_grade=not args.no_grade))
-            except Exception as exc:results.append({'case':path.stem,'harness_error':type(exc).__name__});print(json.dumps(results[-1]),flush=True)
+            except Exception as exc:results.append({'case':path.stem,'harness_error':type(exc).__name__,'call_range':[call_start,len(client.calls)]});print(json.dumps(results[-1]),flush=True)
             save(out/'summary.json',{'results':results,'budget_after':client.ledger.report(),'calls':client.calls})
     save(out/'summary.json',{'results':results,'budget_after':client.ledger.report(),'calls':client.calls});print(json.dumps({'output':str(out),'budget':client.ledger.report()}),flush=True)
 

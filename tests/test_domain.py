@@ -25,6 +25,29 @@ def call(env, name, **args):
     return env[2].call(name, args, 'alice.sales', env[3])
 
 
+def test_handoff_lifecycle_identity_and_legacy_uncertainty(env):
+    store,domain,_,chat,issue,_=env
+    args=dict(issue_refs=[issue],summary='Needs expert',facts=[],hypotheses=[],attempt_refs=[],evidence_refs=[],open_questions=['Cause?'],reason='Unsupported operation',team_hint='general_it')
+    first=call(env,'create_handoff',**args)['data']['handoff']
+    # Seed a later owned lifecycle to exercise the persistence boundary. Expert
+    # resumption is outside this product; this fixture does not add that API.
+    with store.write() as c:
+        payload=json.loads(c.execute('SELECT payload FROM issues WHERE id=?',(issue,)).fetchone()[0]);payload['lifecycle']=2
+        c.execute("UPDATE issues SET payload=?,status='investigating' WHERE id=?",(json.dumps(payload),issue))
+    second=call(env,'create_handoff',**args)
+    assert second['ok'] and second['data']['handoff']['id']!=first['id']
+    assert second['data']['handoff']['issue_lifecycles']=={issue:2}
+    # A legacy row without lifecycle metadata cannot be guessed to belong to1
+    # when the issue has already advanced. Historical rows are never rewritten
+    # by production replay; removal here is solely a legacy-record fixture.
+    with store.write() as c:
+        payload=json.loads(c.execute('SELECT payload FROM handoffs WHERE id=?',(first['id'],)).fetchone()[0]);payload.pop('issue_lifecycles')
+        c.execute('UPDATE handoffs SET payload=? WHERE id=?',(json.dumps(payload),first['id']))
+    unknown=call(env,'create_handoff',**args)
+    assert not unknown['ok'] and unknown['error']['code']=='HANDOFF_LIFECYCLE_UNKNOWN'
+    assert len(domain.snapshot('alice.sales',chat)['handoffs'])==2
+
+
 def test_ownership_and_catalog_have_no_actor_override(env):
     store, domain, tools, chat, issue, _ = env
     with pytest.raises(DomainError, match='FORBIDDEN'):

@@ -80,17 +80,18 @@
   "replacement_measured": true,
   "initial_development_mixed_versions": {
     "runs": 20,
+    "harness_error_measurements": 0,
     "unique_cases": 20,
     "program_simulator_valid": 14,
-    "ai_simulator_invalid": 4,
+    "ai_simulator_invalid": 3,
     "valid_after_available_checks": 14,
     "goal_assertion_pass": 9,
-    "program_hard_failure_runs": 0,
-    "program_hard_failure_count": 0,
-    "semantic_flag_runs": 6,
-    "grader_missing_invalid": 4,
+    "program_hard_failure_runs": 5,
+    "program_hard_failure_count": 6,
+    "semantic_flag_runs": 2,
+    "grader_missing_invalid": 9,
     "goal_and_hard_and_valid_and_available_grade_pass": 6,
-    "judged_valid_denominator": 12,
+    "judged_valid_denominator": 8,
     "durable_agent_runs": 37,
     "agent_run_errors": 7,
     "error_codes": {
@@ -101,13 +102,14 @@
   },
   "frozen_profile_all_measurements": {
     "runs": 17,
+    "harness_error_measurements": 0,
     "unique_cases": 10,
     "program_simulator_valid": 16,
     "ai_simulator_invalid": 0,
     "valid_after_available_checks": 16,
     "goal_assertion_pass": 12,
-    "program_hard_failure_runs": 0,
-    "program_hard_failure_count": 0,
+    "program_hard_failure_runs": 1,
+    "program_hard_failure_count": 2,
     "semantic_flag_runs": 0,
     "grader_missing_invalid": 3,
     "goal_and_hard_and_valid_and_available_grade_pass": 11,
@@ -121,17 +123,18 @@
   },
   "all_formal_versions_descriptive_only": {
     "runs": 63,
+    "harness_error_measurements": 0,
     "unique_cases": 31,
     "program_simulator_valid": 54,
-    "ai_simulator_invalid": 6,
+    "ai_simulator_invalid": 5,
     "valid_after_available_checks": 54,
     "goal_assertion_pass": 37,
-    "program_hard_failure_runs": 1,
-    "program_hard_failure_count": 2,
-    "semantic_flag_runs": 8,
-    "grader_missing_invalid": 10,
-    "goal_and_hard_and_valid_and_available_grade_pass": 31,
-    "judged_valid_denominator": 47,
+    "program_hard_failure_runs": 8,
+    "program_hard_failure_count": 11,
+    "semantic_flag_runs": 4,
+    "grader_missing_invalid": 16,
+    "goal_and_hard_and_valid_and_available_grade_pass": 30,
+    "judged_valid_denominator": 42,
     "durable_agent_runs": 129,
     "agent_run_errors": 19,
     "error_codes": {
@@ -230,5 +233,69 @@
     "semantic_unjudged": 2
   },
   "grade_scores_provisional": true,
-  "no_single_final_30_case_success_rate": true
+  "no_single_final_30_case_success_rate": true,
+  "delivery_vs_measurement": {
+    "latest_measured_freeze": "freeze-v3.json",
+    "latest_measured_git_head": "630e58635221932294a889607b6605327b6ad739",
+    "delivered_runtime_hashes": {
+      "app/agent.py": "6af0b047f77dd1b8e882bb3b20a4101b039c4cfc3c2acccc6e383f336f46bc9f",
+      "app/auth.py": "d2f41beba199937fa5e4f0be2f710152441f7e3d007fa070630ab4ecb108d078",
+      "app/budget.py": "5b30409d8fcbfcab6b8e67d9676cca044902b8fa2b282d226978b07160cafd6d",
+      "app/catalog.py": "ff0684194e53cc942e671996ee3c5f45b15d7bf08cd4a828ae52d1486561ab56",
+      "app/config.py": "d82dc3f909bd641cc3148c90b645d8b78599cd0ecfd9184dbc233782373c5cb9",
+      "app/context.py": "b7c55fe002a356b98191328263b82ca769d0a807097a23d097e2155586967a4e",
+      "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
+      "app/domain.py": "6186b7c906d9cb4951ee0c7f5612f5ed754d850905d1456d663ab02be39f08fe",
+      "app/main.py": "bfd9729f38af41076689d337a0e83481b6e09661b510fc455e1cd56b1a5ab0b5",
+      "app/prompts.py": "3563f37964d0b30d54b97da0d74dbb0f50f45053f0a7387a5d58a8f7c27b9054",
+      "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
+      "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
+      "app/seed.py": "274a5159406e47e0d6139e365f177dfae502b217eeb2f6c22ee255ea3df8f60b",
+      "app/storage.py": "888e781b3d29fd12d2af6c99ca462a6137371a47f94c75f3bc759783f37611cc",
+      "app/tools.py": "a32c2f030b8ce13366240939e3e605c00936b8d748a9f54620d00d750767514f",
+      "app/worker.py": "3008ea2be94eae5dd6e74475c73d1271469ab069a886847b33a4ab9818f664b3",
+      "app/__init__.py": "41d1c9cdcfa1d5717a4209c6e75b5946594bedc04c14ade06dd92fabaf693b9e"
+    },
+    "runtime_files_changed_since_measurement": [
+      "app/domain.py",
+      "app/tools.py"
+    ],
+    "current_delivery_live_measurements": 0,
+    "validation": "Program regressions only after review; Task6 owns next live smoke."
+  },
+  "harness_error_measurements": 0,
+  "stale_judgments": [
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D02"
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D03"
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D08"
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D18"
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D19"
+    },
+    {
+      "batch": "dev-postfix-llm-v3",
+      "case_id": "D02"
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "H10"
+    },
+    {
+      "batch": "candidate-v3-critical-r3",
+      "case_id": "H07"
+    }
+  ]
 }

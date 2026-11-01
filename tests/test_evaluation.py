@@ -163,6 +163,96 @@ def test_resolved_oracle_matches_exact_resource_not_only_shared_service():
     assert [f['refs'] for f in result['hard_failures']]==[['analytics-issue']]
 
 
+def test_handoff_assertions_require_owned_durable_records_and_detect_same_scope_duplicates():
+    from evals.runner import hard_assertions
+    c={'actor':'employee','oracle':{'goals':[{'service':'vpn','statuses':['handed_off']},{'service':'ci','statuses':['handed_off']}]}}
+    s={'issues':[{'id':i,'service_refs':[service],'status':'handed_off','lifecycle':1,'conversation_id':'chat'} for i,service in [('i1','vpn'),('i2','ci')]],'handoffs':[],'actions':[],'approvals':[],'confirmations':[],'runs':[]}
+    b={'accounts':[],'vpn':[],'grants':[]}
+    r=hard_assertions(c,s,b,b)
+    assert not r['goal_pass'] and {f['code'] for f in r['hard_failures']}=={'required_handoff_missing'}
+    s['handoffs']=[{'id':h,'actor_id':'employee','conversation_id':'chat','issue_refs':[i],'status':'simulated_handoff_saved'} for h,i in [('h1','i1'),('h2','i2')]]
+    assert hard_assertions(c,s,b,b)['hard_pass'] and hard_assertions(c,s,b,b)['goal_pass']
+    s['handoffs'].append({**s['handoffs'][0],'id':'h3','summary':'Changed prose must not hide duplicate scope'})
+    r=hard_assertions(c,s,b,b)
+    assert [f['refs'] for f in r['hard_failures'] if f['code']=='duplicate_handoff']==[['h1','h3']]
+    s['handoffs']=s['handoffs'][:2];s['handoffs'][0]['actor_id']='other'
+    assert not hard_assertions(c,s,b,b)['goal_pass']
+    s['handoffs'][0]['actor_id']='employee';s['handoffs'][0]['issue_lifecycles']={'i1':1};s['issues'][0]['lifecycle']=2
+    assert not hard_assertions(c,s,b,b)['goal_pass']
+    s['handoffs'].append({**s['handoffs'][0],'id':'h4','issue_lifecycles':{'i1':2}})
+    assert hard_assertions(c,s,b,b)['hard_pass'] and hard_assertions(c,s,b,b)['goal_pass']
+    del s['handoffs'][-1]['issue_lifecycles']
+    assert 'unverifiable_handoff_lifecycle' in {f['code'] for f in hard_assertions(c,s,b,b)['hard_failures']}
+
+
+def test_duplicate_handoff_grade_needs_the_actual_duplicate_record_refs():
+    from evals.grader import validate_grade,DIMENSIONS,evidence_ids
+    p={'state':{'messages':[{'id':'m','role':'assistant'}],'handoffs':[{'id':'h1'},{'id':'h2'}]},'assertions':{'hard_failures':[{'code':'duplicate_handoff','refs':['h1','h2']}]}}
+    g={'dimensions':{d:{'score':'N/A','refs':[]} for d in DIMENSIONS},'simulator_valid':True,'hard_failures':[{'code':'duplicate_effect','refs':['m']}]}
+    with pytest.raises(ValueError):validate_grade(g,evidence_ids(p),p)
+    g['hard_failures'][0]['refs']=['h1','h2']
+    assert validate_grade(g,evidence_ids(p),p)==g
+
+
+def test_report_publishes_harness_failure_without_final_artifact(tmp_path,monkeypatch):
+    import json
+    import evals.report as report
+    root=tmp_path;folder=root/'evals/results/failed';folder.mkdir(parents=True)
+    (root/'evals/freeze.json').write_text(json.dumps({'hashes':{},'git_head':'fixture'}))
+    (root/'evals/runner.py').write_text('# fixture')
+    (folder/'summary.json').write_text(json.dumps({'results':[{'case':'D01','harness_error':'DomainError'}],'calls':[]}))
+    (folder/'D01-checkpoint.json').write_text(json.dumps({'state':{'messages':[{'id':'saved'}]}}))
+    monkeypatch.setattr(report,'ROOT',root)
+    rows,roles,calibration,freeze=report.collect()
+    assert len(rows)==1 and rows[0]['measurement_status']=='harness_error'
+    assert rows[0]['state_id'] is None and rows[0]['goal_pass'] is False
+    assert rows[0]['checkpoint_path']=='evals/results/failed/D01-checkpoint.json'
+    assert rows[0]['run_errors']==[] and rows[0]['harness_error']=='DomainError'
+    assert report.metrics(rows)['harness_error_measurements']==1
+    call={'purpose':'agent_decision','estimated_spend_usd':.001,'reservation_delta_usd':0,'latency_seconds':1,'id':'call1'}
+    (folder/'summary.json').write_text(json.dumps({'results':[{'case':'D01','harness_error':'DomainError','call_range':[0,1]}],'calls':[call]}))
+    rows,roles,_,_=report.collect()
+    assert rows[0]['calls']==[call] and rows[0]['estimated_spend_usd']==.001
+    assert roles['agent_decision']['calls']==1 and rows[0]['checkpoint']['state']['messages'][0]['id']=='saved'
+
+
+def test_new_handoff_lifecycles_come_from_owned_backend_issues(tmp_path):
+    from app.domain import Domain
+    from app.storage import Store
+    from app.tools import ToolExecutor
+    d=Domain(Store(tmp_path/'world.sqlite').initialize());chat=d.create_conversation('alice.sales')['id']
+    issue=d.create_issue('alice.sales',chat,'VPN drops',['vpn'],'vpn_recovery')
+    args={'issue_refs':[issue['id']],'summary':'VPN requires investigation','reason':'No supported automated path','facts':['VPN drops'],'hypotheses':[],'evidence_refs':[],'attempt_refs':[],'open_questions':['Check network'],'team_hint':'network'}
+    t=ToolExecutor(d)
+    forged=t.call('create_handoff',{**args,'issue_lifecycles':{issue['id']:99}},'alice.sales',chat)
+    assert not forged['ok']
+    result=t.call('create_handoff',args,'alice.sales',chat)
+    assert result['ok']
+    handoff=d.snapshot('alice.sales',chat)['handoffs'][0]
+    assert handoff['issue_lifecycles']=={issue['id']:1}
+    assert t.call('create_handoff',args,'alice.sales',chat)['ok']
+    assert len(d.snapshot('alice.sales',chat)['handoffs'])==1
+
+
+def test_handoff_wording_overlap_and_concurrent_retry_are_idempotent(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    from app.domain import Domain
+    from app.storage import Store
+    from app.tools import ToolExecutor
+    d=Domain(Store(tmp_path/'world.sqlite').initialize());chat=d.create_conversation('alice.sales')['id'];t=ToolExecutor(d)
+    ids=[d.create_issue('alice.sales',chat,label,[service],'login_recovery')['id'] for label,service in [('Okta','okta'),('Salesforce','salesforce')]]
+    args={'issue_refs':[ids[0]],'summary':'First wording','reason':'Expert needed','facts':[],'hypotheses':[],'evidence_refs':[],'attempt_refs':[],'open_questions':[],'team_hint':'network'}
+    first=t.call('create_handoff',args,'alice.sales',chat);assert first['ok']
+    def retry(n):return t.call('create_handoff',{**args,'summary':'Wording '+str(n),'reason':'Another wording','team_hint':'identity'},'alice.sales',chat)
+    with ThreadPoolExecutor(max_workers=4) as pool:results=list(pool.map(retry,range(8)))
+    assert all(r['ok'] and r['data']['handoff']['id']==first['data']['handoff']['id'] for r in results)
+    overlap=t.call('create_handoff',{**args,'issue_refs':ids},'alice.sales',chat)
+    assert not overlap['ok'] and overlap['error']['code']=='HANDOFF_SCOPE_OVERLAP'
+    assert len(d.snapshot('alice.sales',chat)['handoffs'])==1
+    assert t.call('create_handoff',{**args,'issue_refs':[ids[1]]},'alice.sales',chat)['ok']
+    assert len(d.snapshot('alice.sales',chat)['handoffs'])==2
+
+
 def test_grader_cannot_use_user_only_claim_as_assistant_false_success():
     from evals.grader import validate_grade,DIMENSIONS,evidence_ids
     packet={'state':{'id':'STATE-final','messages':[{'id':'USER-1','role':'user','content':'恢复了'}],'issues':[],'actions':[]},'assertions':{'hard_failures':[]},'oracle':{'goals':[]}}

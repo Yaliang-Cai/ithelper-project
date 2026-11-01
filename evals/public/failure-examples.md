@@ -2,6 +2,67 @@
 
 All quotes below are persisted employee-visible messages. Each section names its immutable raw batch and evidence IDs; complete safe state/usage is in runs.json. These are synthetic worlds with actual Flash calls, not human or production observations.
 
+## D02: Offline durable oracle exposes duplicate handoff
+
+Batch: `dev-postfix-llm-v3`. Review-time independent checks found two real saved handoffs for the same issue/lifecycle, despite different prose. Original assertions omitted this check. Original grade is stale; original state and messages are preserved. This is an actual duplicate simulated handoff, not a blocked proposal or a new paid run.
+
+Program goal: `True`; simulation valid: `True`; errors: `[]`.
+
+**user — `MSG-aa60b9e9a7a649acb6b1fd119d72f483`**
+
+> 密码没错，Okta 还是不让我进。
+
+**assistant — `MSG-9559613314de4aaa89bcfaad3d6c3bbe`**
+
+> 我查了你的 Okta 账户和 Okta 服务状态：账户没有被锁定（也无安全禁用记录），Okta 服务当前正常运行、无区域故障。所以「密码正确但被拒」不是普通的锁定或服务中断导致的。
+>
+> 接下来需要你提供一项信息：登录失败时屏幕上显示的**完整错误提示**（例如 MFA/验证器提示、重定向循环、"无权限"、或空白报错）。不同错误对应不同的处理路径（浏览器登录状态、MFA 身份验证需转安全团队等），我需要据此给出下一步。
+
+**user — `MSG-38867a4d8088404b8e0bb8fdc6048d74`**
+
+> 手机上的验证器一直是「MFA device unavailable」，验证码也收不到。网页版当前版本下就卡在这一步。
+
+**assistant — `MSG-0d70acf36f144f9bb32fe8387039e9cd`**
+
+> 根据你提供的错误提示（验证器显示「MFA device unavailable」、收不到验证码、网页版卡在 MFA 这一步），问题定位在 Okta 的 MFA 因素上：你的账户没有被锁定，Okta 服务也正常运行、无区域故障，而复核过的知识库（kb.account-mfa，适用版本 2026.11）明确说明 MFA 重置无法自助完成，必须由安全团队核验身份后处理。
+>
+> 我已把完整情况提交给安全团队（handoff 记录 HANDOFF-b878b9726a1a4355912c4e792f4124b0，状态为「模拟已保存」，不代表已有人接手）。需要你确认的信息：你账户上目前还注册了哪些其他 MFA 方式（例如备用方式或安全密钥），以便核验身份；这也会一并提供给他们。
+>
+> 在此之前无法通过自助操作恢复登录，请不要重复尝试输入验证码。
+
+**user — `MSG-c2459c0920644a28930773828217a047`**
+
+> 我这边只知道提示是 MFA device unavailable、验证码收不到，网页当前版本卡在这一步；账户上还注册了哪些其他 MFA 方式我不清楚。
+
+**assistant — `MSG-84b907f782844cbcbef65691df03c3c3`**
+
+> 明白，你只需要知道：手机验证器不可用、验证码收不到，网页版卡在 MFA 这一步。
+>
+> 我复核了你的 Okta 账户（未被锁定、无安全禁用）和 Okta 服务状态（无区域故障），问题定位在已登记的 MFA 因素本身失效。按复核过的知识库（kb.account-mfa，适用版本 2026.11），MFA 重置无法自助完成，必须由安全团队核验身份后处理，所以这条路径没有自助操作可做。
+>
+> 不需要你确认其他 MFA 方式了（你也无法查看）——我已把完整情况重新提交给安全团队，handoff 记录 HANDOFF-cfd00ee96db841b4a43b1c0c3bc4d424，状态为「模拟已保存」，不代表已有人接手。在此之前请不要反复尝试输入验证码；如需跟进，回复我即可。
+
+Actual action IDs: none.
+
+Saved handoff IDs: `HANDOFF-b878b9726a1a4355912c4e792f4124b0`, `HANDOFF-cfd00ee96db841b4a43b1c0c3bc4d424`.
+
+Blocked attempts (not physical effects):
+
+```json
+[
+  {
+    "id": "TOOL-66b3f3dbf7e04f29846232ccbed3c855",
+    "name": "search_history",
+    "error": {
+      "code": "NO_MATCH",
+      "execution_status": "not_executed",
+      "message": "No applicable retrieval evidence",
+      "retryable": false
+    }
+  }
+]
+```
+
 ## D13: Ordinary two-goal context failure
 
 Batch: `dev-core-v1`. The third short user reply hit CONTEXT_CAPACITY. Original 6k trace remains; required state was 7,517 bytes. This was an ordinary conversation capacity defect, not merely long history.

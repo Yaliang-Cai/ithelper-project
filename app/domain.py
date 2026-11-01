@@ -334,20 +334,30 @@ class Domain:
         finalization, question status and authority events cannot rewrite history.
         """
         self._conversation(c,actor_id,conversation_id)
-        blocked={};unassigned={}
+        blocked={};unassigned={};observation_origins={}
         rows=c.execute('SELECT m.id,b.result FROM messages m JOIN candidate_batches b ON b.message_id=m.id WHERE m.conversation_id=? AND m.actor_id=? AND m.role=\'user\' ORDER BY m.rowid',(conversation_id,actor_id))
         for row in rows:
             batch=json.loads(row['result'])
             intents=set(batch.get('message_intents',[]))
             may_clear=bool(intents&{'new_request','additional_info','correction'}) and not intents&{'cancel_request','handoff_request','unclear','unrelated'}
             may_assign=bool(intents&{'new_request','additional_info','correction','progress_report'}) and not intents&{'cancel_request','unclear','unrelated'}
+            # Assigning an earlier ambiguous report needs an explicit correction
+            # link, not merely a new request or progress about a working target.
+            corrected_groups={observation_origins.get(o.get('observation_id')) for o in batch.get('corrections',[])}
+            scoped={o['issue_refs'][0] for o in batch.get('observations',[]) if o.get('mapping_status')=='tentative' and len(o.get('issue_refs',[]))==1 and o.get('category') in ('request','correction','reported_failure','reported_recovery')}
+            if may_assign and 'correction' in intents and len(scoped)==1:
+                for key,value in list(unassigned.items()):
+                    if key in corrected_groups and scoped.intersection(key[1]):unassigned.pop(key)
             for observation in batch.get('observations',[])+batch.get('corrections',[]):
                 targets=set(observation.get('issue_refs',[]))
-                if may_assign and observation.get('category') in ('request','correction','reported_failure','reported_recovery') and observation.get('mapping_status')=='tentative' and len(targets)==1:
+                if may_assign and observation.get('category') in ('reported_failure','reported_recovery') and observation.get('mapping_status')=='tentative' and len(targets)==1:
                     for key,value in list(unassigned.items()):
-                        if targets.intersection(value['candidate_issue_ids']):unassigned.pop(key)
+                        remaining=set(value['candidate_issue_ids'])-targets
+                        if remaining:value['candidate_issue_ids']=sorted(remaining)
+                        else:unassigned.pop(key)
                 if may_clear and observation.get('category') in ('request','correction') and observation.get('mapping_status')=='tentative' and len(targets)==1:
                     blocked.pop(next(iter(targets)),None)
+                observation_origins[observation['id']]=observation_origins.get(observation.get('observation_id'),(row['id'],tuple(sorted(targets))))
             groups=[set(r.get('candidate_issue_ids',[])) for r in batch.get('unresolved_references',[])]
             groups.extend(set(o.get('issue_refs',[])) for o in batch.get('observations',[]) if o.get('mapping_status')=='needs_clarification')
             # Add this batch's ambiguity last: other proposals in the same
