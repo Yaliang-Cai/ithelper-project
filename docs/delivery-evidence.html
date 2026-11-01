@@ -66,7 +66,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 }
 </style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html" aria-current="page">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">实际检查</a><a href="#section-3">真实smoke范围</a><a href="#section-4">费用与版本</a><a href="#section-5">原题逐项映射</a><a href="#section-6">设计与可执行契约</a><a href="#section-7">最终整体审查后的确定性修复（2026-11-02）</a></details></aside>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html" aria-current="page">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">实际检查</a><a href="#section-3">真实smoke范围</a><a href="#section-4">费用与版本</a><a href="#section-5">原题逐项映射</a><a href="#section-6">设计与可执行契约</a><a href="#section-7">最终整体审查后的确定性修复（2026-11-02）</a><a href="#section-8">开发材料一致性审校</a></details></aside>
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">本地集成交付证据</h1>
 <p>2026-11-02（Asia/Shanghai）。本页先保留65743f3的集成检查，最后记录2026-11-02最终边界修复的离线验证；正式评测保留为历史版本测量，没有真人专家、真实企业系统或外部发布。</p>
 <h2 id="section-2">实际检查</h2>
@@ -259,7 +259,9 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>新增离线回归先4failed/2passed，修复后相关41passed；最终全程序209passed in23.66s，无warning。真实程序/脚本模型浏览器14checks、受控时钟3checks均通过，零付费。固定历史Task5仍656请求/USD2.295008760；合成“后续新批次”的回归证明截止值不变而新费用另列。正式测量/原oracle不改写。</p>
 <p>原docs/evidence/delivery-smoke.json及其原始runtime哈希、两截图和restart.json字节保留：它测量65743f3，在当前config/main.py确定性修复之前。metrics.integration_smoke.matches_current_runtime现为false并列差异，当前没有新的live模型实测；不把旧成功路径重新贴到新HEAD。当前UI/服务加载已通过离线浏览器历史读取，未发送新消息。</p>
 <p>只停止经命令行核实的原app启动进程，再以隐藏loopback helper启动相同factory。新实际服务器PID8388，启动helper PID43028；URL仍http://127.0.0.1:8000/，日志runtime/delivery/final-fix-app.stdout.log、final-fix-app.stderr.log。正常localhost/127.0.0.1读取200；任意匹配Host+Origin的读取/health/登录/建聊天/入队请求全部400。消息4/事件2/运行2/动作1及内容摘要、759条账本行指纹完全一致；花费USD2.634129369、预留0、剩余USD0.365870631，未新增付费调用。</p>
-<p><a href="evidence/final-boundary-checks.json">最终离线边界与重启证据</a>记录模式、前后摘要、Host状态和进程。修复实施不等于最终复核批准，复核结论由控制方另行记录；源码ZIP由控制方在修复复核后重新生成。</p>
+<p><a href="evidence/final-boundary-checks.json">最终离线边界与重启证据</a>记录模式、前后摘要、Host状态和进程。四项修复已通过定向复核，无新增阻断问题；交付 ZIP 从最终已提交源码生成，并核对文件内容与凭据排除。</p>
+<h2 id="section-8">开发材料一致性审校</h2>
+<p>后续审校统一了开发流程、实际接口和预算单位，修正幂等机制、检索切分/无匹配、时钟与未实现交互的描述。文档区分现有能力、验收目标和扩展，数据强调正反例及实体关系，改进强调失败依据与同版本证据。离线检查验证 5 个 JSON 示例，其中 3 个通过实际严格 Schema，核对 5 个接口和源数据数量；31 个案例的引用检查通过，生成的 9 页 HTML 通过结构与链接检查。此修订没有运行新的付费测量，历史成绩与语义局限沿用原记录。</p>
 
 <footer>本页来自 <a href="delivery-evidence.md">delivery-evidence.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
 </article></main></body></html>

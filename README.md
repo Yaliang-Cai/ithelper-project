@@ -48,6 +48,8 @@ powershell -ExecutionPolicy Bypass -File scripts/run_local.ps1
 
 ## 架构与边界
 
+继续开发、测试和答辩准备见[开发与测试流程](docs/superpowers/plans/2026-11-02-helpdesk-implementation.md)：模块职责、数据覆盖、最小修改、测试选择与改进依据。设计不要求把所有维度实现到完善，关键路径和取舍需要实际证据支持。
+
 ```mermaid
 flowchart LR
   E[员工聊天 / 认证] --> Q[SQLite 原文与持久事件]

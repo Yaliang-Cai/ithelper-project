@@ -1,8 +1,8 @@
 # 模型调用、提示词与数据契约
 
-> 可执行契约说明（2026-11-02）：本文的提示词初稿和JSON示例是概念设计，不保证可原样发给当前API/工具。实际严格Schema见[app/contracts.py](../app/contracts.py)，工具参数见[app/tools.py](../app/tools.py)，HTTP请求见[app/main.py](../app/main.py)，实际提示词见[app/prompts.py](../app/prompts.py)。整理使用message_intents/new_issue_candidates/observations/corrections/relation_candidates/unresolved_references；观察用target_refs/claim而非概念target_issue_ids/content。终结使用issue_updates、字符串reply、question_updates/hypotheses/guidance/refinements及可选relation_updates，不接受概念issue_update_proposals/对象reply/stop_reason。默认10模型/12非终结工具/120秒；决策增加guarded refine_issue，强制第10请求仅submit_turn。整理10k/决策12k为保守UTF-8字节；必需记录放不下显式停止。语义匹配只在小开发样本调节，合法结构仍可能错误解释。详见[实现状态](implementation-status.md)与[交付对照](delivery-evidence.md)。
+> 当前契约：严格提议见[contracts.py](../app/contracts.py)，业务工具 Schema 见[catalog.py](../app/catalog.py)，执行逻辑见[tools.py](../app/tools.py)，HTTP 见[main.py](../app/main.py)。本文整理输出与终结 JSON 按当前 Schema 编写；示意 ID 不是真实可执行凭据。输入示例仅为摘录。运行提示词唯一来源为[prompts.py](../app/prompts.py)，下文中文用于解释职责，不另维护可执行提示词。
 
-本文把“每步怎么组织上下文、怎么限制输出、程序怎么记录”落实为可检查的接口设计。提示词是待实现和验证的初始版本，不是已经证明有效的生产提示词。字段名称、数量限制和错误码是工程默认值。
+本文解释每步如何组织上下文、限制提议和保存记录。当前实现有程序验证和部分真实测量；结构合法仍可能解释错误，成绩与限制见[实测报告](evaluation-report.md)。默认 10 模型请求/12 非终结工具/120 秒，第十次仅 submit_turn。10k/12k 为业务上下文的保守 UTF-8 字节目标，不含整个原生请求；完整预算口径见[系统设计](01-system-design.md)。
 
 ## 1 一次消息如何经过系统
 
@@ -32,10 +32,10 @@
 | --- | --- | --- |
 | 当前消息用途 | new_request、additional_info、correction、progress_report、question、cancel_request、handoff_request、unrelated、unclear | 可同时出现多个，不强迫一句话只有一个意图 |
 | 用户观察类别 | symptom、context、prior_attempt、reported_recovery、reported_failure、reported_approval、preference、request、correction | 表示用户陈述性质，不能写后台事实 |
-| 程序记录的来源 | user_report、directory、service_state、kb、history、policy、tool_receipt、approval_event、confirmation_event | 由接入路径绑定，模型不能升级来源 |
+| 程序记录的来源 | user_report；证据另含 directory、service_state、kb、history、policy、tool_receipt、approval_event、confirmation_event、conversation | 由接入路径绑定，模型不能升级来源 |
 | 问题关系 | possible_shared_cause、depends_on、same_incident、duplicate_of | 保存支持、反证和修订；不传播解决状态 |
 | 候选语义状态 | tentative、needs_clarification、superseded | 不等于业务执行或审批状态 |
-| 操作结果 | pending、succeeded、failed、uncertain | 来自实际执行器；uncertain 必须核查 |
+| 执行状态 | 实际收据状态及 error.execution_status，例如 not_executed、uncertain | 不由模型报告创造；响应不确定须查持久收据 |
 
 “context”可以容纳地点、客户端版本等用户自述；具体内容和实体引用仍开放。未知故障不用新增枚举。分类本身由模型判断，仍可能错；新增类别时需要同步 Schema、提示词与相关测试，不能随手加一个可绕过边界的 other_fact。
 
@@ -43,23 +43,24 @@
 
 ## 3 整理阶段输入
 
-后端按固定结构生成输入，数据块均作为数据传入，不与固定指令拼接成可执行规则。
+后端按固定结构生成输入，数据块作为数据传入。以下仅为便于阅读的摘录，完整字段见 ContextBuilder.build；实际 current_message 为包含 id、role、content 等字段的消息对象。
 
     {
-      "event": {"id": "E-41", "message_id": "M-18", "state_version": 7},
-      "current_message": "Grafana好了，生产库那个老板说批了",
+      "event": {"id": "E-41", "message_id": "M-18"},
+      "state_version": 7,
+      "current_message": {"id": "M-18", "role": "user", "content": "Grafana好了，生产库那个老板说批了"},
       "issues": [
         {"id": "I-1", "goal": "访问 Grafana 仪表盘", "status": "verifying"},
         {"id": "I-2", "goal": "申请生产库只读权限", "status": "waiting_approval"}
       ],
       "pending_questions": [],
       "recent_messages": [],
-      "relevant_refs": []
+      "evidence": []
     }
 
 recent_messages 并非永远为空；示例只突出必要字段。实际包含最近相关问答，尤其是“好了”“不是那个”的指代上下文。身份由后端绑定，不从用户自述“我是管理员”中生成角色。
 
-## 4 整理阶段提示词初稿
+## 4 整理阶段职责说明
 
     你负责解释当前员工消息，输出候选记录，不执行业务动作。
     只处理当前消息带来的新增信息、纠正和反馈；使用已有问题及近期交流理解指代。
@@ -84,9 +85,9 @@ recent_messages 并非永远为空；示例只突出必要字段。实际包含�
 | --- | --- |
 | new_issue_candidates | candidate_key、goal、quote、service_refs；不允许模型自建全局 issue_id |
 | observations | candidate_key、target_refs、category、claim、quote、mapping_status |
-| corrections | 原观察 ID、新陈述与 quote；保留旧记录并标 superseded 候选 |
+| corrections | candidate_key、observation_id、expected_version、claim、quote；保留旧记录并标 superseded |
 | relation_candidates | 两个目标引用、关系类别、支持引用；没有证据不能标已确认根因 |
-| unresolved_references | quote、候选问题 ID、clarification_question；不同时把含糊反馈应用于所有候选 |
+| unresolved_references | candidate_key、quote、candidate_issue_ids、clarification_question；不同时把含糊反馈应用于所有候选 |
 
 target_refs 可以引用现存问题或同批 new_issue_candidates 的临时 key；后端分配正式 ID 后统一解析。引用不应指向别的聊天。默认最多提出 8 个新目标、20 条观察；超出时返回可解释限制并引导分批，不能静默漏掉目标。
 
@@ -141,7 +142,7 @@ target_refs 可以引用现存问题或同批 new_issue_candidates 的临时 key
 
 身份和政策摘要帮助模型少走错路；实际执行仍读取权威记录，不能使用模型上下文中可能过期的摘要直接授权。
 
-## 7 决策阶段提示词初稿
+## 7 决策阶段职责说明
 
     你是员工 IT 支持 Agent。推进每个员工目标，使用现有工具调查和执行允许的动作。
     根据当前证据选择下一步，不要求固定工具顺序，也不为展示而调用所有来源。
@@ -169,11 +170,11 @@ target_refs 可以引用现存问题或同批 new_issue_candidates 的临时 key
 
 ## 8 关键工具参数如何受控
 
-所有工具调用均有后端绑定的 actor、conversation_id、run_id；模型参数中不提供可覆盖身份的字段。资源 ID 必须来自可见目录或可解析的明确名称，无法唯一解析时先澄清。
+工具执行由后端传入 actor_id 与 conversation_id，run/event 关联由 Agent/Worker 维护；模型参数不能覆盖身份。工具要求明确资源 ID，模型可依据可见目录解析用户的名称；无法唯一确定时先澄清，没有任意名称自动解析服务。
 
 | 工具示例 | 模型提交 | 后端取得或生成 |
 | --- | --- | --- |
-| inspect_account | service_id、可见账号引用 | 当前员工绑定账号与读取权限 |
+| inspect_account | service_id | 当前员工绑定账号与读取权限 |
 | grant_catalog_access | issue_id、resource_id、permission、申请或批准引用 | 员工、最新政策、批准有效性、操作 ID |
 | reset_vpn_session | issue_id、目标会话引用、confirmation_id | 实际会话归属、确认指纹、期限、影响范围 |
 | request_approval | issue_id、resource_id、permission、reason、evidence_refs | 请求人、应审批角色、期限、重复申请判断 |
@@ -197,31 +198,31 @@ target_refs 可以引用现存问题或同批 new_issue_candidates 的临时 key
 | TEMPORARY_UNAVAILABLE | 读取服务暂时不可用 | 按预算有限重试或利用其他证据 |
 | EXECUTION_UNCERTAIN | 写入可能已完成 | 查询持久 action_id，不重新发起写入 |
 | NO_APPLICABLE_EVIDENCE | 无可靠适用来源 | 追问、缩小查询或交接，不补造指南 |
-| BUDGET_EXHAUSTED | 本次运行达到上限 | 保存进度并说明暂停；是否交接另行判定 |
+| PROJECT_BUDGET_EXHAUSTED、MODEL_CALL_LIMIT、TOOL_CALL_LIMIT、RUN_DEADLINE | 费用或本事件请求/工具/时间达到上限 | 由程序保存进度并说明停止，是否交接另行判定 |
 
 工具失败不意味着业务事实为假。status 工具超时应形成“暂时无法查询”，不能自动等价于“系统没有事故”。后端在预算耗尽时有固定兜底回复，不依赖再多调用一次模型才能停止。
 
 ## 10 结束本轮的结构化提议
 
-为减少自由文本与真实状态矛盾，结束本轮可使用内部 submit_turn 契约。它属于控制循环协议，不是对企业系统新增的业务工具。实现时可用终结工具或供应商结构化输出承载，并统一计入模型调用预算。
+当前通过内部 submit_turn 工具终结本轮，必须是该模型响应中的唯一工具调用。它属于控制循环协议，不是企业业务工具；调用计入模型预算，终结不占 12 次非终结工具额度。以下结构符合 Turn Schema，示意引用仍须在实际运行时替换为可校验记录。
 
     {
-      "issue_update_proposals": [
+      "issue_updates": [
         {
           "issue_id": "I-1",
           "expected_version": 4,
           "requested_status": "resolved",
           "criterion_id": "access_and_user_verification",
-          "evidence_refs": ["ACCESS-8", "OBS-21"]
+          "evidence_refs": ["EVID-access-example", "OBS-21"]
         }
       ],
       "questions": [],
-      "reply": {
-        "text": "Grafana 这项已恢复。生产库申请目前仍在等待审批。",
-        "issue_refs": ["I-1", "I-2"],
-        "evidence_refs": ["ACCESS-8", "OBS-21", "APPROVAL-4"]
-      },
-      "stop_reason": "waiting_approval"
+      "question_updates": [],
+      "hypotheses": [],
+      "guidance": [],
+      "refinements": [],
+      "relation_updates": [],
+      "reply": "Grafana 这项已恢复。生产库申请仍在等待审批。"
     }
 
 expected_version 必须是最新已读的问题版本，不是整次运行开始时固定不变的旧版本。evidence_refs 必须存在、可访问且属于适用的目标；criterion_id 从后端目录选择，模型不能临时定义一个宽松验收标准。

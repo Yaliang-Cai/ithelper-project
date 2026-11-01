@@ -66,12 +66,12 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 }
 </style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html" aria-current="page">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 一次消息如何经过系统</a><a href="#section-3">2 有限分类与开放内容</a><a href="#section-4">3 整理阶段输入</a><a href="#section-5">4 整理阶段提示词初稿</a><a href="#section-6">5 整理阶段输出与程序处理</a><a href="#section-7">6 决策阶段输入</a><a href="#section-8">7 决策阶段提示词初稿</a><a href="#section-9">8 关键工具参数如何受控</a><a href="#section-10">9 工具错误与模型行为</a><a href="#section-11">10 结束本轮的结构化提议</a><a href="#section-12">11 一段完整的多问题处理示例</a><a href="#section-13">12 提示词与契约怎么验证和迭代</a></details></aside>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html" aria-current="page">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 一次消息如何经过系统</a><a href="#section-3">2 有限分类与开放内容</a><a href="#section-4">3 整理阶段输入</a><a href="#section-5">4 整理阶段职责说明</a><a href="#section-6">5 整理阶段输出与程序处理</a><a href="#section-7">6 决策阶段输入</a><a href="#section-8">7 决策阶段职责说明</a><a href="#section-9">8 关键工具参数如何受控</a><a href="#section-10">9 工具错误与模型行为</a><a href="#section-11">10 结束本轮的结构化提议</a><a href="#section-12">11 一段完整的多问题处理示例</a><a href="#section-13">12 提示词与契约怎么验证和迭代</a></details></aside>
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">模型调用、提示词与数据契约</h1>
 <blockquote>
-<p>可执行契约说明（2026-11-02）：本文的提示词初稿和JSON示例是概念设计，不保证可原样发给当前API/工具。实际严格Schema见<a href="../app/contracts.py">app/contracts.py</a>，工具参数见<a href="../app/tools.py">app/tools.py</a>，HTTP请求见<a href="../app/main.py">app/main.py</a>，实际提示词见<a href="../app/prompts.py">app/prompts.py</a>。整理使用message_intents/new_issue_candidates/observations/corrections/relation_candidates/unresolved_references；观察用target_refs/claim而非概念target_issue_ids/content。终结使用issue_updates、字符串reply、question_updates/hypotheses/guidance/refinements及可选relation_updates，不接受概念issue_update_proposals/对象reply/stop_reason。默认10模型/12非终结工具/120秒；决策增加guarded refine_issue，强制第10请求仅submit_turn。整理10k/决策12k为保守UTF-8字节；必需记录放不下显式停止。语义匹配只在小开发样本调节，合法结构仍可能错误解释。详见<a href="implementation-status.html">实现状态</a>与<a href="delivery-evidence.html">交付对照</a>。</p>
+<p>当前契约：严格提议见<a href="../app/contracts.py">contracts.py</a>，业务工具 Schema 见<a href="../app/catalog.py">catalog.py</a>，执行逻辑见<a href="../app/tools.py">tools.py</a>，HTTP 见<a href="../app/main.py">main.py</a>。本文整理输出与终结 JSON 按当前 Schema 编写；示意 ID 不是真实可执行凭据。输入示例仅为摘录。运行提示词唯一来源为<a href="../app/prompts.py">prompts.py</a>，下文中文用于解释职责，不另维护可执行提示词。</p>
 </blockquote>
-<p>本文把“每步怎么组织上下文、怎么限制输出、程序怎么记录”落实为可检查的接口设计。提示词是待实现和验证的初始版本，不是已经证明有效的生产提示词。字段名称、数量限制和错误码是工程默认值。</p>
+<p>本文解释每步如何组织上下文、限制提议和保存记录。当前实现有程序验证和部分真实测量；结构合法仍可能解释错误，成绩与限制见<a href="evaluation-report.html">实测报告</a>。默认 10 模型请求/12 非终结工具/120 秒，第十次仅 submit_turn。10k/12k 为业务上下文的保守 UTF-8 字节目标，不含整个原生请求；完整预算口径见<a href="01-system-design.html">系统设计</a>。</p>
 <h2 id="section-2">1 一次消息如何经过系统</h2>
 <pre><code>员工消息
    ↓ 身份与聊天归属检查、原文落库
@@ -112,7 +112,7 @@ Context builder → 决策阶段模型 ← 真实工具结果
 </tr>
 <tr>
 <td>程序记录的来源</td>
-<td>user_report、directory、service_state、kb、history、policy、tool_receipt、approval_event、confirmation_event</td>
+<td>user_report；证据另含 directory、service_state、kb、history、policy、tool_receipt、approval_event、confirmation_event、conversation</td>
 <td>由接入路径绑定，模型不能升级来源</td>
 </tr>
 <tr>
@@ -126,30 +126,31 @@ Context builder → 决策阶段模型 ← 真实工具结果
 <td>不等于业务执行或审批状态</td>
 </tr>
 <tr>
-<td>操作结果</td>
-<td>pending、succeeded、failed、uncertain</td>
-<td>来自实际执行器；uncertain 必须核查</td>
+<td>执行状态</td>
+<td>实际收据状态及 error.execution_status，例如 not_executed、uncertain</td>
+<td>不由模型报告创造；响应不确定须查持久收据</td>
 </tr>
 </tbody>
 </table></div>
 <p>“context”可以容纳地点、客户端版本等用户自述；具体内容和实体引用仍开放。未知故障不用新增枚举。分类本身由模型判断，仍可能错；新增类别时需要同步 Schema、提示词与相关测试，不能随手加一个可绕过边界的 other_fact。</p>
 <p>原始消息永远保留。候选观察是对消息的解释，后台业务状态是独立记录，处理记录则是实际调用与事件，不能混成一张模型随意改写的“记忆摘要”。</p>
 <h2 id="section-4">3 整理阶段输入</h2>
-<p>后端按固定结构生成输入，数据块均作为数据传入，不与固定指令拼接成可执行规则。</p>
+<p>后端按固定结构生成输入，数据块作为数据传入。以下仅为便于阅读的摘录，完整字段见 ContextBuilder.build；实际 current_message 为包含 id、role、content 等字段的消息对象。</p>
 <pre><code>{
-  "event": {"id": "E-41", "message_id": "M-18", "state_version": 7},
-  "current_message": "Grafana好了，生产库那个老板说批了",
+  "event": {"id": "E-41", "message_id": "M-18"},
+  "state_version": 7,
+  "current_message": {"id": "M-18", "role": "user", "content": "Grafana好了，生产库那个老板说批了"},
   "issues": [
     {"id": "I-1", "goal": "访问 Grafana 仪表盘", "status": "verifying"},
     {"id": "I-2", "goal": "申请生产库只读权限", "status": "waiting_approval"}
   ],
   "pending_questions": [],
   "recent_messages": [],
-  "relevant_refs": []
+  "evidence": []
 }
 </code></pre>
 <p>recent_messages 并非永远为空；示例只突出必要字段。实际包含最近相关问答，尤其是“好了”“不是那个”的指代上下文。身份由后端绑定，不从用户自述“我是管理员”中生成角色。</p>
-<h2 id="section-5">4 整理阶段提示词初稿</h2>
+<h2 id="section-5">4 整理阶段职责说明</h2>
 <pre><code>你负责解释当前员工消息，输出候选记录，不执行业务动作。
 只处理当前消息带来的新增信息、纠正和反馈；使用已有问题及近期交流理解指代。
 一条消息可以包含多个诉求、旧问题反馈与新问题，不强迫只选一个意图。
@@ -184,7 +185,7 @@ Context builder → 决策阶段模型 ← 真实工具结果
 </tr>
 <tr>
 <td>corrections</td>
-<td>原观察 ID、新陈述与 quote；保留旧记录并标 superseded 候选</td>
+<td>candidate_key、observation_id、expected_version、claim、quote；保留旧记录并标 superseded</td>
 </tr>
 <tr>
 <td>relation_candidates</td>
@@ -192,7 +193,7 @@ Context builder → 决策阶段模型 ← 真实工具结果
 </tr>
 <tr>
 <td>unresolved_references</td>
-<td>quote、候选问题 ID、clarification_question；不同时把含糊反馈应用于所有候选</td>
+<td>candidate_key、quote、candidate_issue_ids、clarification_question；不同时把含糊反馈应用于所有候选</td>
 </tr>
 </tbody>
 </table></div>
@@ -281,7 +282,7 @@ Context builder → 决策阶段模型 ← 真实工具结果
 </table></div>
 <p>标为 tentative 的观察必须保留其原文和来源性质。程序不把它重写为一段无来源的“当前事实”。上下文块可以紧凑，但必须能追溯到持久记录。</p>
 <p>身份和政策摘要帮助模型少走错路；实际执行仍读取权威记录，不能使用模型上下文中可能过期的摘要直接授权。</p>
-<h2 id="section-8">7 决策阶段提示词初稿</h2>
+<h2 id="section-8">7 决策阶段职责说明</h2>
 <pre><code>你是员工 IT 支持 Agent。推进每个员工目标，使用现有工具调查和执行允许的动作。
 根据当前证据选择下一步，不要求固定工具顺序，也不为展示而调用所有来源。
 先利用已知信息；只追问会改变下一步选择且后台不能获得的信息。
@@ -306,7 +307,7 @@ Context builder → 决策阶段模型 ← 真实工具结果
 </code></pre>
 <p>工具参数说明和 JSON Schema 独立注册，不在提示词里再维护另一份动作名单。允许的动作和约束由统一目录生成，减少规则漂移。</p>
 <h2 id="section-9">8 关键工具参数如何受控</h2>
-<p>所有工具调用均有后端绑定的 actor、conversation_id、run_id；模型参数中不提供可覆盖身份的字段。资源 ID 必须来自可见目录或可解析的明确名称，无法唯一解析时先澄清。</p>
+<p>工具执行由后端传入 actor_id 与 conversation_id，run/event 关联由 Agent/Worker 维护；模型参数不能覆盖身份。工具要求明确资源 ID，模型可依据可见目录解析用户的名称；无法唯一确定时先澄清，没有任意名称自动解析服务。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
 <tr>
@@ -318,7 +319,7 @@ Context builder → 决策阶段模型 ← 真实工具结果
 <tbody>
 <tr>
 <td>inspect_account</td>
-<td>service_id、可见账号引用</td>
+<td>service_id</td>
 <td>当前员工绑定账号与读取权限</td>
 </tr>
 <tr>
@@ -397,32 +398,32 @@ Context builder → 决策阶段模型 ← 真实工具结果
 <td>追问、缩小查询或交接，不补造指南</td>
 </tr>
 <tr>
-<td>BUDGET_EXHAUSTED</td>
-<td>本次运行达到上限</td>
-<td>保存进度并说明暂停；是否交接另行判定</td>
+<td>PROJECT_BUDGET_EXHAUSTED、MODEL_CALL_LIMIT、TOOL_CALL_LIMIT、RUN_DEADLINE</td>
+<td>费用或本事件请求/工具/时间达到上限</td>
+<td>由程序保存进度并说明停止，是否交接另行判定</td>
 </tr>
 </tbody>
 </table></div>
 <p>工具失败不意味着业务事实为假。status 工具超时应形成“暂时无法查询”，不能自动等价于“系统没有事故”。后端在预算耗尽时有固定兜底回复，不依赖再多调用一次模型才能停止。</p>
 <h2 id="section-11">10 结束本轮的结构化提议</h2>
-<p>为减少自由文本与真实状态矛盾，结束本轮可使用内部 submit_turn 契约。它属于控制循环协议，不是对企业系统新增的业务工具。实现时可用终结工具或供应商结构化输出承载，并统一计入模型调用预算。</p>
+<p>当前通过内部 submit_turn 工具终结本轮，必须是该模型响应中的唯一工具调用。它属于控制循环协议，不是企业业务工具；调用计入模型预算，终结不占 12 次非终结工具额度。以下结构符合 Turn Schema，示意引用仍须在实际运行时替换为可校验记录。</p>
 <pre><code>{
-  "issue_update_proposals": [
+  "issue_updates": [
     {
       "issue_id": "I-1",
       "expected_version": 4,
       "requested_status": "resolved",
       "criterion_id": "access_and_user_verification",
-      "evidence_refs": ["ACCESS-8", "OBS-21"]
+      "evidence_refs": ["EVID-access-example", "OBS-21"]
     }
   ],
   "questions": [],
-  "reply": {
-    "text": "Grafana 这项已恢复。生产库申请目前仍在等待审批。",
-    "issue_refs": ["I-1", "I-2"],
-    "evidence_refs": ["ACCESS-8", "OBS-21", "APPROVAL-4"]
-  },
-  "stop_reason": "waiting_approval"
+  "question_updates": [],
+  "hypotheses": [],
+  "guidance": [],
+  "refinements": [],
+  "relation_updates": [],
+  "reply": "Grafana 这项已恢复。生产库申请仍在等待审批。"
 }
 </code></pre>
 <p>expected_version 必须是最新已读的问题版本，不是整次运行开始时固定不变的旧版本。evidence_refs 必须存在、可访问且属于适用的目标；criterion_id 从后端目录选择，模型不能临时定义一个宽松验收标准。</p>

@@ -1,6 +1,6 @@
 # IT Helpdesk Agent 系统设计
 
-> 本地实现对照（2026-11-02）：单业务Agent、五场景/五来源、实际模拟效果、独立问题与审批恢复已实现；真实数据/来源/执行逻辑以app/main.py、domain.py、tools.py为准。当前默认10模型请求/12非终结工具/120秒；整理/决策上下文10,000/12,000保守UTF-8字节，不是精确token。额外guarded refine_issue在决策中细化缺失范围；不从证据机械创建目标。必需上下文超容量明确停止；小语义匹配阈值为开发样本拟合，不能证明普遍语义正确。已知模糊反馈保留上次验证状态、整体不判全解决，页面提示待澄清。本文概念结构与下方目标保留，实际差别及原失败见[交付对照](delivery-evidence.md)、[七裁定](engineering-decisions.md)。
+> 当前实现按 `e662abf` 代码校对。本文说明用户目标、模块职责、数据与执行边界；运行方式见[README](../README.md)，开发步骤见[开发与测试流程](superpowers/plans/2026-11-02-helpdesk-implementation.md)，真实成绩和未测范围见[实测报告](evaluation-report.md)。示意 ID 不是真实执行凭据。
 
 本系统面向遇到 IT 问题的员工，通过多轮交流、后台查询和受约束的操作推进解决过程。它使用一个业务 Agent，由自定义控制循环驱动；语义理解、状态存储、权限校验和工具执行分工明确。
 
@@ -76,7 +76,7 @@
 
 ## 4 组件与技术默认值
 
-以下是便于落实的工程默认值，并非已运行代码。后端建议 Python、FastAPI、Pydantic 与 SQLite；前端使用简单 HTML、CSS 和 JavaScript，由同一应用提供静态页面。这样保留一个本地启动入口，同时保持模块职责分离。[FastAPI 文档](https://fastapi.tiangolo.com/)
+当前实现使用 Python、FastAPI、Pydantic 与 SQLite；前端为同一应用提供的 HTML、CSS 和 JavaScript。下表按职责解释架构，不要求把每个职责另建成服务或抽象层。实际文件与开发顺序见[开发与测试流程](superpowers/plans/2026-11-02-helpdesk-implementation.md)。
 
 | 组件 | 输入与输出 | 责任 |
 | --- | --- | --- |
@@ -94,7 +94,9 @@
 
 运行数据和评测数据分库存放。知识库与历史案例可用 Markdown 或 JSON 管理；可变账号、权限、会话、审批和操作记录存 SQLite。检索索引是可重建的派生数据。
 
-建议目录职责为 app/api、app/agent、app/context、app/state、app/policies、app/tools、app/retrieval、app/storage、app/ui；data 存模拟公开数据，evals 私有保存场景与评分依据，tests 保存程序测试。具体文件名称可在实现时调整。
+实际文件包括 app/main.py、auth.py、worker.py、agent.py、context.py、contracts.py、catalog.py、prompts.py、domain.py、tools.py、retrieval.py、storage.py、seed.py 及供应商/费用模块。状态与验收在 domain.py，工具执行在 tools.py，不另设空壳 Policy engine 或 Result service。data 存合成来源；evals 保存案例与评测代码，公开投影可提交，完整运行原件位于被忽略的 evals/results；tests 保存程序回归。
+
+入口负责身份、请求结构和 HTTP 访问约束；候选落库检查引用、归属和版本；工具产生效果前在事务内核对当前政策、精确审批/确认和目标。它们验证不同条件；同一规则复用已有函数，不在每层复制一套。执行前复查是因为等待期间状态可能改变，模型上下文的旧摘要不能代替当前授权。
 
 ## 5 两阶段调用的完整过程
 
@@ -118,21 +120,27 @@
 允许的顶层候选操作可以收敛为：新增问题建议、追加观察、纠正既往陈述建议、问题关联建议、需要澄清的指代。具体故障描述仍用自然语言，不为所有 IT 故障创建枚举。
 
     {
+      "message_intents": ["progress_report", "additional_info"],
       "observations": [
         {
-          "target_issue_ids": ["I-1"],
+          "candidate_key": "o1",
+          "target_refs": ["I-1"],
           "category": "reported_recovery",
-          "content": "用户报告 Grafana 已恢复",
-          "quote": "Grafana好了"
+          "claim": "用户报告 Grafana 已恢复",
+          "quote": "Grafana好了",
+          "mapping_status": "tentative"
         },
         {
-          "target_issue_ids": ["I-2"],
+          "candidate_key": "o2",
+          "target_refs": ["I-2"],
           "category": "reported_approval",
-          "content": "用户声称主管已批准申请",
-          "quote": "老板说批了"
+          "claim": "用户声称主管已批准申请",
+          "quote": "老板说批了",
+          "mapping_status": "tentative"
         }
       ],
       "new_issue_candidates": [],
+      "corrections": [],
       "relation_candidates": [],
       "unresolved_references": []
     }
@@ -158,7 +166,7 @@ I-1 用户恢复反馈可作为其验收依据之一；I-2 用户声称获批只
 
 “Grafana 好了？”可能被误解为恢复确认；“数据库那个”可能关联到错误申请。这不是 JSON 校验能完全解决的问题。第二次调用也可能重复同一模型的误判。
 
-对涉及授权和执行的决定，必须查询后台事实。对普通问题状态，使用可追溯、可纠正的更新，并纳入错误关联和假解决评测。界面中的目标明确的“已恢复／仍有问题”按钮可提供高确定性的反馈，但不要求每次交流都通过表单完成。
+对涉及授权和执行的决定，必须查询后台事实。对普通问题状态，使用可追溯、可纠正的更新，并纳入错误关联和假解决评测。当前使用自然语言反馈与必要澄清；“已恢复／仍有问题”的目标绑定按钮可以降低歧义，当前未实现，也不要求每次交流都通过表单。
 
 ## 6 上下文组织
 
@@ -169,18 +177,18 @@ I-1 用户恢复反馈可作为其验收依据之一；I-2 用户声称获批只
 | 固定指令与输出约束 | 只解释新消息，不执行动作 | 诊断、查证、行动边界与回复约束 |
 | 当前用户消息 | 完整保留 | 完整保留 |
 | 身份 | 已验证员工 ID、必要概要 | 已验证身份、允许范围与政策提示 |
-| 问题 | 当前聊天各问题的短概要 | 所有未决项概要、当前项完整状态 |
+| 问题 | 当前聊天各问题的短概要 | 全部问题概要必需；详细状态按容量选取 |
 | 历史 | 最近相关交流和未答追问 | 近期交流、尝试记录、待确认动作 |
 | 证据 | 必要的引用上下文 | 当前证据内容、来源、时间和适用范围 |
 | 工具结果 | 通常不需要完整重放 | 当前运行的调用与结果完整保留 |
 
-工程默认预算：整理阶段业务上下文约 6,000 tokens，决策阶段目标约 12,000 tokens。它们是初始装配预算，不是模型上下文极限；系统指令、工具定义和当前工具循环也占用 token，必须一并计数。若必须保留的信息超预算，应暂停或重新选择调查范围，不能静默删掉授权条件。
+当前业务上下文目标：整理阶段 10,000、决策阶段 12,000 保守 UTF-8 字节，不是精确 token 数。系统指令、工具定义、时间戳补充与当前原生工具循环另占请求空间，完整请求估计和实际 usage 另记；现有目标没有为整个请求实施等值字节硬上限。必需业务记录超容量时返回 CONTEXT_CAPACITY，不静默丢弃授权或拒绝历史。原 6k 失败与调整理由见[决策记录](engineering-decisions.md)。
 
-保留优先级为：身份与强约束、当前消息、所有未解决事项、待确认与审批范围、当前问题失败尝试、最新工具结果、关键证据、近期对话、较旧辅助材料。较旧原文可通过当前聊天的历史查询工具读取。来源冲突的两边都保留，不能只挑支持当前假设的一边。
+必需记录包括身份、事件与当前消息、问题概要、授权范围、追问、尝试、操作、观察和关联/假设。之后按容量选问题详情、最近最多八条消息和证据内容，旧原文可由当前聊天读取工具取回。证据选择应保留重要反证，不能只挑支持当前假设的材料；当前装配器的顺序选择仍可能遗漏可选内容，必须检查实际省略记录。
 
-上下文输出包含各块来源 ID、版本、token 估计和裁剪记录。评测可以检查“模型错了”是否实际上是组装器漏掉了信息。过期状态可以作为历史保存，但操作前必须重新查询需要实时验证的条件。
+上下文输出包含选择/省略的来源 ID、记录版本与保守字节估计。字段 estimated_tokens、target_tokens 为兼容保留名称，estimation=conservative_utf8_bytes 说明实际单位。可选证据内容可能因容量被省略，不能声称所有冲突证据永远完整进入请求；重要反证漏传属于上下文失败，不以模型猜中结果来抵消。
 
-模型协议适配与业务上下文分离。DeepSeek 思考模式工具循环需要保留其规定的 reasoning_content 和工具消息配对；不能任意删除协议字段。[DeepSeek 思考模式文档](https://api-docs.deepseek.com/guides/thinking_mode/)
+模型协议适配与业务上下文分离。项目默认 thinking=False；适配器仍保留供应商要求的原生字段与工具消息配对。原生隐藏推理仅用于必要的内存协议，不展示为 trace 或审计证据。
 
 建议每个新应用事件重新构建一次模型会话，把较早业务历史作为有来源的上下文数据；在该事件内部完整保留原生模型工具消息。不能将外部审批回调伪装成模型刚刚发起的 tool call。上下文重建后的引用和恢复行为需要适配器测试。
 
@@ -193,8 +201,8 @@ I-1 用户恢复反馈可作为其验收依据之一；I-2 用户声称获批只
 | Message | id、conversation_id、actor、content、created_at |
 | Issue | id、goal、service_refs、status、acceptance_criteria_id、version |
 | Observation | issue_refs、source_kind、source_id、quote、claim、observed_at |
-| Evidence | source_type、record_id、revision、content_hash、fetched_at、scope |
-| Hypothesis | description、support_refs、contradict_refs、candidate 或 supported 或 rejected |
+| Evidence | source、record_id、revision、content_hash、fetched_at、scope |
+| Hypothesis | claim、support_refs、contradict_refs、tentative 或 supported 或 rejected |
 | Relation | from_issue、to_issue、type、evidence_refs、status、revision |
 | Attempt | issue_id、remedy_id、normalized_parameters、evidence_refs、outcome |
 | Action | action_id、actor、target、parameters_hash、authorization_refs、status、receipt |
@@ -235,7 +243,7 @@ Run 状态另行使用 queued、running、waiting、completed、failed、budget_
 
 ### 8.1 工具目录
 
-模型可见工具按职责保持清楚，不使用可执行任意代码的通用工具。启动时注册完整目录，按当前身份和阶段提供允许使用的工具；执行端仍再次校验。
+模型可见工具按职责保持清楚，不使用可执行任意代码的通用工具。整理阶段不提供业务工具；决策阶段注册 16 个业务工具与内部 refine_issue、submit_turn，第十次模型请求只提供终结接口。当前没有按角色动态裁剪整套工具名单；能否执行由后端真实身份、范围与政策决定。
 
 | 工具 | 主要作用 | 关键约束 |
 | --- | --- | --- |
@@ -271,7 +279,7 @@ Run 状态另行使用 queued、running、waiting、completed、failed、budget_
       "error": null
     }
 
-错误使用 code、retryable、execution_status 和安全说明。NO_MATCH、NOT_FOUND、FORBIDDEN、APPROVAL_REQUIRED、CONFIRMATION_REQUIRED、TIMEOUT、INVALID_ARGUMENT、CONFLICT、EXECUTION_UNKNOWN 分别处理，不能统一返回空列表。模型不得把错误解释成工具证实了某个事实。
+错误使用 code、retryable、execution_status 和安全说明。NO_MATCH、NOT_FOUND、FORBIDDEN、APPROVAL_REQUIRED、CONFIRMATION_REQUIRED、TIMEOUT、INVALID_ARGUMENT、CONFLICT、EXECUTION_UNCERTAIN 等分别处理。底层 Retrieval.search 无匹配时返回空 hits；模型可见 search_kb/search_history 工具再转换成 NO_MATCH 反馈。未命中与读取故障都不证明服务正常或企业事实不存在。
 
 ### 8.3 动作边界
 
@@ -289,7 +297,7 @@ Run 状态另行使用 queued、running、waiting、completed、failed、budget_
 
 ### 8.4 幂等和不确定执行
 
-幂等键由后端依据持久 action_id 生成，绑定员工、问题、动作和规范化参数。API 重试、刷新和重复审批事件复用同一操作记录。不能用模型自行生成的随机键来声称避免重复执行。
+后端以员工、聊天、问题生命周期、动作和规范化参数计算指纹，先查已有操作；新操作才签发 action_id。API 重试、刷新与重复审批事件复用原收据，不靠模型每次生成随机键去重。消息去重、整轮提议去重和业务动作去重属于不同对象。
 
 模拟数据变更和操作收据在同一数据库事务中提交。评测故意支持“已提交但响应超时”：此时调用方看到 EXECUTION_UNCERTAIN，先 get_action_result 查询，不能盲目再次执行。
 
@@ -346,14 +354,14 @@ employee 只能访问自己的聊天和申请；approver 只能处理其负责�
 | 解锁账号 | 后台普通锁定解除；若目标是恢复登录，还需登录验证或明确用户恢复反馈 |
 | 开通权限 | 目标权限存在且范围正确；若用户诉求包含访问页面，则继续验证访问 |
 | VPN 恢复 | 连接恢复并达到案例定义的观察窗口，不能仅凭重置返回成功 |
-| 应用故障 | 员工对应症状恢复，或可观测指标满足目标条件 |
+| 应用故障 | application_recovery 要求后续明确恢复反馈、当前服务健康、无匹配活跃事故及当前状态证据；不凭一句回复解决 |
 | 跨系统故障 | 每个独立用户目标分别验收，根因相关不传播成功状态 |
 
 明确正向用户反馈可以成为验收依据，但其语义解释仍依赖模型。反馈含糊或与最新后台结果冲突时，不自动标记 resolved。测试环境通过确定的模拟状态检查用户模拟器有没有虚构恢复。
 
 ## 12 五类数据的组织
 
-建议初始准备 20 篇知识文档、12 条历史案例、6 位演示员工、8 个服务、若干事故和变更记录、约 12 条政策。数量是工程起点，覆盖和一致性比数量重要。
+当前准备 22 篇 KB、12 条通用历史、6 个演示账号、8 个服务、5 个资源、2 个事故、2 个变更、2 条依赖和 12 条政策。题目只要求至少 2–3 类来源，五类是本项目的取舍；覆盖和一致性比数量重要，不要求每次查询所有来源。
 
 员工覆盖销售、远程办公、数据工程新人、平台工程师和资源审批人等角色。所有来源通过 employee_id、service_id、resource_id、region、device_version、change_id 关联。
 
@@ -365,7 +373,7 @@ employee 只能访问自己的聊天和申请；approver 只能处理其负责�
 | 历史案例 | 当时环境、症状、验证根因、解决步骤、结果 | 症状相同但原因不同、环境已变 |
 | 政策 | 动作、资源、直接允许条件、确认、审批角色、禁止条件 | 紧急诉求不改变授权，申请范围变更 |
 
-每条合成数据注明模拟属性。采用固定场景时钟，使“昨天”“上周五”等相对时间可复现。演示环境可设置 as_of 为 2026-11-02 09:00 Asia/Shanghai；评测场景分别设定时间，不依赖执行主机当天日期。
+合成来源注明模拟属性，静态世界 as_of 固定为 2026-11-02 09:00 Asia/Shanghai。评测使用受控时钟；实际演示的审批到期、租约与动作使用运行时钟，不能把静态 as_of 当成冻结的业务时钟。相对日期应结合消息时间与记录核对，不宣称已覆盖所有日期理解。
 
 后台只按配置和操作规则变化，不识别员工输入是否匹配某段演示台词。面试新问题照常经过模型、查询和政策检查；没有模拟的数据应报告未知，不临时编造企业记录。
 
@@ -375,11 +383,11 @@ employee 只能访问自己的聊天和申请；approver 只能处理其负责�
 
 知识库和历史案例使用 BM25 与 embedding 检索。用户目录、状态和政策优先按 ID 与字段查询，不强行全部向量化。
 
-文档按自然小节切分，保留标题、父文档、适用版本和前置条件。初始片段约 300 至 600 tokens，长操作步骤保持完整或提供父段读取，避免只检索到动作而丢失限制。
+文档按自然小节切分，保留父文档、适用版本与前置条件，不切断经过审阅的操作段。当前不是严格的 300–600 token 切分器；单段超过 12,000 UTF-8 字节时明确省略并记录，不提供独立父段读取工具，长文支持仍有边界。
 
 查询同时进入关键词和向量两路，初始各取 10 个结果；按排名融合后保留约 5 个，按父文档去重。RRF 初始使用 1/(60+rank) 累加，仅作为可调整参数，不把排名分数当正确性概率。中文分词需保留英文产品名、错误码和版本号；不能直接采用只适合英语空格切分的处理方式。
 
-过滤只使用已知条件；员工未说明版本时不能猜版本再强过滤。返回 NO_MATCH 是合法结果，不为凑足 Top K 返回无关文档。相似度阈值需要开发集校准，不能未经测试写成通用可信度。
+过滤只使用已知条件；员工未说明版本时不能猜版本再强过滤。无匹配时空 hits/工具 NO_MATCH 是合法结果，不为凑足 Top K 返回无关文档。语义门槛 0.48 只经过五条开发探针调节，不是正确性概率或普遍可信度。
 
 建议 BM25S 本地执行；向量使用硅基流动 BAAI/bge-m3，缓存文档向量，本地计算相似度。2026 年 11 月 2 日重新核对的官方价格页标为免费，用户提供独立密钥后的实际调用已返回 1024 维向量。不自动切换到收费的 Pro/BAAI/bge-m3；服务价格与可用性仍以供应商当时规则为准。[价格页](https://siliconflow.cn/pricing) [模型说明](https://huggingface.co/BAAI/bge-m3) [BM25S](https://github.com/xhluca/bm25s)
 
@@ -411,7 +419,7 @@ embedding 服务不可用时明确降级到 BM25，记录 degraded=true。不能
 
 ## 15 界面与 API 默认设计
 
-员工界面包含聊天、问题进度、动作确认卡、审批或交接编号，以及可展开的相关证据。语言跟随员工输入，支持中英文；默认回复简短，复杂步骤分段给出。用户可以结束或重新打开聊天，Agent 不关闭前端。
+员工界面包含聊天、问题进度、动作确认卡、审批或交接编号，以及可展开的相关证据。语言跟随员工输入，默认回复简短，复杂步骤分段给出；中英文自然度仍需实际评测。用户可以收起界面、切换或重新打开聊天；当前没有业务上的聊天关闭状态，Agent 结束的是一次运行。
 
 审批界面只显示当前审批人有权处理的申请。调试视图独立，显示实际上下文、工具、状态差异、错误和耗时；敏感凭据排除。简短决策依据可以显示，模型内部思考文本不作为审计证据。
 
@@ -422,7 +430,7 @@ embedding 服务不可用时明确降级到 BM25，记录 degraded=true。不能
 | POST /conversations | 建立当前员工的聊天 |
 | GET /conversations/{id} | 读取有权访问的历史 |
 | POST /conversations/{id}/messages | 保存消息并创建运行 |
-| GET /runs/{id}/events | 通过 SSE 或轮询读取进度 |
+| GET /runs/{id}/events | 轮询事件/运行进度；当前未实现 SSE |
 | POST /confirmations/{id}/decision | 对绑定动作确认或取消 |
 | GET /approvals 与 POST /approvals/{id}/decision | 有权限的审批查询和决策 |
 | GET /handoffs/{id} | 读取有权查看的交接 |

@@ -69,7 +69,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html" aria-current="page">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 已确认的选择</a><a href="#section-3">2 题目要求与交付证据</a><a href="#section-6">3 为什么需要这种架构</a><a href="#section-7">4 组件与技术默认值</a><a href="#section-8">5 两阶段调用的完整过程</a><a href="#section-13">6 上下文组织</a><a href="#section-14">7 记录模型与状态</a><a href="#section-18">8 工具与政策</a><a href="#section-23">9 身份与授权</a><a href="#section-24">10 审批与人工交接</a><a href="#section-27">11 诊断与结果判断</a><a href="#section-28">12 五类数据的组织</a><a href="#section-29">13 混合检索</a><a href="#section-30">14 五类场景的端到端示例</a><a href="#section-36">15 界面与 API 默认设计</a><a href="#section-37">16 故障与可观测性</a><a href="#section-38">17 验证顺序与实现边界</a></details></aside>
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">IT Helpdesk Agent 系统设计</h1>
 <blockquote>
-<p>本地实现对照（2026-11-02）：单业务Agent、五场景/五来源、实际模拟效果、独立问题与审批恢复已实现；真实数据/来源/执行逻辑以app/main.py、domain.py、tools.py为准。当前默认10模型请求/12非终结工具/120秒；整理/决策上下文10,000/12,000保守UTF-8字节，不是精确token。额外guarded refine_issue在决策中细化缺失范围；不从证据机械创建目标。必需上下文超容量明确停止；小语义匹配阈值为开发样本拟合，不能证明普遍语义正确。已知模糊反馈保留上次验证状态、整体不判全解决，页面提示待澄清。本文概念结构与下方目标保留，实际差别及原失败见<a href="delivery-evidence.html">交付对照</a>、<a href="engineering-decisions.html">七裁定</a>。</p>
+<p>当前实现按 <code>e662abf</code> 代码校对。本文说明用户目标、模块职责、数据与执行边界；运行方式见<a href="../README.md">README</a>，开发步骤见<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>，真实成绩和未测范围见<a href="evaluation-report.html">实测报告</a>。示意 ID 不是真实执行凭据。</p>
 </blockquote>
 <p>本系统面向遇到 IT 问题的员工，通过多轮交流、后台查询和受约束的操作推进解决过程。它使用一个业务 Agent，由自定义控制循环驱动；语义理解、状态存储、权限校验和工具执行分工明确。</p>
 <p>设计目标是用一个规模有限但可检查的模拟企业环境，展示可靠的决策与执行边界。模型判断仍可能出错：结构合法不等于语义正确，审批有效不等于操作成功，操作成功也不总等于员工目标已实现。评估必须分别检查这些环节。</p>
@@ -273,7 +273,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>不使用多 Agent，是因为当前没有必要将工作拆成多个自主角色；这会增加上下文传递和诊断责任归属的复杂度。分阶段调用有明确输入输出，但不创造多个自行协商的业务 Agent。</p>
 <p>选择自定义循环，是为了直接观察状态、上下文与执行过程。代价是自己承担持久化、重试和恢复测试。LangGraph 的检查点和中断能力是可行替代方案；当前选择不意味着它不适合 Agent。<a href="https://docs.langchain.com/oss/python/langgraph/overview">LangGraph 官方说明</a></p>
 <h2 id="section-7">4 组件与技术默认值</h2>
-<p>以下是便于落实的工程默认值，并非已运行代码。后端建议 Python、FastAPI、Pydantic 与 SQLite；前端使用简单 HTML、CSS 和 JavaScript，由同一应用提供静态页面。这样保留一个本地启动入口，同时保持模块职责分离。<a href="https://fastapi.tiangolo.com/">FastAPI 文档</a></p>
+<p>当前实现使用 Python、FastAPI、Pydantic 与 SQLite；前端为同一应用提供的 HTML、CSS 和 JavaScript。下表按职责解释架构，不要求把每个职责另建成服务或抽象层。实际文件与开发顺序见<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
 <tr>
@@ -341,7 +341,8 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tbody>
 </table></div>
 <p>运行数据和评测数据分库存放。知识库与历史案例可用 Markdown 或 JSON 管理；可变账号、权限、会话、审批和操作记录存 SQLite。检索索引是可重建的派生数据。</p>
-<p>建议目录职责为 app/api、app/agent、app/context、app/state、app/policies、app/tools、app/retrieval、app/storage、app/ui；data 存模拟公开数据，evals 私有保存场景与评分依据，tests 保存程序测试。具体文件名称可在实现时调整。</p>
+<p>实际文件包括 app/main.py、auth.py、worker.py、agent.py、context.py、contracts.py、catalog.py、prompts.py、domain.py、tools.py、retrieval.py、storage.py、seed.py 及供应商/费用模块。状态与验收在 domain.py，工具执行在 tools.py，不另设空壳 Policy engine 或 Result service。data 存合成来源；evals 保存案例与评测代码，公开投影可提交，完整运行原件位于被忽略的 evals/results；tests 保存程序回归。</p>
+<p>入口负责身份、请求结构和 HTTP 访问约束；候选落库检查引用、归属和版本；工具产生效果前在事务内核对当前政策、精确审批/确认和目标。它们验证不同条件；同一规则复用已有函数，不在每层复制一套。执行前复查是因为等待期间状态可能改变，模型上下文的旧摘要不能代替当前授权。</p>
 <h2 id="section-8">5 两阶段调用的完整过程</h2>
 <h3 id="section-9">5.1 新用户消息</h3>
 <ol>
@@ -360,21 +361,27 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <h3 id="section-10">5.2 语义整理的允许输出</h3>
 <p>允许的顶层候选操作可以收敛为：新增问题建议、追加观察、纠正既往陈述建议、问题关联建议、需要澄清的指代。具体故障描述仍用自然语言，不为所有 IT 故障创建枚举。</p>
 <pre><code>{
+  "message_intents": ["progress_report", "additional_info"],
   "observations": [
     {
-      "target_issue_ids": ["I-1"],
+      "candidate_key": "o1",
+      "target_refs": ["I-1"],
       "category": "reported_recovery",
-      "content": "用户报告 Grafana 已恢复",
-      "quote": "Grafana好了"
+      "claim": "用户报告 Grafana 已恢复",
+      "quote": "Grafana好了",
+      "mapping_status": "tentative"
     },
     {
-      "target_issue_ids": ["I-2"],
+      "candidate_key": "o2",
+      "target_refs": ["I-2"],
       "category": "reported_approval",
-      "content": "用户声称主管已批准申请",
-      "quote": "老板说批了"
+      "claim": "用户声称主管已批准申请",
+      "quote": "老板说批了",
+      "mapping_status": "tentative"
     }
   ],
   "new_issue_candidates": [],
+  "corrections": [],
   "relation_candidates": [],
   "unresolved_references": []
 }
@@ -426,7 +433,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>I-1 用户恢复反馈可作为其验收依据之一；I-2 用户声称获批只形成待核查观察。第二阶段应查询实际审批结果。原始消息继续保留，避免语义整理错误成为唯一输入。</p>
 <h3 id="section-12">5.4 剩余语义风险</h3>
 <p>“Grafana 好了？”可能被误解为恢复确认；“数据库那个”可能关联到错误申请。这不是 JSON 校验能完全解决的问题。第二次调用也可能重复同一模型的误判。</p>
-<p>对涉及授权和执行的决定，必须查询后台事实。对普通问题状态，使用可追溯、可纠正的更新，并纳入错误关联和假解决评测。界面中的目标明确的“已恢复／仍有问题”按钮可提供高确定性的反馈，但不要求每次交流都通过表单完成。</p>
+<p>对涉及授权和执行的决定，必须查询后台事实。对普通问题状态，使用可追溯、可纠正的更新，并纳入错误关联和假解决评测。当前使用自然语言反馈与必要澄清；“已恢复／仍有问题”的目标绑定按钮可以降低歧义，当前未实现，也不要求每次交流都通过表单。</p>
 <h2 id="section-13">6 上下文组织</h2>
 <p>上下文由程序中的 Context builder 组装，输入是已保存的状态、真实工具结果和当前运行目的。它不自行推断根因；语义相关性来自检索及模型候选，来源、时效、权限、预算和装配顺序由代码管理。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
@@ -456,7 +463,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <tr>
 <td>问题</td>
 <td>当前聊天各问题的短概要</td>
-<td>所有未决项概要、当前项完整状态</td>
+<td>全部问题概要必需；详细状态按容量选取</td>
 </tr>
 <tr>
 <td>历史</td>
@@ -475,10 +482,10 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 </tbody>
 </table></div>
-<p>工程默认预算：整理阶段业务上下文约 6,000 tokens，决策阶段目标约 12,000 tokens。它们是初始装配预算，不是模型上下文极限；系统指令、工具定义和当前工具循环也占用 token，必须一并计数。若必须保留的信息超预算，应暂停或重新选择调查范围，不能静默删掉授权条件。</p>
-<p>保留优先级为：身份与强约束、当前消息、所有未解决事项、待确认与审批范围、当前问题失败尝试、最新工具结果、关键证据、近期对话、较旧辅助材料。较旧原文可通过当前聊天的历史查询工具读取。来源冲突的两边都保留，不能只挑支持当前假设的一边。</p>
-<p>上下文输出包含各块来源 ID、版本、token 估计和裁剪记录。评测可以检查“模型错了”是否实际上是组装器漏掉了信息。过期状态可以作为历史保存，但操作前必须重新查询需要实时验证的条件。</p>
-<p>模型协议适配与业务上下文分离。DeepSeek 思考模式工具循环需要保留其规定的 reasoning_content 和工具消息配对；不能任意删除协议字段。<a href="https://api-docs.deepseek.com/guides/thinking_mode/">DeepSeek 思考模式文档</a></p>
+<p>当前业务上下文目标：整理阶段 10,000、决策阶段 12,000 保守 UTF-8 字节，不是精确 token 数。系统指令、工具定义、时间戳补充与当前原生工具循环另占请求空间，完整请求估计和实际 usage 另记；现有目标没有为整个请求实施等值字节硬上限。必需业务记录超容量时返回 CONTEXT_CAPACITY，不静默丢弃授权或拒绝历史。原 6k 失败与调整理由见<a href="engineering-decisions.html">决策记录</a>。</p>
+<p>必需记录包括身份、事件与当前消息、问题概要、授权范围、追问、尝试、操作、观察和关联/假设。之后按容量选问题详情、最近最多八条消息和证据内容，旧原文可由当前聊天读取工具取回。证据选择应保留重要反证，不能只挑支持当前假设的材料；当前装配器的顺序选择仍可能遗漏可选内容，必须检查实际省略记录。</p>
+<p>上下文输出包含选择/省略的来源 ID、记录版本与保守字节估计。字段 estimated_tokens、target_tokens 为兼容保留名称，estimation=conservative_utf8_bytes 说明实际单位。可选证据内容可能因容量被省略，不能声称所有冲突证据永远完整进入请求；重要反证漏传属于上下文失败，不以模型猜中结果来抵消。</p>
+<p>模型协议适配与业务上下文分离。项目默认 thinking=False；适配器仍保留供应商要求的原生字段与工具消息配对。原生隐藏推理仅用于必要的内存协议，不展示为 trace 或审计证据。</p>
 <p>建议每个新应用事件重新构建一次模型会话，把较早业务历史作为有来源的上下文数据；在该事件内部完整保留原生模型工具消息。不能将外部审批回调伪装成模型刚刚发起的 tool call。上下文重建后的引用和恢复行为需要适配器测试。</p>
 <h2 id="section-14">7 记录模型与状态</h2>
 <h3 id="section-15">7.1 核心记录</h3>
@@ -504,11 +511,11 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 <tr>
 <td>Evidence</td>
-<td>source_type、record_id、revision、content_hash、fetched_at、scope</td>
+<td>source、record_id、revision、content_hash、fetched_at、scope</td>
 </tr>
 <tr>
 <td>Hypothesis</td>
-<td>description、support_refs、contradict_refs、candidate 或 supported 或 rejected</td>
+<td>claim、support_refs、contradict_refs、tentative 或 supported 或 rejected</td>
 </tr>
 <tr>
 <td>Relation</td>
@@ -606,7 +613,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>语义判断只提出候选关联。明确的系统依赖可由配置支持，但“依赖存在”不证明此次故障一定沿该依赖传播。证据出现反例时可以否定关系。关系变化不得自动传播 resolved 状态。</p>
 <h2 id="section-18">8 工具与政策</h2>
 <h3 id="section-19">8.1 工具目录</h3>
-<p>模型可见工具按职责保持清楚，不使用可执行任意代码的通用工具。启动时注册完整目录，按当前身份和阶段提供允许使用的工具；执行端仍再次校验。</p>
+<p>模型可见工具按职责保持清楚，不使用可执行任意代码的通用工具。整理阶段不提供业务工具；决策阶段注册 16 个业务工具与内部 refine_issue、submit_turn，第十次模型请求只提供终结接口。当前没有按角色动态裁剪整套工具名单；能否执行由后端真实身份、范围与政策决定。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
 <tr>
@@ -711,7 +718,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
   "error": null
 }
 </code></pre>
-<p>错误使用 code、retryable、execution_status 和安全说明。NO_MATCH、NOT_FOUND、FORBIDDEN、APPROVAL_REQUIRED、CONFIRMATION_REQUIRED、TIMEOUT、INVALID_ARGUMENT、CONFLICT、EXECUTION_UNKNOWN 分别处理，不能统一返回空列表。模型不得把错误解释成工具证实了某个事实。</p>
+<p>错误使用 code、retryable、execution_status 和安全说明。NO_MATCH、NOT_FOUND、FORBIDDEN、APPROVAL_REQUIRED、CONFIRMATION_REQUIRED、TIMEOUT、INVALID_ARGUMENT、CONFLICT、EXECUTION_UNCERTAIN 等分别处理。底层 Retrieval.search 无匹配时返回空 hits；模型可见 search_kb/search_history 工具再转换成 NO_MATCH 反馈。未命中与读取故障都不证明服务正常或企业事实不存在。</p>
 <h3 id="section-21">8.3 动作边界</h3>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
@@ -758,7 +765,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>工具目录决定“能否做”，审批决定“是否获得某项允许动作的额外授权”。批准不能创造原本不存在的工具能力。</p>
 <p>用户明确请求的低风险动作可以直接执行，但程序不可能只凭 Schema 证明自然语言授权成立。低风险动作仍存在意图误判风险，必须限制目标和影响范围并做评测。具有连接中断等影响的动作，用明确展示对象及影响的确认卡绑定 action_fingerprint；动作或目标变化时原确认失效。</p>
 <h3 id="section-22">8.4 幂等和不确定执行</h3>
-<p>幂等键由后端依据持久 action_id 生成，绑定员工、问题、动作和规范化参数。API 重试、刷新和重复审批事件复用同一操作记录。不能用模型自行生成的随机键来声称避免重复执行。</p>
+<p>后端以员工、聊天、问题生命周期、动作和规范化参数计算指纹，先查已有操作；新操作才签发 action_id。API 重试、刷新与重复审批事件复用原收据，不靠模型每次生成随机键去重。消息去重、整轮提议去重和业务动作去重属于不同对象。</p>
 <p>模拟数据变更和操作收据在同一数据库事务中提交。评测故意支持“已提交但响应超时”：此时调用方看到 EXECUTION_UNCERTAIN，先 get_action_result 查询，不能盲目再次执行。</p>
 <p>检查与变更尽量在同一事务内使用版本条件；确认或审批已失效、权限被撤回、资源状态变化时重新判定。对于不同操作之间的业务撤销，不承诺自动回滚所有动作；只对明确可补偿的模拟操作设计补偿规则。</p>
 <h2 id="section-23">9 身份与授权</h2>
@@ -806,7 +813,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 <tr>
 <td>应用故障</td>
-<td>员工对应症状恢复，或可观测指标满足目标条件</td>
+<td>application_recovery 要求后续明确恢复反馈、当前服务健康、无匹配活跃事故及当前状态证据；不凭一句回复解决</td>
 </tr>
 <tr>
 <td>跨系统故障</td>
@@ -816,7 +823,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </table></div>
 <p>明确正向用户反馈可以成为验收依据，但其语义解释仍依赖模型。反馈含糊或与最新后台结果冲突时，不自动标记 resolved。测试环境通过确定的模拟状态检查用户模拟器有没有虚构恢复。</p>
 <h2 id="section-28">12 五类数据的组织</h2>
-<p>建议初始准备 20 篇知识文档、12 条历史案例、6 位演示员工、8 个服务、若干事故和变更记录、约 12 条政策。数量是工程起点，覆盖和一致性比数量重要。</p>
+<p>当前准备 22 篇 KB、12 条通用历史、6 个演示账号、8 个服务、5 个资源、2 个事故、2 个变更、2 条依赖和 12 条政策。题目只要求至少 2–3 类来源，五类是本项目的取舍；覆盖和一致性比数量重要，不要求每次查询所有来源。</p>
 <p>员工覆盖销售、远程办公、数据工程新人、平台工程师和资源审批人等角色。所有来源通过 employee_id、service_id、resource_id、region、device_version、change_id 关联。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
@@ -854,14 +861,14 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 </tbody>
 </table></div>
-<p>每条合成数据注明模拟属性。采用固定场景时钟，使“昨天”“上周五”等相对时间可复现。演示环境可设置 as_of 为 2026-11-02 09:00 Asia/Shanghai；评测场景分别设定时间，不依赖执行主机当天日期。</p>
+<p>合成来源注明模拟属性，静态世界 as_of 固定为 2026-11-02 09:00 Asia/Shanghai。评测使用受控时钟；实际演示的审批到期、租约与动作使用运行时钟，不能把静态 as_of 当成冻结的业务时钟。相对日期应结合消息时间与记录核对，不宣称已覆盖所有日期理解。</p>
 <p>后台只按配置和操作规则变化，不识别员工输入是否匹配某段演示台词。面试新问题照常经过模型、查询和政策检查；没有模拟的数据应报告未知，不临时编造企业记录。</p>
 <p>预期答案、隐藏根因和故障注入配置仅在评测侧可见。实际工具只能返回其职责允许观察到的信息，不直接附带“本例正确答案”。</p>
 <h2 id="section-29">13 混合检索</h2>
 <p>知识库和历史案例使用 BM25 与 embedding 检索。用户目录、状态和政策优先按 ID 与字段查询，不强行全部向量化。</p>
-<p>文档按自然小节切分，保留标题、父文档、适用版本和前置条件。初始片段约 300 至 600 tokens，长操作步骤保持完整或提供父段读取，避免只检索到动作而丢失限制。</p>
+<p>文档按自然小节切分，保留父文档、适用版本与前置条件，不切断经过审阅的操作段。当前不是严格的 300–600 token 切分器；单段超过 12,000 UTF-8 字节时明确省略并记录，不提供独立父段读取工具，长文支持仍有边界。</p>
 <p>查询同时进入关键词和向量两路，初始各取 10 个结果；按排名融合后保留约 5 个，按父文档去重。RRF 初始使用 1/(60+rank) 累加，仅作为可调整参数，不把排名分数当正确性概率。中文分词需保留英文产品名、错误码和版本号；不能直接采用只适合英语空格切分的处理方式。</p>
-<p>过滤只使用已知条件；员工未说明版本时不能猜版本再强过滤。返回 NO_MATCH 是合法结果，不为凑足 Top K 返回无关文档。相似度阈值需要开发集校准，不能未经测试写成通用可信度。</p>
+<p>过滤只使用已知条件；员工未说明版本时不能猜版本再强过滤。无匹配时空 hits/工具 NO_MATCH 是合法结果，不为凑足 Top K 返回无关文档。语义门槛 0.48 只经过五条开发探针调节，不是正确性概率或普遍可信度。</p>
 <p>建议 BM25S 本地执行；向量使用硅基流动 BAAI/bge-m3，缓存文档向量，本地计算相似度。2026 年 11 月 2 日重新核对的官方价格页标为免费，用户提供独立密钥后的实际调用已返回 1024 维向量。不自动切换到收费的 Pro/BAAI/bge-m3；服务价格与可用性仍以供应商当时规则为准。<a href="https://siliconflow.cn/pricing">价格页</a> <a href="https://huggingface.co/BAAI/bge-m3">模型说明</a> <a href="https://github.com/xhluca/bm25s">BM25S</a></p>
 <p>索引保存 embedding 模型标识、维度、文档哈希、切分版本和索引版本。查询与文档必须使用同一向量空间；更换模型要重建索引，不能混用缓存。</p>
 <p>embedding 服务不可用时明确降级到 BM25，记录 degraded=true。不能把降级运行归入正常混合检索结果；缓存未命中的查询失败仍可使用关键词路径。Reranker 不是首版必需项。</p>
@@ -877,7 +884,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <h3 id="section-35">14.5 跨系统</h3>
 <p>员工报告 Jenkins 超时与 Tableau 陈旧。检查维护、服务依赖、运行状态和历史案例；维护时间相近只形成候选关联。若需要生产网络变更，生成包含支持和反对证据的交接，停止该项自动修复。若一项恢复而另一项仍旧，分别记录。</p>
 <h2 id="section-36">15 界面与 API 默认设计</h2>
-<p>员工界面包含聊天、问题进度、动作确认卡、审批或交接编号，以及可展开的相关证据。语言跟随员工输入，支持中英文；默认回复简短，复杂步骤分段给出。用户可以结束或重新打开聊天，Agent 不关闭前端。</p>
+<p>员工界面包含聊天、问题进度、动作确认卡、审批或交接编号，以及可展开的相关证据。语言跟随员工输入，默认回复简短，复杂步骤分段给出；中英文自然度仍需实际评测。用户可以收起界面、切换或重新打开聊天；当前没有业务上的聊天关闭状态，Agent 结束的是一次运行。</p>
 <p>审批界面只显示当前审批人有权处理的申请。调试视图独立，显示实际上下文、工具、状态差异、错误和耗时；敏感凭据排除。简短决策依据可以显示，模型内部思考文本不作为审计证据。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
@@ -909,7 +916,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 <tr>
 <td>GET /runs/{id}/events</td>
-<td>通过 SSE 或轮询读取进度</td>
+<td>轮询事件/运行进度；当前未实现 SSE</td>
 </tr>
 <tr>
 <td>POST /confirmations/{id}/decision</td>

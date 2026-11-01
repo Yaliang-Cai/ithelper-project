@@ -1,105 +1,139 @@
-# Helpdesk Agent Implementation Plan
+# Helpdesk Agent 开发与测试流程
 
-> **For agentic workers:** Use superpowers:subagent-driven-development task by task. Follow the task brief, preserve the contracts below, and report verification evidence. Do not publish or push.
+本文供继续开发、复测和答辩使用。实现基线为 `e662abf`；原始任务拆解保留在 Git 历史。完成情况与实测范围分别见[实现状态](../../implementation-status.md)、[实测报告](../../evaluation-report.md)，不将计划当成绩。
 
-**Goal:** Deliver the locally runnable, model-driven employee IT agent described in the reviewed design, with real mock-system changes and reproducible evaluation.
+## 1 项目目标与范围
 
-**Architecture:** A single business Agent has interpretation and decision stages. Backend state, policy checks and persistence enforce permissions and outcome prerequisites. Retrieval combines lexical matching and SiliconFlow embeddings, with explicit lexical degradation.
+展示可检查的员工支持链路：自然描述 → 按证据调查或澄清 → 执行允许的模拟动作 → 核查结果 → 分别等待、解决或保存交接。重点是选择合理、数据支持决定、失败可解释，以及员工能够自然使用。
 
-**Tech Stack:** Python 3.12, FastAPI, Pydantic 2, SQLite, HTTPX, Argon2, NumPy, BM25S/Jieba, plain HTML/CSS/JS, pytest and Playwright.
+题目要求至少 2–3 类合成来源；选择五类是为了展示互补、冲突和反证。五类场景都提供数据和处理路径，但自动操作仅限普通账号解锁、目录内只读权限及经确认的 VPN 会话重置。复杂生产变更以调查和交接结束，不承诺修好任意 IT 问题。
 
-**Spec:** docs/01-system-design.md, docs/02-evaluation.md, docs/03-defense-and-extensions.md, docs/04-prompts-and-contracts.md.
+| 优先级 | 内容 | 理由 |
+| --- | --- | --- |
+| 核心 | 单 Agent、多轮多目标、五类来源、受控模拟动作、核查和交接 | 回答题目的用户问题与能力边界 |
+| 支撑 | 简单聊天、精确审批确认、当前聊天持久化、有限恢复、评估记录 | 使关键决定可以实际运行和验证 |
+| 扩展 | 跨聊天个人检索、专家回流、完整传播、真实企业 API、更多模型 | 当前不实现，发现收益且条件成熟再加入 |
 
-## Global Constraints
+不为扩大功能数增加模块，不强制每次查询五类来源，不穷举全部故障状态。
 
-- All project LLM calls, including user simulation and grading, use the official DeepSeek Flash model ID `deepseek-flash`. No paid model fallback.
-- Embeddings use `BAAI/bge-m3` at `https://api.siliconflow.cn/v1`; never silently select `Pro/BAAI/bge-m3`. Missing key means explicitly degraded lexical retrieval, not simulated vectors.
-- User-authorized cumulative project DeepSeek budget is USD 3. Persist spending across processes/restarts, reserve before calls, and retain conservative charges for uncertain requests.
-- Resetting the demo or creating an evaluation world must never reset or relocate the shared project spending ledger. Scenario databases are separate from the one cumulative budget database.
-- Keys are loaded from the gitignored .env or environment, never committed, printed, placed in model context or returned to the browser.
-- Single business Agent; no fixed per-scenario response branches. Test oracles never enter the application runtime.
-- Multiple issues retain independent outcomes. Claims of approval, successful execution, or handoff do not create those facts.
-- Approval and confirmation APIs enforce identity, exact scope, expiry and cancellation. Writes are idempotent and verified.
-- Five scenario families and all five data source types remain in scope. Cross-chat personal memory, full propagation simulation, expert resumption, and real enterprise integrations remain extensions.
-- Every evaluation result records actual mode: fixture, live Agent, rule user, LLM user, AI grader, lexical/hybrid. No invented scores or human evaluation claims.
-- Work is in the dedicated new repository D:/药明-test on feat/helpdesk-agent. No existing application or main branch is being modified. No publishing is authorized.
+## 2 代码职责与接口
 
-## Task 1: Provider configuration, budget and connectivity
+下列职责是同一应用内的模块，不是独立部署的服务。
 
-**Files:** app/__init__.py, app/config.py, app/providers.py, app/budget.py, scripts/check_connections.py, tests/test_providers.py, pyproject.toml, .env.example.
+| 文件 | 负责 | 不负责 |
+| --- | --- | --- |
+| `app/main.py`、`auth.py`、`app/ui/` | HTTP、登录会话、请求格式、页面 | 诊断分支、把聊天文本变成真实批准 |
+| `app/worker.py` | 认领事件、聊天串行运行、续租恢复 | 选择业务工具或扩大恢复问题的范围 |
+| `app/agent.py` | 整理与决策调用、工具循环、停止和终结 | 直接写入未经校验的业务事实 |
+| `contracts.py`、`catalog.py`、`prompts.py` | 严格提议、工具 Schema、版本化指令 | 保存另一套运行状态 |
+| `context.py`、`retrieval.py` | 从当前记录装配上下文、检索与取舍记录 | 用检索分数确认根因或授权 |
+| `domain.py`、`tools.py` | 记录归属、状态验收、审批确认、执行与收据 | 穷举自然语言含义 |
+| `storage.py`、`seed.py`、`data/` | 事务、合成世界、业务数据重置 | 重置费用、携带测试答案 |
+| `config.py`、`providers.py`、`budget.py` | 配置、模型协议、调用前预留和结算 | 决定业务诊断路径 |
+| `evals/`、`tests/`、`scripts/verify_*.py` | 隔离世界、用户模拟、断言评分、浏览器检查 | 将 oracle 或案例 ID 注入应用 |
 
-**Interfaces:** Settings.load(env_file='.env') loads secrets and defaults; Settings exposes deepseek_model, deepseek_base_url, embedding_model, embedding_base_url, llm_budget_usd and runtime_dir. DeepSeekClient(settings, budget, transport=None).complete(messages, *, purpose, tools=None, response_format=None, thinking=False, max_tokens=2048, tool_choice=None) returns the validated provider response dictionary including usage and message protocol fields. EmbeddingClient(settings, transport=None).embed(texts) returns list[list[float]]. BudgetLedger(path, limit_usd) reserves, settles and reports cumulative costs atomically. API methods may be synchronous initially; the later worker executes them outside request handling.
+结构以实际文件为准，不再创建名义上的 Policy engine、Result service 等空壳层。`domain.py` 责任较集中，只有具体变更确实需要时再抽取，避免为拆文件新增跳转与重复规则。
 
-- [ ] Create tests that fail before production code: forbidden model fallback, invalid/empty embedding results, secret-safe exceptions, disabled embedding without key, complete reasoning/tool message preservation, successful usage accounting, timeout reservation retention, concurrent reservations unable to exceed budget, and restart persistence.
-- [ ] Use actual temporary SQLite ledgers and HTTPX MockTransport responses. Example behavioral requirement:
+易误用的接口如下，其余参数以源码为准：
 
-```python
-def test_budget_survives_restart(tmp_path):
-    from app.budget import BudgetLedger, BudgetExceeded
-    ledger = BudgetLedger(tmp_path / 'usage.sqlite', limit_usd=0.01)
-    reservation = ledger.reserve(0.009, purpose='agent')
-    ledger.settle(reservation, 0.008)
-    reopened = BudgetLedger(tmp_path / 'usage.sqlite', limit_usd=0.01)
-    import pytest
-    with pytest.raises(BudgetExceeded):
-        reopened.reserve(0.003, purpose='grader')
+- `Agent.handle(claimed_event)` 接收 Worker 已认领的持久事件字典，不是裸事件 ID。
+- `ContextBuilder.build(stage, actor_id, conversation_id, event)` 返回 `data`、选择/省略引用及估计信息。
+- `ToolExecutor.call(name, arguments, actor_id, conversation_id, *, before_effect=None)` 由后端传入身份。
+- `Retrieval.search(query, filters=None, *, source_type='kb', top_k=5)` 查询 KB 或通用历史。
+- `Store.reset_demo()` 重置模拟业务；`Domain` 没有同名重置接口。
+
+## 3 校验职责与运行边界
+
+| 决定 | 权威位置 | 校验内容 |
+| --- | --- | --- |
+| 谁能进入 HTTP 入口 | HTTP/认证 | Host、会话、角色、CSRF、请求格式 |
+| 候选能否作为记录保存 | Domain/契约 | 归属、引用、版本与来源，不证明语义正确 |
+| 当前动作能否产生效果 | 工具执行事务 | 当前政策、精确批准/确认、目标及生命周期 |
+| 本轮是否仍可运行 | Agent/Worker | 调用、工具、时间和事件租约 |
+| 能否发起付费请求 | Provider/共享账本 | 并发原子预留、跨进程重启累计 |
+| 目标是否完成 | Domain 验收 | 当前证据、收据与必要反馈 |
+
+同一规则优先调用已有函数，不在 HTTP、Agent、工具各复制一份。入口认证与执行前授权不是同一判断；审批可能在等待或网络请求期间到期，因此事务内必须读取最新条件。模型上下文中的政策摘要帮助决策，不作为授权凭据。
+
+所有项目 LLM 角色固定 `deepseek-flash`，embedding 固定 SiliconFlow `BAAI/bge-m3`。累计 DeepSeek 上限 USD3，原账本固定为仓库 `runtime/usage.sqlite`；业务目录、评测世界和连接探针不能另建额度。凭据只从本地 `.env`/环境加载。
+
+每事件上限 10 次模型请求、12 次非终结工具、120 秒；一次格式修正也消耗额度，第十次模型请求只允许终结。整理/决策业务上下文目标为 10,000/12,000 保守 UTF-8 字节，既不是精确 token 数，也不是包含系统指令、工具 Schema 和当前循环的总请求硬上限。完整请求估计与实际 usage 另记；必需业务上下文装不下时明确停止。
+
+## 4 数据覆盖
+
+当前有 6 个账号、8 个服务、5 个资源、2 个事故、2 个变更、2 条依赖、12 条政策，另有 22 篇 KB、12 条通用历史。数量来自实际数据，重点是以下对照能否改变决定。
+
+| 来源 | 决策价值与关联 | 正例与反例 |
+| --- | --- | --- |
+| 目录 | 员工、部门、地区、设备、账号及可申请资源 | 本人/他人，部门符合/不符合，目标明确/缺少具体资源 |
+| 状态与变更 | 服务、地区、时间、依赖及当前影响 | 同地区/其他地区事故，相关/无关维护 |
+| KB | 服务、版本、审阅状态及 remedy | 当前指南/旧或不适用指南，无答案 |
+| 通用历史 | 当时环境、症状和处理 | 类似症状但条件不同，历史解释被当前证据否定 |
+| 政策 | 动作、资源、部门、确认、审批与权限 | 直接允许/需批准/禁止，精确批准/范围不符 |
+
+新增案例先写事实、可观察目标和禁止行为，再写自然输入；不根据当前 Agent 输出反推 oracle。世界、用户可知信息、隐藏预期和故障注入保持分离。缺少的企业数据返回未知，不临时生成公司事实。只有覆盖新条件、实体关系或表达现象的数据才值得增加。
+
+## 5 开发顺序与已有结果
+
+| 阶段 | 开发内容 | 验证重点 | 当前状态 |
+| --- | --- | --- | --- |
+| 1 接入 | 配置、协议、共享费用 | 非法响应、并发预留、超时、重启、目录变化 | 已实现和程序回归，接入实测有记录 |
+| 2 业务 | 数据、状态、政策与工具 | 归属、精确批准/确认、幂等、效果及收据 | 已实现，模拟数据库实际改变 |
+| 3 Agent | 检索、上下文、整理与决策 | 多目标、纠正、指代、协议、停止条件 | 已实现，语义和协议失败保留 |
+| 4 交互 | 聊天、审批、调试与 Worker | 自然续问、角色隔离、恢复、可读状态 | 已实现，有脚本模型浏览器检查 |
+| 5 评估 | 场景、用户、oracle、grader、对照 | 模拟有效性、程序结果与语义评分分开 | 历史 66 次跨版本测量，最终同版本覆盖不完整 |
+| 6 交付 | 安装、重启、重置、材料与审查 | 新输入、失败说明、源码和证据版本 | 已交付，最终边界修复后做离线验证 |
+
+这不是要求重新开发六遍。后续先定位受影响的阶段，只修改该层和真正受影响的调用处。
+
+## 6 日常修改与测试流程
+
+1. 从实际失败或明确缺口出发，记录目标、输入、当前/预期结果和证据，定位到数据、检索、上下文、理解、决策、执行、呈现或评测器。
+2. 选择最小修改；现有接口和状态能表达就不新增模块、状态或工具，写清替代方案与代价。
+3. 业务错误先用临时 SQLite、受控时钟或外部响应 fixture 复现，再修复；不能把待验证的权限判断 mock 成允许。纯文档/低影响文案做相应校对，不机械增加测试。
+4. 跑受影响的回归；页面变化再查实际 JS/HTTP/浏览器，公共接口、事务或并发边界变化时扩大范围。
+5. 语义、上下文、检索、工具说明或提示词变化需要有针对性的真实模型案例；先估算费用，沿用累计上限。固定模型输出的程序测试不能证明模型能力提升。
+6. 保存前后配置、输入、trace、结果与无效模拟原因，保留原失败。尽量一次改一个因素，多因素变化时承认归因限制。
+7. 更新相应说明、审查并打包；不将旧运行标为新代码成绩。
+
+以下命令从仓库根执行，按变更选择，不是每次全部运行：
+
+```powershell
+# 受影响的程序回归，外部模型使用 fixture
+.venv/Scripts/python.exe -m pytest tests/test_domain.py tests/test_agent.py -q
+# 公共运行边界变化时使用全量程序回归
+.venv/Scripts/python.exe -m pytest -q
+# 数据/案例引用检查，不调用模型
+.venv/Scripts/python.exe -m evals.runner validate
+# 实际 Agent/HTTP/浏览器，使用脚本模型
+python scripts/verify_browser.py
+python scripts/verify_ui_states.py
+# Markdown 转 HTML，并校验文档结构与本地链接
+python docs/_tools/render_docs.py
 ```
 
-- [ ] Implement validated configuration, persistent reservations and HTTP adapters. Use bounded HTTP timeouts, no silent network retry; caller owns request budgets. Peak Flash pricing for conservative estimates: USD 0.30 / million input tokens, USD 1.20 / million output tokens, checked 2026-11-02. Cache savings may be reflected in actual accounting but not assumed for reservations. Missing usage retains reserved cost. Invalid provider responses do not expose request headers or raw exception dumps.
-- [ ] Add a CLI with masked readiness output, model-list authentication, small JSON completion, native tool-call round trip, and embedding probe only when its independent key exists. Its calls use the same ledger as the application. Save only safe metadata to runtime/connectivity.json.
-- [ ] Install into .venv, run focused tests, run the bounded live connectivity check, self-review and commit explicit files. Do not read or print secrets as evidence.
+付费命令如 `python -m evals.runner live --cases D01 --mode llm_user --output fresh-name` 必须另选明确案例，不放入默认回归。安装和浏览器/文档依赖见[README](../../../README.md)，完整口径见[评估设计](../../02-evaluation.md)。
 
-## Task 2: Synthetic world, state and policy-controlled actions
+## 7 自然使用的验收重点
 
-**Files:** app/storage.py, app/auth.py, app/domain.py, app/tools.py, app/seed.py, data/world.json, data/kb/*.md, data/history.json, tests/test_domain.py, tests/test_auth.py.
+- 短句、简称和不完整描述可以开始；先查后台已知信息，只问影响下一步且后台不能取得的信息，一次聚焦一个问题。
+- “好了？”、“那个还不行”、部分恢复和新请求分别处理；归属不清就问目标，不让员工填一整份故障报告。
+- 已尝试步骤不机械重来；正常重试属于验证，新修复路径要有新依据。
+- 员工看结果、影响和下一步，完整 ID、版本、内部状态和 trace 放详情或调试页。
+- 批准、执行、等待、交接与整体解决分别说明；模拟交接不承诺真人已接单。
+- 无答案、非 IT 请求、网络失败和范围外问题给清楚的下一步，不编造完成。
 
-**Consumes:** Settings and runtime directory from Task 1. **Produces:** Store(db_path), initialize/reset_demo; authenticated employee/session services; issue/message/evidence persistence; ToolExecutor.call(name, arguments, actor_id, conversation_id) returning the design envelope; approval and confirmation decision services; queued events.
+以上是验收目标，不是所有表达都已通过。旧实测仍有字面反斜杠 n、英文目标标题和协议错误；优先做对应体验修复和语义验证，暂不增加新功能。
 
-- [ ] Write failing tests for cross-user access, unsupported writes, invalid/expired approval, refusal, repeated approval/action, unknown execution after commit, independent issue outcomes, failed handoff persistence and restart recovery.
-- [ ] Build deterministic shared IDs and five rich source types. Seed six roles and eight services, current and outdated KB versions, current/mismatched outages, policy prohibitions and causal counterexamples. No oracle or scenario-ID routing in the runtime.
-- [ ] Implement transactional state changes, backend-generated provenance, action fingerprints, persistent operations and receipts, exact scope checks and password hashing. Complete tool inventory follows system design section 8; query tool schemas do not accept actor overrides.
-- [ ] Run focused state/security tests, self-review and commit. Report the exact public interfaces used by Task 3 and Task 4 before integration.
+## 8 提升依据
 
-## Task 3: Retrieval, context and model-driven Agent
+| 问题或选择 | 修改/取舍 | 已有证据 | 结论边界 |
+| --- | --- | --- | --- |
+| 三目标续轮超过 6k 必需上下文 | 先结构去重，再调至 10k 字节 | 去重后探针仍需 6,560 字节，调整后保留目标和观察 | 缓解容量问题，不证明所有长聊天更准确 |
+| 关键词漏检 | 比较 BM25 与混合检索 | 小集有答案命中 26/35 与 35/35 | 未证明普遍端到端优势，额外依赖仍有成本 |
+| 同问题交接因措辞变化重复 | 按真实问题生命周期去重 | 并发/重试/范围程序回归，历史重复仍算失败 | 程序修复不等于新版本语义已全测 |
+| 两阶段调用更易归因 | 保留阶段职责和中间候选 | 可追溯整理结果与工具选择 | 未做单阶段对照，不宣称准确率提升 |
 
-**Files:** app/retrieval.py, app/context.py, app/contracts.py, app/prompts.py, app/agent.py, tests/test_retrieval.py, tests/test_agent.py.
+新改进也按此记录。更高测试数、更多来源调用、更长提示词或更高模型评分，本身不是业务收益证据。
 
-**Consumes:** Task 1 providers, Task 2 state/tools. **Produces:** Retrieval.search(query, filters), ContextBuilder.build(stage, actor_id, conversation_id, event), Agent.handle(event_id), structured turn/state proposals.
-
-- [ ] Write meaningful fixtures for ambiguous feedback, claimed approval, two goals, relation reversal, missing evidence, protocol pairing, truncation that preserves constraints, and stop budgets.
-- [ ] Implement keyword and embedding retrieval with versioned cache and rank fusion; expose degraded status. Directory/status/policy queries stay structured.
-- [ ] Implement the documented interpretation contract and atomic validation; store raw messages first. Build fresh decision context from persisted facts and retain native provider fields within a run.
-- [ ] Implement tool selection and submit_turn finalization, bounded repairs, two distinct remedy paths, evidence-based acceptance and honest fallback responses. Current-chat history only. No tool generated by a fixture in live mode.
-- [ ] Run focused tests and small live conversations, record actual context/tool traces with no secrets or raw internal reasoning displayed, self-review and commit.
-
-## Task 4: Web app, approval worker and user experience
-
-**Files:** app/main.py, app/worker.py, app/ui/index.html, app/ui/app.js, app/ui/styles.css, tests/test_api.py, scripts/run_local.ps1.
-
-**Consumes:** authentication, persistence, Agent and queue. **Produces:** local employee chat, approver page, protected debug view and durable event processing.
-
-- [ ] Write API integration tests for login/session regeneration/logout, CSRF, forbidden roles, message ownership, confirmation decisions, scope-bound approval, duplicate events and cancellation races.
-- [ ] Implement the API table in design section 15, asynchronous runs with polling, durable queued events and startup recovery. An approval resumes only its original issue; logging out is not automatic cancellation.
-- [ ] Build a small accessible chat with independent issue status, source references, confirmation cards, approval/handoff identifiers, explicit mock-system labels and role-specific pages. Render untrusted text safely.
-- [ ] Verify real browser flows, role switching, mobile usability and errors; commit after relevant API tests pass.
-
-## Task 5: Evaluation, data isolation and results
-
-**Files:** evals/cases/*.json, evals/runner.py, evals/simulators.py, evals/grader.py, evals/retrieval_queries.json, tests/test_evaluation.py, docs/evaluation-report.md.
-
-**Consumes:** same application services and model provider, independent scenario databases. **Produces:** actual reproducible traces, hard assertions, dimension scores and failure analysis.
-
-- [ ] Encode D01–D20 development and H01–H10 held-out blueprints with world/user-card/oracle/fault-plan visibility separation. Grade on real state and receipts, never actor self-report.
-- [ ] Implement rule and LLM users with short natural messages and known-fact checks. Confirmation and approval drivers use actual authorization APIs. Report unsupported simulator steps as invalid instead of forcing canned success.
-- [ ] Implement five 0/1/2/N/A rubric dimensions and hard-failure gates, costs by role, latency and simulator validity. Calibrate the grader on known good/bad traces. Same Flash model throughout.
-- [ ] Run program checks, approximately forty retrieval queries, BM25/hybrid contrast when embeddings are available, then live cases and repeated critical cases within the cumulative budget. Keep incomplete/environment-blocked cases visible; never relabel them as passed.
-- [ ] Save reports with versions and failures, self-review and commit. Holdout failures used for tuning become development cases and require new held-out variants.
-
-## Task 6: Integration, delivery and final review
-
-**Files:** README.md, .env.example, docs/implementation-status.md, scripts/demo_reset.py, relevant corrected modules and regressions.
-
-- [ ] Confirm a clean local setup and restart through README, run all program tests, inspect fresh-input browser conversations and reset behavior.
-- [ ] Reconcile implemented behavior against all four design documents; annotate deviations rather than silently rewrite agreed goals. Keep design material separate from measured results.
-- [ ] Request independent code review of the full change. Fix critical findings with regressions and a scoped re-review.
-- [ ] Deliver startup commands, demo users, actual evaluation summary, known limitations and credential/budget readiness. Keep the feature branch locally; no push, publication or external messaging.
+基线记录为 209 项程序测试、脚本模型的 14 项浏览器/3 项时钟检查。历史真实测量和修复前 smoke 另记，尚无最终版本 30 案例完整成功结论或真人专家盲评。后续优先补同一候选的失败复测与自然交互，再决定扩展。

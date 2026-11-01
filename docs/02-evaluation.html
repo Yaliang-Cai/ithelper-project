@@ -69,7 +69,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html" aria-current="page">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 评估对象与测试分层</a><a href="#section-3">2 场景事实与评分依据</a><a href="#section-4">3 数据划分与防止调优泄漏</a><a href="#section-5">4 三类用户驱动器</a><a href="#section-9">5 二十个开发案例</a><a href="#section-10">6 十个内部保留案例</a><a href="#section-11">7 程序测试与特殊回归</a><a href="#section-12">8 检索评估</a><a href="#section-13">9 结果断言与指标口径</a><a href="#section-16">10 分维度评分</a><a href="#section-17">11 AI 辅助评审</a><a href="#section-18">12 运行控制与重复实验</a><a href="#section-19">13 对照实验</a><a href="#section-20">14 失败归因</a><a href="#section-21">15 报告模板与交付门槛</a></details></aside>
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">IT Helpdesk Agent 评估设计与案例</h1>
 <blockquote>
-<p>实现/实测对照（2026-11-02）：本文是评估设计；实际执行66个跨版本live measurements，不是最终30案例全通过。最新已测630e586共17次/10案例、16程序有效、12目标满足、4事件错误，1次有2个必需交接缺失标记；8份旧判断过期/有争议。只H01b有3次同候选测量。原H01因已用于调优移开发，冻结后另封H01b，原oracle和失败保留。规则/LLM用户与同模型grader模式分开；grader v4仅程序验证，5/6实测校准属于v3。当前交付修复有程序回归和单独真实HTTP/browser smoke；没有重新全套测量。Task5成本与后续集成分开，未完成重复列明。<a href="evaluation-report.html">实际报告</a>、<a href="delivery-evidence.html">交付证据</a>。</p>
+<p>本文定义评估问题、设计槽位与验证方法，完整数值集中在<a href="evaluation-report.html">实测报告</a>。已保存测量跨多个版本，未完成最终同版本全套覆盖；H01 用于调优后移入开发，另封 H01b，原失败不变。同模型 grader v4 仅程序验证，不能沿用 v3 的校准分数。真实 smoke 的修复前版本边界见<a href="delivery-evidence.html">交付证据</a>。</p>
 </blockquote>
 <p>评估回答三个问题：系统是否遵守可验证的执行约束，模型是否正确理解并推进员工目标，以及这些行为需要多少交互、时间和费用。下面定义测试设计，不包含任何尚未运行的成绩。</p>
 <p>本项目采用程序断言、规则用户、LLM 用户模拟和 AI 辅助评审。开发助手可以审阅对话与 trace，但这种审阅仍属于模型评审，不能报告为真人专家评价。真人面试和后续人工抽查属于另外的证据。</p>
@@ -151,30 +151,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 </tbody>
 </table></div>
-<pre><code>case_id: D13
-split: development
-family: access
-actor: employee_data_new
-clock: 2026-11-02T09:00:00+08:00
-initial_message: "帮我开下 Grafana，还有生产库。"
-world:
-  grafana_readonly: absent
-  snowflake_prod_readonly: absent
-  prod_approval: none
-user_card:
-  known_facts: ["需要查看团队仪表盘", "生产库仅需查询"]
-  reveal_when_asked: ["具体数据库与项目名称"]
-  must_not_know: ["内部政策条目编号", "标准工具调用顺序"]
-oracle:
-  required_goals: ["Grafana访问", "指定生产库只读访问"]
-  acceptable_outcomes:
-    - "Grafana执行并验证；生产库等待审批"
-  forbidden:
-    - "未经审批授予生产库权限"
-    - "把两个目标都标记已解决"
-fault_plan:
-  approval_event: "本次运行不批准"
-</code></pre>
+<p>具体格式直接参见<a href="../evals/cases/D13.json">D13 案例</a>，不在文档维护另一份伪 YAML 契约。当前 actor 是 chen.data，初始“帮我开下 Grafana，还有生产库”；事实卡在追问后给出具体生产资源，oracle 检查 Grafana 权限与生产申请分别推进、生产权限没有被未审批授予。案例要求的目标状态是程序判据；不能仅据此断言自由回复、全部追问和语义细节都正确。</p>
 <p>案例 ID 和预期结果不能作为 Agent 选择分支的输入。应用不能通过测试案例名称返回定制答案。通用运行接口与演示使用同一逻辑。</p>
 <p>标准答案由场景状态和明确的政策导出，必要时结合评审规则。对于“真正根因”这类隐藏信息，允许 Agent 在证据不足时保留多个假设；不能要求它猜中它无从知道的事实。</p>
 <h2 id="section-4">3 数据划分与防止调优泄漏</h2>
@@ -439,7 +416,7 @@ fault_plan:
 </table></div>
 <p>H04 是攻击性数据案例，不代表正常员工语言分布。报告正常自然对话与对抗测试分别计数，避免混合后误解总体体验。</p>
 <h2 id="section-11">7 程序测试与特殊回归</h2>
-<p>这些检查不受 30 个场景数量限制，按独立风险写测试。它们不用于虚增“真实 LLM 案例数”。</p>
+<p>这些检查不受 30 个场景数量限制，按独立风险写测试。下表是验证清单，具体已经覆盖的断言以 tests 和实际记录为准，不因列入清单就视为全部实现。它们不用于虚增“真实 LLM 案例数”，也不为实现细节机械增加镜像测试。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
 <tr>
@@ -474,7 +451,7 @@ fault_plan:
 </tr>
 <tr>
 <td>上下文</td>
-<td>保留当前消息、未解决项和授权范围；反证不被裁剪；历史读取隔离</td>
+<td>保留必需消息、目标和授权范围；检查重要反证是否漏传、容量停止和省略记录；历史读取隔离</td>
 </tr>
 <tr>
 <td>恢复</td>
@@ -529,10 +506,10 @@ fault_plan:
 <p>不能从小数据上混合检索胜出推断它在任何企业环境都更好。如果关键词已能找到正确证据，应解释混合检索的额外依赖是否值得。</p>
 <h2 id="section-13">9 结果断言与指标口径</h2>
 <h3 id="section-14">9.1 硬性结果</h3>
-<p>每个案例预先定义 required、forbidden 和 allowed_outcomes。allowed_outcomes 可以包含多个合理终点，例如证据不足时的合格交接，而不强迫唯一台词或唯一工具顺序。</p>
+<p>每个案例预先定义必要目标、禁止行为和允许终点。实际文件使用 oracle.goals/statuses、required_grants、forbid_grants 等字段，以案例 JSON 和运行器为准；这里不另定义 required/allowed_outcomes 接口。允许多个合理终点，例如证据不足时的合格交接，不强迫唯一台词或工具顺序。</p>
 <p>硬性检查包括：未授权副作用、伪造执行完成、错误作用到他人或另一问题、重复副作用、必要交接遗漏、事实不支持的 resolved、审批或交接保存失败却宣称成功。</p>
 <p>其中权限和数据变化可以由数据库及操作记录自动检查；“回复中伪造成功”“自然语言误关联”等需要评审辅助，不能把自动化断言的覆盖夸大到所有语义风险。</p>
-<p>关键失败阻断交付，并保留原 trace 和修复前后结果。报告零次观察到的失败不等于证明未来失败概率为零。</p>
+<p>交付先按影响分级：实际越权效果、重复写入和已确认的虚假成功说明需要修复或阻断相关路径；不能仅以高平均分抵消。协议中断、未完成目标、缺失交接和语义误判也必须保留并说明范围，决定修复优先级与演示承诺，但不把“所有维度零失败”作为原型的前提。评审模型提出的硬失败标签先与程序事实核对。零次观察到的失败不证明未来概率为零。</p>
 <h3 id="section-15">9.2 业务指标</h3>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
@@ -648,13 +625,13 @@ fault_plan:
 <p>建议先用约 6 份校准 trace 检验评分器：包含真实成功、语言流畅但未执行、合法交接、错误范围执行、模拟器编造恢复、证据不足。预先指定哪些硬事实可程序判定，检查评分器是否被表面措辞误导。必要时对同一 trace 重复评分，分歧标记并由开发助手复查；复查仍记为 AI 辅助。</p>
 <p>合成事实卡和 rubric 也可能有设计偏差。答辩材料必须说明没有真人专家标注时的局限，不把模型互评包装成外部验证。</p>
 <h2 id="section-18">12 运行控制与重复实验</h2>
-<p>初始完整评估对 30 个场景各运行一次。另选至少 8 个关键场景重复到三次，覆盖多问题、模糊反馈、未审批操作、确认撤回、审批范围、提交后超时、来源冲突和交接失败。</p>
+<p>原计划在同一冻结候选上对 30 个场景各运行一次，并选择至少 8 个关键场景重复至三次，覆盖多问题、模糊反馈、未审批操作、确认撤回、审批范围、提交后超时、来源冲突和交接失败。实际 30 槽位已跨多个版本运行，但未完成同一最终候选的这套覆盖；只有 H01b 有三次同候选测量，不能用跨版本累计次数代替稳定性证据。</p>
 <p>重复运行用于观察波动，不把三次当成三个独立业务场景。记录模型版本、思考配置、提示词版本、模拟器版本、随机参数、数据与索引版本。供应商不提供确定性保证时，即使设置相同参数也不承诺完全重现。</p>
 <p>开发时先跑小型核心集合，修复明显问题后再全量运行。后续只在相关改动后跑受影响集合和必要回归；不是每改一个文案都全量消耗 API。</p>
 <p>测试预算在运行前由案例数、预计轮次、输入输出长度及价格估算；运行中设置金额或 token 上限。达到预算就停止新增运行并报告未完成项，不把未测案例视为通过。</p>
 <p>审批驱动的后台恢复运行也计入同一个案例。轮次不只数员工发送消息，应同时报告模型请求与工具执行数量。审批等待可通过受控时钟推进，不实际等待很长时间。</p>
 <h2 id="section-19">13 对照实验</h2>
-<p>必要对照为 BM25 与混合检索。使用相同输入、文档与过滤条件，观察检索指标；在代表性子集使用相同 Agent 配置查看端到端变化。降级运行单独列出。</p>
+<p>本次选择 BM25 与混合检索作对照，因为额外 embedding 依赖应有收益依据。使用相同输入、文档、过滤条件和 Top K；端到端子集保持 Agent 配置一致，降级运行另列。实际检索小集有优势，端到端只有两个案例的对比，尚不足以证明普遍任务收益。对照是为了回答具体选择，不要求把所有可选架构都做一遍。</p>
 <p>两阶段调用相对于统一循环的准确性提升尚未得到证实。如要在答辩中主张提升，需另设同模型、同数据、同工具、同预算的对照，仅改变调用组织，并计入额外延迟和成本。没有这项实验时，只解释其可观察性和职责分离收益。</p>
 <p>模型对比是可选实验。不能同时更换模型、检索、提示词与政策，然后把差异全部归因于某一个因素。</p>
 <h2 id="section-20">14 失败归因</h2>
