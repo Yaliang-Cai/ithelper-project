@@ -1,0 +1,1507 @@
+{
+  "profile": "delivery-iteration-v7-paired",
+  "source": "new targeted development measurements; historical original evidence remains unchanged",
+  "not_formal_full_benchmark": true,
+  "business_layer": "real Agent/domain/transactional mock effects on isolated synthetic worlds",
+  "manifest": {
+    "id": "CONFIG-1",
+    "eval_version": "eval-v1",
+    "timestamp": "2026-11-01T22:32:39.648220+00:00",
+    "git_head": "baca519e2fc316dad6de51ff89d8da1530004408",
+    "hashes": {
+      "app/__init__.py": "41d1c9cdcfa1d5717a4209c6e75b5946594bedc04c14ade06dd92fabaf693b9e",
+      "app/agent.py": "6af0b047f77dd1b8e882bb3b20a4101b039c4cfc3c2acccc6e383f336f46bc9f",
+      "app/auth.py": "d2f41beba199937fa5e4f0be2f710152441f7e3d007fa070630ab4ecb108d078",
+      "app/budget.py": "5b30409d8fcbfcab6b8e67d9676cca044902b8fa2b282d226978b07160cafd6d",
+      "app/catalog.py": "ff0684194e53cc942e671996ee3c5f45b15d7bf08cd4a828ae52d1486561ab56",
+      "app/config.py": "17252a8019da41a030c1cc3ecd1e9d8c3a75744063113b540253f5e31d4c1bca",
+      "app/context.py": "b7c55fe002a356b98191328263b82ca769d0a807097a23d097e2155586967a4e",
+      "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
+      "app/domain.py": "6186b7c906d9cb4951ee0c7f5612f5ed754d850905d1456d663ab02be39f08fe",
+      "app/main.py": "17b5b268326fb004ebaa7f6bf0b3ed319c81f57645dafb79b41c577842ce8ea6",
+      "app/prompts.py": "631af4048eed21d51b843e2bd4bbd920b5f0a64aff012961b53a07a67e9f872a",
+      "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
+      "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
+      "app/seed.py": "274a5159406e47e0d6139e365f177dfae502b217eeb2f6c22ee255ea3df8f60b",
+      "app/storage.py": "888e781b3d29fd12d2af6c99ca462a6137371a47f94c75f3bc759783f37611cc",
+      "app/tools.py": "a32c2f030b8ce13366240939e3e605c00936b8d748a9f54620d00d750767514f",
+      "app/worker.py": "3008ea2be94eae5dd6e74475c73d1271469ab069a886847b33a4ab9818f664b3",
+      "data/history.json": "f314e9f2a838cdad86c9a89719b1524d78306006ae376fce30a1641feb7ed8c9",
+      "data/kb/01-account-unlock.md": "4af26aed33938e1952ee8af2ea39def0f00bead03bdba989f943d2ed50fc330c",
+      "data/kb/02-account-security.md": "fd7df642511af0c670845c27f6661d66458d0b65b2c441fb23c0fe35c83b56e5",
+      "data/kb/03-account-browser.md": "c8d00542a89ab50f012c9853cf97e59f549ad95b6247d22d3d411e880639dbaa",
+      "data/kb/04-account-mfa.md": "35344fedb0309354ad0d27739d8e4c1ef20da29e4f70b432380d4549f222a008",
+      "data/kb/05-salesforce-slow.md": "cc494c0515300a4806f69c03fdb9cde07c486c1a13be63415c0b51021e9aaac7",
+      "data/kb/06-salesforce-browser.md": "7610fcf9c0eefdcff22db7873bbae80fc2650803e7c1086111e23b0c814e3027",
+      "data/kb/07-salesforce-old.md": "eefd315b3abd7e655f040b97d028ccc820c4290b419497a2af99482c52f629f7",
+      "data/kb/08-vpn-session.md": "23ab894629bd099c7128476ef42db5dfaec3a580761b75f42f7cc92c945a0edc",
+      "data/kb/09-vpn-local-network.md": "c96189da244efd85e2d8055f3b71ff7ece14bdcb4f4b471eaa49ba89c7609b09",
+      "data/kb/10-vpn-old.md": "156d3cc11b84d40d4489993627d053ecbff26500584600baf56acd23f9792365",
+      "data/kb/11-grafana-sales.md": "5b97dd8d18300ed828e9c8da9dbee0aff320b3b18af7d0f46d3b92b48291dadd",
+      "data/kb/12-grafana-data.md": "c7ba46021aa35e7da0cac9b1b62c64323b5c5cee50c674ce704ad8ac13e408d3",
+      "data/kb/13-grafana-platform.md": "f8d6c6477fc8f7a03513103e08f27be41d5849baf48259195a8ef2e34a680f51",
+      "data/kb/14-snowflake-read.md": "dbf64a92a86df958305685b67d6f22ec84988b2aee6b4003d5876e062e53be9d",
+      "data/kb/15-snowflake-no-write.md": "e8284f8bc5297c1e544fdfebc7f4820696f9bd3b355c48abb415af5505f0cbe5",
+      "data/kb/16-snowflake-verify.md": "ca9db2984e3e0d6e6aef2b33432d16f84214c1dee13e8ba4f150dfa062be4395",
+      "data/kb/17-jenkins-token.md": "a7fcb6455a647bcd9f3c1996cfa735846070fa3bdf983d4f2efe7d0a74b2240f",
+      "data/kb/18-jenkins-escalate.md": "79cf209fd43487aab50778b6d323bb1df910bfd2f094b0edfed4fcf4a5fb2e16",
+      "data/kb/19-tableau-extract.md": "7e9f8c4972d178f1db60eb83b9b6c85af660654fc536be96f11119b99cedaa72",
+      "data/kb/20-tableau-escalate.md": "b292ab09791ff0817c16a539d605380ec63267f995710a3028390438e5350fc8",
+      "data/kb/21-token-rotation.md": "f01182a9fa30cea9468f3aca74f82047235e6d0fb8c10c9b9b93feeec28a0939",
+      "data/kb/22-cross-system.md": "d8d9b22e151081bf90e601ca6b37e74103d68c6be1cd409fe3b7a19858de35a5",
+      "data/world.json": "57fc53a40ed52081baa157cff95f6b1b260d72bbaae73ca3ed4a3d2d2fc4063c",
+      "evals/__init__.py": "5a71cef9221fa035cac51de4a4e28d851beea9b1856826eef4cae817e5ed3fce",
+      "evals/author_holdout.py": "45185ba43892cc9a2bbcc75146477df448532c950de219e4a8b020ed69a5a1d4",
+      "evals/author_replacement.py": "f3d3164e1eb7b1de3dbc1f12079243ffe6daf79b6b75027235a1a0e5268c53dc",
+      "evals/build_cases.py": "d92302161f5f19db4b60445abfefd3ed9eb2a16f2640db2c49eff156c0554a09",
+      "evals/failure_examples.py": "bb81da6df268ddc2e701cc9e9dfade47a690fc0ea65d144afad90b55c0628841",
+      "evals/grader.py": "85fc0d6c325c23f0f3bf3ad462c189f65cc7c97b22e8a7de7a778362321205c8",
+      "evals/report.py": "426a43353e8dfac6e0bfcfd5d8bb436127c15641d901fcce4c5552e1d582265d",
+      "evals/retrieval_supplement.py": "9c75268bdd2a569ff074c56c72b4787192f66003c3934196562e91d2fa2740d9",
+      "evals/runner.py": "a210b17ba5d4d29a09738e26a4d546f6ff3156a05b00a52c12906eec63452999",
+      "evals/simulators.py": "4f1fce4e671eb3d583a769881253cf301917100a70bbea1d7979332d3d375151"
+    },
+    "request_model": "deepseek-flash",
+    "thinking": false,
+    "sampling": "provider default; no deterministic guarantee",
+    "context_targets_utf8_bytes": {
+      "interpretation": 10000,
+      "decision": 12000
+    },
+    "max_model_calls_per_event": 10,
+    "max_tools_per_event": 12,
+    "max_event_seconds": 120,
+    "ledger_path": "D:\\药明-test\\runtime\\usage.sqlite",
+    "prompt_version": "helpdesk-2026-11-02-v7-matched-followup",
+    "budget_before": {
+      "accounting_overrun": false,
+      "spent_usd": 2.807842572,
+      "reserved_usd": 0.0,
+      "limit_usd": 3.0,
+      "requests": 809
+    },
+    "source": "delivery_iteration_paired_development_retest",
+    "batch": "delivery-iteration-v7-paired",
+    "evaluation": {
+      "user_mode": "rule_user",
+      "max_events": 4,
+      "lexical_requested": false,
+      "grader_enabled": true,
+      "task_request_reservation_ceiling_usd": 2.9,
+      "case_ids": [
+        "D05",
+        "D09"
+      ],
+      "H01b_label": "previously exposed replacement reused as development retest; not fresh holdout"
+    }
+  },
+  "user_simulation": "rule_user; fact-card validity is a program check, not semantic proof",
+  "grader": "official deepseek-flash, separate context; same-model AI assessment, not independent human review",
+  "diagnostics_note": "Counts and visible lengths are diagnostics only; no automatic naturalness score. Synthetic account/session keys and standalone employee-directory keys counted separately from record IDs; necessary exact resource names excluded. All shown assistant messages are raw persisted content, including backend-appended reviewed KB guidance.",
+  "runtime_frozen_before_paid": true,
+  "budget_before": {
+    "accounting_overrun": false,
+    "spent_usd": 2.807842572,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 809
+  },
+  "budget_after": {
+    "accounting_overrun": false,
+    "spent_usd": 2.870759773,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 828
+  },
+  "attributed_cost_usd": 0.062917201,
+  "new_ledger_requests": 19,
+  "limitations": [
+    "One measurement per selected case; no final 30-case success claim.",
+    "Previously exposed H01b is a development retest, not fresh holdout.",
+    "No runtime changes or favorable reruns during batch.",
+    "Historical smoke comparison uses a different employee input and is descriptive, not a controlled improvement estimate."
+  ],
+  "results": [
+    {
+      "case": "D05",
+      "valid": true,
+      "goal_pass": true,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-1",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2348,
+            "completion_tokens": 169,
+            "total_tokens": 2517,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 556
+          },
+          "latency_seconds": 1.2382868999993661,
+          "ledger_reservation_ids": [
+            "13a1e0a97d064d8c93a8d9919d661ef2"
+          ],
+          "estimated_spend_usd": 0.0009072,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007044,
+          "estimated_output_usd": 0.0002028
+        },
+        {
+          "id": "CALL-2",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 7686,
+            "completion_tokens": 130,
+            "total_tokens": 7816,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 6790
+          },
+          "latency_seconds": 1.2812827000016114,
+          "ledger_reservation_ids": [
+            "e809a0f130c54c4f989c782ff5a4c80a"
+          ],
+          "estimated_spend_usd": 0.0024618,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0023057999999999998,
+          "estimated_output_usd": 0.000156
+        },
+        {
+          "id": "CALL-3",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 11292,
+            "completion_tokens": 42,
+            "total_tokens": 11334,
+            "prompt_tokens_details": {
+              "cached_tokens": 7168
+            },
+            "prompt_cache_hit_tokens": 7168,
+            "prompt_cache_miss_tokens": 4124
+          },
+          "latency_seconds": 1.0034805000032065,
+          "ledger_reservation_ids": [
+            "114e0ffcdbd34960abdf6523bf6b9b5e"
+          ],
+          "estimated_spend_usd": 0.003438,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0033875999999999997,
+          "estimated_output_usd": 5.04e-05
+        },
+        {
+          "id": "CALL-4",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14601,
+            "completion_tokens": 527,
+            "total_tokens": 15128,
+            "prompt_tokens_details": {
+              "cached_tokens": 7168
+            },
+            "prompt_cache_hit_tokens": 7168,
+            "prompt_cache_miss_tokens": 7433
+          },
+          "latency_seconds": 2.775254300002416,
+          "ledger_reservation_ids": [
+            "0d567571f7c440cfa76bb058c247bd77"
+          ],
+          "estimated_spend_usd": 0.0050127,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0043803,
+          "estimated_output_usd": 0.0006324
+        },
+        {
+          "id": "CALL-5",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 5295,
+            "completion_tokens": 549,
+            "total_tokens": 5844,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 4655
+          },
+          "latency_seconds": 3.2018673999991734,
+          "ledger_reservation_ids": [
+            "d581abc92edc433787c0b3e79720566a"
+          ],
+          "estimated_spend_usd": 0.002247301,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0015885,
+          "estimated_output_usd": 0.0006588
+        }
+      ],
+      "spend": 0.014067001,
+      "stop": "all_goals_terminal_or_external_wait",
+      "case_hash": "b853f39abc9d4b49aed193ea0307f43e3a5d6f8e25756854840491d7f5d19c4f",
+      "family": "application",
+      "paid_request_count": 5,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "24fa607b90ab6dd188d8cfc8cdd4ff19d2358977d62adc7f73ad6de081992be5",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": []
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "application_recovery",
+          "goal": "解决 Salesforce 响应缓慢的问题",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "salesforce"
+          ],
+          "id": "ISSUE-2c828586ebee45c09fe9be44f611a0e2",
+          "conversation_id": "CHAT-f0a8a3f003074664a1c55173e77be520",
+          "actor_id": "alice.sales",
+          "status": "waiting_external",
+          "version": 3,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [
+        {
+          "created_after_message_sequence": 1,
+          "history": [],
+          "issue_refs": [
+            "ISSUE-2c828586ebee45c09fe9be44f611a0e2"
+          ],
+          "question_intent": "affected_scope",
+          "text": "你这边遇到的是所有页面都慢，还是只有某些特定页面或操作慢？从大概几点开始变慢的？",
+          "id": "QUESTION-f6aee1f9124049e9b24e2c4ea7e1de10",
+          "conversation_id": "CHAT-f0a8a3f003074664a1c55173e77be520",
+          "actor_id": "alice.sales",
+          "status": "pending"
+        }
+      ],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-2c828586ebee45c09fe9be44f611a0e2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 1,
+            "refs": [
+              "MSG-2f806a5b633f40c490701a1dbf739ac0",
+              "MSG-64c64901e3904ef8a57eba1b4e268e1a",
+              "ISSUE-2c828586ebee45c09fe9be44f611a0e2"
+            ],
+            "reason": "Captured slow Salesforce and issue waiting_external; asked scope/start time but never integrated user's later-reported Chicago colleagues and 08:30 onset (not in trace)."
+          },
+          "diagnosis_applicability": {
+            "score": 2,
+            "refs": [
+              "MSG-64c64901e3904ef8a57eba1b4e268e1a",
+              "EVID-bf8a86ec344c4fe788fc547cce39f1c2",
+              "EVID-dd0e91b60a8941a1a9950107ef0e656b",
+              "HYPOTHESIS-7945e403b4274c04b8e09b8023146154"
+            ],
+            "reason": "Linked degraded status and us-central slow-page incident onset with matching symptoms, per KB region/onset comparison."
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-bf8a86ec344c4fe788fc547cce39f1c2",
+              "EVID-dd0e91b60a8941a1a9950107ef0e656b",
+              "MSG-2f806a5b633f40c490701a1dbf739ac0"
+            ],
+            "reason": "Cited concrete service incident and applicable KB guidance traceably."
+          },
+          "communication": {
+            "score": 2,
+            "refs": [
+              "MSG-64c64901e3904ef8a57eba1b4e268e1a"
+            ],
+            "reason": "Concise, explains degradation, asks relevant scoping question; no failed attempts to misrepresent."
+          },
+          "outcome_handoff": {
+            "score": 1,
+            "refs": [
+              "ISSUE-2c828586ebee45c09fe9be44f611a0e2",
+              "QUESTION-f6aee1f9124049e9b24e2c4ea7e1de10"
+            ],
+            "reason": "Issue correctly in waiting_external with pending scope question, but no saved handoff or clear next-owner/pending summary."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [
+          "Only one user message present, consistent with provided facts; no simulator violation observed."
+        ],
+        "failure_tags": [
+          "incomplete_handoff"
+        ]
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 1,
+        "visible_assistant_lengths_characters": [
+          144
+        ],
+        "mean_characters": 144,
+        "max_characters": 144,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 0,
+        "internal_ids_shown": [],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-2f806a5b633f40c490701a1dbf739ac0",
+          "role": "user",
+          "content": "Salesforce 慢得不行。"
+        },
+        {
+          "id": "MSG-64c64901e3904ef8a57eba1b4e268e1a",
+          "role": "assistant",
+          "content": "Salesforce 目前确实处于降级状态，并且你所在的 us-central 区域有一个正在进行的页面加载缓慢事件（开始于今天 08:25 左右），症状与你描述的一致。这类情况通常需要平台团队处理，个人侧无法修复。想先确认一下：你这边遇到的是所有页面都慢，还是只有某些特定页面/操作慢？"
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-466b8523463e435f96ef1c4d82427d96",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "salesforce"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-59cc03630f8e43b0b1d373a1126299ba",
+          "name": "search_kb",
+          "arguments": {
+            "filters": {
+              "region": "us-central",
+              "service_id": "salesforce"
+            },
+            "query": "Salesforce slow response performance troubleshooting",
+            "top_k": 5
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-c157cd04b53e4ec18dc76f2afa770d12",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "create_handoff"
+          },
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-bf8a86ec344c4fe788fc547cce39f1c2",
+          "source": "service_state",
+          "record_id": "salesforce",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [],
+            "dependencies": [],
+            "incidents": [
+              {
+                "id": "incident.sf.central",
+                "kind": "incidents",
+                "observed_at": "2026-11-02T09:00:00+08:00",
+                "region": "us-central",
+                "revision": 2,
+                "service_id": "salesforce",
+                "simulated": true,
+                "started_at": "2026-11-02T08:25:00+08:00",
+                "status": "active",
+                "symptoms": [
+                  "slow page loads"
+                ]
+              },
+              {
+                "id": "incident.sf.eu.old",
+                "kind": "incidents",
+                "observed_at": "2026-10-23T12:00:00+08:00",
+                "region": "eu-west",
+                "revision": 3,
+                "service_id": "salesforce",
+                "simulated": true,
+                "started_at": "2026-10-23T10:00:00+08:00",
+                "status": "resolved",
+                "symptoms": [
+                  "login failure"
+                ]
+              }
+            ],
+            "service": {
+              "id": "salesforce",
+              "kind": "services",
+              "name": "Salesforce",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "degraded",
+              "version": "2026.11"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-dd0e91b60a8941a1a9950107ef0e656b",
+          "source": "kb",
+          "record_id": "kb.salesforce-slow",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.salesforce-slow:0",
+            "id": "kb.salesforce-slow",
+            "parent_id": "kb.salesforce-slow",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "check_incident_scope"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03278688524590164,
+            "service_id": "salesforce",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Slow pages\n\nCompare region, onset and symptoms with current incident; unrelated region is counterevidence.",
+            "title": "Slow pages",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-3f8cbf65cb2e456b994daf0274a03344",
+          "source": "kb",
+          "record_id": "kb.salesforce-browser",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.salesforce-browser:0",
+            "id": "kb.salesforce-browser",
+            "parent_id": "kb.salesforce-browser",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "browser_private_window"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03225806451612903,
+            "service_id": "salesforce",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Browser slowness\n\nCompare private window and another permitted browser. Do not change production settings.",
+            "title": "Browser slowness",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        }
+      ],
+      "actions": [],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    },
+    {
+      "case": "D09",
+      "valid": true,
+      "goal_pass": true,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-6",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2345,
+            "completion_tokens": 150,
+            "total_tokens": 2495,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 553
+          },
+          "latency_seconds": 1.7048989000031725,
+          "ledger_reservation_ids": [
+            "ef5f5a2fdea8472ebf0b902b34e43f1e"
+          ],
+          "estimated_spend_usd": 0.0008835,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007035,
+          "estimated_output_usd": 0.00018
+        },
+        {
+          "id": "CALL-7",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 7682,
+            "completion_tokens": 69,
+            "total_tokens": 7751,
+            "prompt_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "prompt_cache_hit_tokens": 6272,
+            "prompt_cache_miss_tokens": 1410
+          },
+          "latency_seconds": 1.0081525999994483,
+          "ledger_reservation_ids": [
+            "f5045a25985a47949d49e03fa499fd05"
+          ],
+          "estimated_spend_usd": 0.0023874,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0023046,
+          "estimated_output_usd": 8.28e-05
+        },
+        {
+          "id": "CALL-8",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 9536,
+            "completion_tokens": 145,
+            "total_tokens": 9681,
+            "prompt_tokens_details": {
+              "cached_tokens": 7168
+            },
+            "prompt_cache_hit_tokens": 7168,
+            "prompt_cache_miss_tokens": 2368
+          },
+          "latency_seconds": 1.3210708999977214,
+          "ledger_reservation_ids": [
+            "2ccd984dfd0e4b02bd40f07bd401b6f8"
+          ],
+          "estimated_spend_usd": 0.0030348,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0028607999999999997,
+          "estimated_output_usd": 0.000174
+        },
+        {
+          "id": "CALL-9",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14921,
+            "completion_tokens": 621,
+            "total_tokens": 15542,
+            "prompt_tokens_details": {
+              "cached_tokens": 7168
+            },
+            "prompt_cache_hit_tokens": 7168,
+            "prompt_cache_miss_tokens": 7753
+          },
+          "latency_seconds": 3.2528040999968653,
+          "ledger_reservation_ids": [
+            "afa045009bae4a3da67662cc993dd042"
+          ],
+          "estimated_spend_usd": 0.0052215,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0044763,
+          "estimated_output_usd": 0.0007451999999999999
+        },
+        {
+          "id": "CALL-10",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 5414,
+            "completion_tokens": 255,
+            "total_tokens": 5669,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 3622
+          },
+          "latency_seconds": 2.119861699997273,
+          "ledger_reservation_ids": [
+            "1ec5923f196b444b91ddb78282a25062"
+          ],
+          "estimated_spend_usd": 0.0019302,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0016242000000000001,
+          "estimated_output_usd": 0.000306
+        },
+        {
+          "id": "CALL-11",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 11196,
+            "completion_tokens": 56,
+            "total_tokens": 11252,
+            "prompt_tokens_details": {
+              "cached_tokens": 6528
+            },
+            "prompt_cache_hit_tokens": 6528,
+            "prompt_cache_miss_tokens": 4668
+          },
+          "latency_seconds": 1.20592420000321,
+          "ledger_reservation_ids": [
+            "42ee2116b26a4bccac1b6a7e595da8c7"
+          ],
+          "estimated_spend_usd": 0.003426,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0033588,
+          "estimated_output_usd": 6.720000000000001e-05
+        },
+        {
+          "id": "CALL-12",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 13731,
+            "completion_tokens": 166,
+            "total_tokens": 13897,
+            "prompt_tokens_details": {
+              "cached_tokens": 7936
+            },
+            "prompt_cache_hit_tokens": 7936,
+            "prompt_cache_miss_tokens": 5795
+          },
+          "latency_seconds": 1.439191799996479,
+          "ledger_reservation_ids": [
+            "df9dcc58d31c4d28a3fca0117965d607"
+          ],
+          "estimated_spend_usd": 0.0043185,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0041193,
+          "estimated_output_usd": 0.0001992
+        },
+        {
+          "id": "CALL-13",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14554,
+            "completion_tokens": 831,
+            "total_tokens": 15385,
+            "prompt_tokens_details": {
+              "cached_tokens": 6784
+            },
+            "prompt_cache_hit_tokens": 6784,
+            "prompt_cache_miss_tokens": 7770
+          },
+          "latency_seconds": 4.151495699996303,
+          "ledger_reservation_ids": [
+            "cacc3be667db440aa5f64c93ec52640d"
+          ],
+          "estimated_spend_usd": 0.0053634,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0043662,
+          "estimated_output_usd": 0.0009972
+        },
+        {
+          "id": "CALL-14",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 11413,
+            "completion_tokens": 181,
+            "total_tokens": 11594,
+            "prompt_tokens_details": {
+              "cached_tokens": 6528
+            },
+            "prompt_cache_hit_tokens": 6528,
+            "prompt_cache_miss_tokens": 4885
+          },
+          "latency_seconds": 2.0681813999981387,
+          "ledger_reservation_ids": [
+            "b41d972838664082a6a9524d02d4f5ff"
+          ],
+          "estimated_spend_usd": 0.0036411,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0034239,
+          "estimated_output_usd": 0.0002172
+        },
+        {
+          "id": "CALL-15",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 13041,
+            "completion_tokens": 552,
+            "total_tokens": 13593,
+            "prompt_tokens_details": {
+              "cached_tokens": 6656
+            },
+            "prompt_cache_hit_tokens": 6656,
+            "prompt_cache_miss_tokens": 6385
+          },
+          "latency_seconds": 2.7237889999960316,
+          "ledger_reservation_ids": [
+            "c4b933da3c2c4de4ab0ebcf1348cf8f9"
+          ],
+          "estimated_spend_usd": 0.0045747,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0039123,
+          "estimated_output_usd": 0.0006624
+        },
+        {
+          "id": "CALL-16",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 6195,
+            "completion_tokens": 125,
+            "total_tokens": 6320,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 4403
+          },
+          "latency_seconds": 1.864046700000472,
+          "ledger_reservation_ids": [
+            "8435039e3ac9436dac5e93ec2c5e300d"
+          ],
+          "estimated_spend_usd": 0.0020085,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0018585,
+          "estimated_output_usd": 0.00015
+        },
+        {
+          "id": "CALL-17",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 11858,
+            "completion_tokens": 35,
+            "total_tokens": 11893,
+            "prompt_tokens_details": {
+              "cached_tokens": 6528
+            },
+            "prompt_cache_hit_tokens": 6528,
+            "prompt_cache_miss_tokens": 5330
+          },
+          "latency_seconds": 1.3035745000015595,
+          "ledger_reservation_ids": [
+            "983a08d0670d4ceda63e3e80529bb4fa"
+          ],
+          "estimated_spend_usd": 0.0035994,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0035574,
+          "estimated_output_usd": 4.2e-05
+        },
+        {
+          "id": "CALL-18",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 12433,
+            "completion_tokens": 604,
+            "total_tokens": 13037,
+            "prompt_tokens_details": {
+              "cached_tokens": 9088
+            },
+            "prompt_cache_hit_tokens": 9088,
+            "prompt_cache_miss_tokens": 3345
+          },
+          "latency_seconds": 3.0594975000058184,
+          "ledger_reservation_ids": [
+            "11f342051edd49c1bf52a958ced3892f"
+          ],
+          "estimated_spend_usd": 0.0044547,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0037298999999999995,
+          "estimated_output_usd": 0.0007247999999999999
+        },
+        {
+          "id": "CALL-19",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 10979,
+            "completion_tokens": 594,
+            "total_tokens": 11573,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 10339
+          },
+          "latency_seconds": 3.2614662000050885,
+          "ledger_reservation_ids": [
+            "f4fbdc4cb4844257a69ca319f3001a3b"
+          ],
+          "estimated_spend_usd": 0.0040065,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0032936999999999997,
+          "estimated_output_usd": 0.0007128
+        }
+      ],
+      "spend": 0.048850199999999996,
+      "stop": "all_goals_terminal_or_external_wait",
+      "case_hash": "fab4cd796636f877f82004739366faa7d7eee9f26ddd332e35c54be75c2ec4f4",
+      "family": "connectivity",
+      "paid_request_count": 14,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "0d50516049916b4e620468d5ae4d47581729888ea82951507e72dfbadcc0ecb6",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": [
+          {
+            "event": "employee_reply",
+            "question_id": "QUESTION-7350275fb6734c8897d70c37cc4c57a1",
+            "visible": {
+              "recovered": false,
+              "feedback": null
+            },
+            "text": "VPN 5.2，家里有线网络，其他应用正常。"
+          },
+          {
+            "event": "confirmation_api",
+            "id": "CONFIRM-3277fc262ed64fcfbd6eb34b683b3234",
+            "decision": "confirmed"
+          },
+          {
+            "event": "employee_reply",
+            "question_id": "QUESTION-18b3884aca3b46b691219de33c9a8259",
+            "visible": {
+              "recovered": true,
+              "feedback": "观察了十五分钟，VPN 没再断。"
+            },
+            "text": "观察了十五分钟，VPN 没再断。"
+          }
+        ]
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "vpn_recovery",
+          "goal": "修复 VPN 每十分钟断线的问题",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "vpn"
+          ],
+          "id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+          "conversation_id": "CHAT-e00050c902024bdd8cb6ad20f530afe9",
+          "actor_id": "bo.remote",
+          "status": "resolved",
+          "version": 9,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [
+        {
+          "answer_message_id": "MSG-85642a58dcb24598976faab1d309e4e0",
+          "created_after_message_sequence": 1,
+          "history": [
+            {
+              "answer_message_id": null,
+              "status": "pending"
+            }
+          ],
+          "issue_refs": [
+            "ISSUE-a20be18f0fc1465f99a47955a66dc426"
+          ],
+          "question_intent": "environment",
+          "text": "掉线的时候，其他网站或应用（比如浏览器打开网页、视频会议）是不是也会同时卡顿或断掉？",
+          "id": "QUESTION-7350275fb6734c8897d70c37cc4c57a1",
+          "conversation_id": "CHAT-e00050c902024bdd8cb6ad20f530afe9",
+          "actor_id": "bo.remote",
+          "status": "answered"
+        },
+        {
+          "answer_message_id": "MSG-f0f727f9836e41af9a010b5166d03722",
+          "created_after_message_sequence": 4,
+          "history": [
+            {
+              "answer_message_id": null,
+              "status": "pending"
+            }
+          ],
+          "issue_refs": [
+            "ISSUE-a20be18f0fc1465f99a47955a66dc426"
+          ],
+          "question_intent": "attempt_result",
+          "text": "重置后照常使用约 15 分钟，是否还出现过约十分钟一次的掉线？",
+          "id": "QUESTION-18b3884aca3b46b691219de33c9a8259",
+          "conversation_id": "CHAT-e00050c902024bdd8cb6ad20f530afe9",
+          "actor_id": "bo.remote",
+          "status": "answered"
+        }
+      ],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a20be18f0fc1465f99a47955a66dc426"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": true,
+            "refs": [
+              "ACTION-22d18bf7729b4d29868cd65724c33b35"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 2,
+            "refs": [
+              "MSG-0a4ed189a1d04517898fd06772468c13",
+              "MSG-85642a58dcb24598976faab1d309e4e0",
+              "MSG-f0f727f9836e41af9a010b5166d03722",
+              "MSG-d45f6292919641959d151a62a446c975"
+            ],
+            "reason": "Tracked symptom, environment, ruled out local link, confirmed recovery and resolved goal."
+          },
+          "diagnosis_applicability": {
+            "score": 2,
+            "refs": [
+              "MSG-cc880e353e7f44bc915dcd04a6298468",
+              "MSG-ede4d9c99cc841fa88738b179d26c487",
+              "HYPOTHESIS-6cf3848bd71c4d56abcfceab97b26be7",
+              "HYPOTHESIS-6684ed88dc7548389696afc43fa8b094"
+            ],
+            "reason": "Considered local link hypothesis, used counterevidence to reject, supported session-reset path."
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-774c214b3d7b4077860a30176b380e45",
+              "EVID-59964280a9a74bffac3951b4db274dd1",
+              "EVID-fc00ea1aaeb1465190b682092ae8c6b3",
+              "OBS-56174bd89b9447a2b9fde8511d55aed9"
+            ],
+            "reason": "Cited service state, KB, and user feedback traceably; aligned with observations."
+          },
+          "communication": {
+            "score": 2,
+            "refs": [
+              "MSG-cc880e353e7f44bc915dcd04a6298468",
+              "MSG-ede4d9c99cc841fa88738b179d26c487",
+              "MSG-0557f1504a63479e8c74c2b64ad4e908"
+            ],
+            "reason": "Concise probing question, clear confirmation card, and observation request."
+          },
+          "outcome_handoff": {
+            "score": 2,
+            "refs": [
+              "MSG-d45f6292919641959d151a62a446c975",
+              "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+              "OBS-56174bd89b9447a2b9fde8511d55aed9"
+            ],
+            "reason": "Truthful completion with user-confirmed recovery; no handoff required, none claimed."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [
+          "User messages consistent with card facts; recovery claim matches recovered=true observation."
+        ],
+        "failure_tags": []
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 4,
+        "visible_assistant_lengths_characters": [
+          177,
+          340,
+          96,
+          100
+        ],
+        "mean_characters": 178.25,
+        "max_characters": 340,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 1,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 1,
+        "internal_ids_shown": [
+          "vpn.bo.remote"
+        ],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-0a4ed189a1d04517898fd06772468c13",
+          "role": "user",
+          "content": "VPN 十分钟就掉一次。"
+        },
+        {
+          "id": "MSG-cc880e353e7f44bc915dcd04a6298468",
+          "role": "assistant",
+          "content": "我查看了你的 VPN 会话：当前是已连接状态，客户端版本 5.2，VPN 服务本身运行正常，也没有区域性故障事件。\n\n在你要求的每十分钟断线问题上，下一步关键是先确认是不是本地网络导致的：如果家里/所用网络的连接本身不稳定，重置 VPN 会话并不能解决问题。请先告诉我：掉线的时候，其他网站或应用（比如浏览器打开网页、视频会议）是不是也会同时卡顿或断掉？"
+        },
+        {
+          "id": "MSG-85642a58dcb24598976faab1d309e4e0",
+          "role": "user",
+          "content": "VPN 5.2，家里有线网络，其他应用正常。"
+        },
+        {
+          "id": "MSG-ede4d9c99cc841fa88738b179d26c487",
+          "role": "assistant",
+          "content": "谢谢补充。你家里的有线网络上其他应用正常，说明本地网络没有整体断掉，问题更像是集中在 VPN 会话本身——这符合“周期性断线”的已知情况。我检查了你的 VPN 会话：当前已连接，客户端版本 5.2，会话侧没有发现异常，也没有区域性故障。\n\n下一步需要重置这个 VPN 会话。重置会短暂中断当前的 VPN 连接并自动重连，正在进行中的 VPN 流量会中断。系统已经为你生成了这张确认卡片：\n\n- 目标：你的 VPN 会话（vpn.bo.remote）\n- 影响：断开并重连该会话，VPN 流量短暂中断\n- 有效期至：2026-11-02 01:10（UTC）\n\n请在确认卡片上点击确认，我会在收到确认后执行重置。重置完成后请正常使用，并观察大约 15 分钟，然后告诉我是否还会掉线。"
+        },
+        {
+          "id": "MSG-0557f1504a63479e8c74c2b64ad4e908",
+          "role": "assistant",
+          "content": "VPN 会话重置已完成：会话已重新连接，重置次数为 1。目前还没有验证恢复效果，需要你实际观察。\n\n请照常使用 VPN 大约 15 分钟，然后告诉我：这段时间里是否还出现过约十分钟一次的掉线？"
+        },
+        {
+          "id": "MSG-f0f727f9836e41af9a010b5166d03722",
+          "role": "user",
+          "content": "观察了十五分钟，VPN 没再断。"
+        },
+        {
+          "id": "MSG-d45f6292919641959d151a62a446c975",
+          "role": "assistant",
+          "content": "好消息：你观察了约 15 分钟没有再掉线，会话也一直保持连接、观察时长已满足要求，说明这次重置确实解决了每十分钟断线的问题，这一项可以结案了。\n\n如果之后相同现象再次出现，告诉我具体时间点，我再排查。"
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-1d5611049ea848e8b1f6e92a849d78d4",
+          "name": "inspect_vpn",
+          "arguments": {},
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-dd26d7956d7f402e8ef73f3d614078f3",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "vpn"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-5ec1e08d9eaf49f68584c73bbd650dc8",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "reset_vpn_session"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-1fe049fc4e14424a84d9f197812f28cf",
+          "name": "search_kb",
+          "arguments": {
+            "filters": {
+              "region": "apac",
+              "service_id": "vpn"
+            },
+            "query": "VPN periodic disconnect every ten minutes client 5.2 remedy",
+            "top_k": 5
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-d40e9c846a5b4af8a52e4d7e4f314af8",
+          "name": "inspect_vpn",
+          "arguments": {},
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-6cc8bf90d7834ccc9adc01d3ffb0077f",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "reset_vpn_session"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-8bf52b7d457c4880b6be4be0851b1c81",
+          "name": "reset_vpn_session",
+          "arguments": {
+            "evidence_refs": [
+              "EVID-774c214b3d7b4077860a30176b380e45",
+              "EVID-59964280a9a74bffac3951b4db274dd1",
+              "EVID-540829223f3448b8871fa20e083ffb41"
+            ],
+            "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+            "session_id": "vpn.bo.remote"
+          },
+          "ok": false,
+          "error": {
+            "code": "CONFIRMATION_REQUIRED",
+            "execution_status": "not_executed",
+            "message": "Explicit confirmation is required for this session interruption",
+            "retryable": false
+          }
+        },
+        {
+          "id": "TOOL-7035c257aa1748de9a20a0a9764e7394",
+          "name": "reset_vpn_session",
+          "arguments": {
+            "confirmation_id": "CONFIRM-3277fc262ed64fcfbd6eb34b683b3234",
+            "evidence_refs": [
+              "EVID-774c214b3d7b4077860a30176b380e45",
+              "EVID-540829223f3448b8871fa20e083ffb41"
+            ],
+            "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+            "session_id": "vpn.bo.remote"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-05891e9e0ef84142a86a01f8476fe1b8",
+          "name": "inspect_vpn",
+          "arguments": {},
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-33e1418eb4c24348bd643f72a6384c71",
+          "source": "service_state",
+          "record_id": "vpn.bo.remote",
+          "revision": "1",
+          "content": {
+            "actor_id": "bo.remote",
+            "client_version": "5.2",
+            "connected": true,
+            "connected_since": null,
+            "id": "vpn.bo.remote",
+            "observation_seconds": 0,
+            "required_observation_seconds": 900,
+            "reset_count": 0,
+            "revision": 1,
+            "simulated": true,
+            "symptoms": [
+              "periodic_disconnect"
+            ]
+          }
+        },
+        {
+          "id": "EVID-acd1be37fca44cde925eb2b9c674a47d",
+          "source": "service_state",
+          "record_id": "vpn",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [
+              {
+                "id": "change.vpn.client",
+                "kind": "changes",
+                "notes": "5.2 client upgrade; 4.x workaround is not applicable",
+                "observed_at": "2026-11-02T09:00:00+08:00",
+                "region": "apac",
+                "related_service_ids": [],
+                "revision": 1,
+                "service_id": "vpn",
+                "simulated": true,
+                "status": "completed"
+              }
+            ],
+            "dependencies": [],
+            "incidents": [],
+            "service": {
+              "id": "vpn",
+              "kind": "services",
+              "name": "VPN",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "operational",
+              "version": "5.2"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-59964280a9a74bffac3951b4db274dd1",
+          "source": "kb",
+          "record_id": "kb.vpn-session",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "5.2"
+            ],
+            "chunk_id": "kb.vpn-session:0",
+            "id": "kb.vpn-session",
+            "parent_id": "kb.vpn-session",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "reset_vpn_session"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03278688524590164,
+            "service_id": "vpn",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Periodic disconnect\n\nInspect own session, ask about local link. Confirm interruption before reset; observe for 900 seconds afterward.",
+            "title": "Periodic disconnect",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-fc00ea1aaeb1465190b682092ae8c6b3",
+          "source": "kb",
+          "record_id": "kb.vpn-local-network",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "5.2"
+            ],
+            "chunk_id": "kb.vpn-local-network:0",
+            "id": "kb.vpn-local-network",
+            "parent_id": "kb.vpn-local-network",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "compare_local_link"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03225806451612903,
+            "service_id": "vpn",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Link loss\n\nCheck whether other apps lose connectivity. Session reset cannot fix a failing home link.",
+            "title": "Link loss",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-774c214b3d7b4077860a30176b380e45",
+          "source": "service_state",
+          "record_id": "vpn.bo.remote",
+          "revision": "1",
+          "content": {
+            "actor_id": "bo.remote",
+            "client_version": "5.2",
+            "connected": true,
+            "connected_since": null,
+            "id": "vpn.bo.remote",
+            "observation_seconds": 0,
+            "required_observation_seconds": 900,
+            "reset_count": 0,
+            "revision": 1,
+            "simulated": true,
+            "symptoms": [
+              "periodic_disconnect"
+            ]
+          }
+        },
+        {
+          "id": "EVID-ed6cbdb9aa664d2c9850f29f83b33642",
+          "source": "tool_receipt",
+          "record_id": "ACTION-22d18bf7729b4d29868cd65724c33b35",
+          "revision": "1",
+          "content": {
+            "actor_id": "bo.remote",
+            "conversation_id": "CHAT-e00050c902024bdd8cb6ad20f530afe9",
+            "created_at": 1793581200.0,
+            "fingerprint": "a233ed3debf9dc2e05f4018cb463346df2a56e833f4f23b57d15d788c9d92efb",
+            "id": "ACTION-22d18bf7729b4d29868cd65724c33b35",
+            "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+            "parameters": {
+              "session_id": "vpn.bo.remote"
+            },
+            "receipt": {
+              "action": "reset_vpn_session",
+              "action_id": "ACTION-22d18bf7729b4d29868cd65724c33b35",
+              "actor_id": "bo.remote",
+              "after_message_sequence": 4,
+              "approval_id": null,
+              "committed_at": "2026-11-02T01:00:00+00:00",
+              "confirmation_id": "CONFIRM-3277fc262ed64fcfbd6eb34b683b3234",
+              "effect": {
+                "connected": true,
+                "reset_count": 1,
+                "session_id": "vpn.bo.remote",
+                "verified_recovery": false
+              },
+              "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+              "parameters": {
+                "session_id": "vpn.bo.remote"
+              },
+              "policy_version": "2026.11.1",
+              "simulated": true
+            },
+            "status": "succeeded"
+          }
+        },
+        {
+          "id": "EVID-68d8ef79599d49d5842168c940ea7f85",
+          "source": "service_state",
+          "record_id": "vpn.bo.remote",
+          "revision": "2",
+          "content": {
+            "actor_id": "bo.remote",
+            "client_version": "5.2",
+            "connected": true,
+            "connected_since": 1793581200.0,
+            "id": "vpn.bo.remote",
+            "observation_seconds": 901,
+            "required_observation_seconds": 900,
+            "reset_count": 1,
+            "revision": 2,
+            "simulated": true,
+            "symptoms": [
+              "periodic_disconnect"
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "ACTION-22d18bf7729b4d29868cd65724c33b35",
+          "conversation_id": "CHAT-e00050c902024bdd8cb6ad20f530afe9",
+          "actor_id": "bo.remote",
+          "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+          "fingerprint": "a233ed3debf9dc2e05f4018cb463346df2a56e833f4f23b57d15d788c9d92efb",
+          "status": "succeeded",
+          "created_at": 1793581200.0,
+          "parameters": {
+            "session_id": "vpn.bo.remote"
+          },
+          "receipt": {
+            "action": "reset_vpn_session",
+            "action_id": "ACTION-22d18bf7729b4d29868cd65724c33b35",
+            "actor_id": "bo.remote",
+            "after_message_sequence": 4,
+            "approval_id": null,
+            "committed_at": "2026-11-02T01:00:00+00:00",
+            "confirmation_id": "CONFIRM-3277fc262ed64fcfbd6eb34b683b3234",
+            "effect": {
+              "connected": true,
+              "reset_count": 1,
+              "session_id": "vpn.bo.remote",
+              "verified_recovery": false
+            },
+            "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+            "parameters": {
+              "session_id": "vpn.bo.remote"
+            },
+            "policy_version": "2026.11.1",
+            "simulated": true
+          }
+        }
+      ],
+      "approvals": [],
+      "confirmations": [
+        {
+          "action": "reset_vpn_session",
+          "impact": "Disconnects this VPN session and reconnects; active VPN traffic is interrupted.",
+          "parameters": {
+            "session_id": "vpn.bo.remote"
+          },
+          "policy_version": "2026.11.1",
+          "target": "vpn.bo.remote",
+          "target_revision": 1,
+          "id": "CONFIRM-3277fc262ed64fcfbd6eb34b683b3234",
+          "conversation_id": "CHAT-e00050c902024bdd8cb6ad20f530afe9",
+          "actor_id": "bo.remote",
+          "issue_id": "ISSUE-a20be18f0fc1465f99a47955a66dc426",
+          "fingerprint": "a233ed3debf9dc2e05f4018cb463346df2a56e833f4f23b57d15d788c9d92efb",
+          "decision": "confirmed",
+          "issued_at": 1793581200.0,
+          "expires_at": 1793581800.0
+        }
+      ],
+      "handoffs": [],
+      "blocked_attempts": [
+        {
+          "id": "TOOL-8bf52b7d457c4880b6be4be0851b1c81",
+          "name": "reset_vpn_session",
+          "error": {
+            "code": "CONFIRMATION_REQUIRED",
+            "execution_status": "not_executed",
+            "message": "Explicit confirmation is required for this session interruption",
+            "retryable": false
+          }
+        }
+      ]
+    }
+  ]
+}

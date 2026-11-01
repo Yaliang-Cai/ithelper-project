@@ -1,0 +1,4200 @@
+{
+  "profile": "delivery-iteration-v6-targeted",
+  "source": "new targeted development measurements; historical original evidence remains unchanged",
+  "not_formal_full_benchmark": true,
+  "business_layer": "real Agent/domain/transactional mock effects on isolated synthetic worlds",
+  "manifest": {
+    "id": "CONFIG-1",
+    "eval_version": "eval-v1",
+    "timestamp": "2026-11-01T22:27:54.958238+00:00",
+    "git_head": "505572297668f2b73fc438bab424102185701e85",
+    "hashes": {
+      "app/__init__.py": "41d1c9cdcfa1d5717a4209c6e75b5946594bedc04c14ade06dd92fabaf693b9e",
+      "app/agent.py": "6af0b047f77dd1b8e882bb3b20a4101b039c4cfc3c2acccc6e383f336f46bc9f",
+      "app/auth.py": "d2f41beba199937fa5e4f0be2f710152441f7e3d007fa070630ab4ecb108d078",
+      "app/budget.py": "5b30409d8fcbfcab6b8e67d9676cca044902b8fa2b282d226978b07160cafd6d",
+      "app/catalog.py": "ff0684194e53cc942e671996ee3c5f45b15d7bf08cd4a828ae52d1486561ab56",
+      "app/config.py": "17252a8019da41a030c1cc3ecd1e9d8c3a75744063113b540253f5e31d4c1bca",
+      "app/context.py": "b7c55fe002a356b98191328263b82ca769d0a807097a23d097e2155586967a4e",
+      "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
+      "app/domain.py": "6186b7c906d9cb4951ee0c7f5612f5ed754d850905d1456d663ab02be39f08fe",
+      "app/main.py": "17b5b268326fb004ebaa7f6bf0b3ed319c81f57645dafb79b41c577842ce8ea6",
+      "app/prompts.py": "464afd3e749b23b0206156093e8bfad1aaef697a899571e7fb85469bf845c285",
+      "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
+      "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
+      "app/seed.py": "274a5159406e47e0d6139e365f177dfae502b217eeb2f6c22ee255ea3df8f60b",
+      "app/storage.py": "888e781b3d29fd12d2af6c99ca462a6137371a47f94c75f3bc759783f37611cc",
+      "app/tools.py": "a32c2f030b8ce13366240939e3e605c00936b8d748a9f54620d00d750767514f",
+      "app/worker.py": "3008ea2be94eae5dd6e74475c73d1271469ab069a886847b33a4ab9818f664b3",
+      "data/history.json": "f314e9f2a838cdad86c9a89719b1524d78306006ae376fce30a1641feb7ed8c9",
+      "data/kb/01-account-unlock.md": "4af26aed33938e1952ee8af2ea39def0f00bead03bdba989f943d2ed50fc330c",
+      "data/kb/02-account-security.md": "fd7df642511af0c670845c27f6661d66458d0b65b2c441fb23c0fe35c83b56e5",
+      "data/kb/03-account-browser.md": "c8d00542a89ab50f012c9853cf97e59f549ad95b6247d22d3d411e880639dbaa",
+      "data/kb/04-account-mfa.md": "35344fedb0309354ad0d27739d8e4c1ef20da29e4f70b432380d4549f222a008",
+      "data/kb/05-salesforce-slow.md": "cc494c0515300a4806f69c03fdb9cde07c486c1a13be63415c0b51021e9aaac7",
+      "data/kb/06-salesforce-browser.md": "7610fcf9c0eefdcff22db7873bbae80fc2650803e7c1086111e23b0c814e3027",
+      "data/kb/07-salesforce-old.md": "eefd315b3abd7e655f040b97d028ccc820c4290b419497a2af99482c52f629f7",
+      "data/kb/08-vpn-session.md": "23ab894629bd099c7128476ef42db5dfaec3a580761b75f42f7cc92c945a0edc",
+      "data/kb/09-vpn-local-network.md": "c96189da244efd85e2d8055f3b71ff7ece14bdcb4f4b471eaa49ba89c7609b09",
+      "data/kb/10-vpn-old.md": "156d3cc11b84d40d4489993627d053ecbff26500584600baf56acd23f9792365",
+      "data/kb/11-grafana-sales.md": "5b97dd8d18300ed828e9c8da9dbee0aff320b3b18af7d0f46d3b92b48291dadd",
+      "data/kb/12-grafana-data.md": "c7ba46021aa35e7da0cac9b1b62c64323b5c5cee50c674ce704ad8ac13e408d3",
+      "data/kb/13-grafana-platform.md": "f8d6c6477fc8f7a03513103e08f27be41d5849baf48259195a8ef2e34a680f51",
+      "data/kb/14-snowflake-read.md": "dbf64a92a86df958305685b67d6f22ec84988b2aee6b4003d5876e062e53be9d",
+      "data/kb/15-snowflake-no-write.md": "e8284f8bc5297c1e544fdfebc7f4820696f9bd3b355c48abb415af5505f0cbe5",
+      "data/kb/16-snowflake-verify.md": "ca9db2984e3e0d6e6aef2b33432d16f84214c1dee13e8ba4f150dfa062be4395",
+      "data/kb/17-jenkins-token.md": "a7fcb6455a647bcd9f3c1996cfa735846070fa3bdf983d4f2efe7d0a74b2240f",
+      "data/kb/18-jenkins-escalate.md": "79cf209fd43487aab50778b6d323bb1df910bfd2f094b0edfed4fcf4a5fb2e16",
+      "data/kb/19-tableau-extract.md": "7e9f8c4972d178f1db60eb83b9b6c85af660654fc536be96f11119b99cedaa72",
+      "data/kb/20-tableau-escalate.md": "b292ab09791ff0817c16a539d605380ec63267f995710a3028390438e5350fc8",
+      "data/kb/21-token-rotation.md": "f01182a9fa30cea9468f3aca74f82047235e6d0fb8c10c9b9b93feeec28a0939",
+      "data/kb/22-cross-system.md": "d8d9b22e151081bf90e601ca6b37e74103d68c6be1cd409fe3b7a19858de35a5",
+      "data/world.json": "57fc53a40ed52081baa157cff95f6b1b260d72bbaae73ca3ed4a3d2d2fc4063c",
+      "evals/__init__.py": "5a71cef9221fa035cac51de4a4e28d851beea9b1856826eef4cae817e5ed3fce",
+      "evals/author_holdout.py": "45185ba43892cc9a2bbcc75146477df448532c950de219e4a8b020ed69a5a1d4",
+      "evals/author_replacement.py": "f3d3164e1eb7b1de3dbc1f12079243ffe6daf79b6b75027235a1a0e5268c53dc",
+      "evals/build_cases.py": "d92302161f5f19db4b60445abfefd3ed9eb2a16f2640db2c49eff156c0554a09",
+      "evals/failure_examples.py": "bb81da6df268ddc2e701cc9e9dfade47a690fc0ea65d144afad90b55c0628841",
+      "evals/grader.py": "85fc0d6c325c23f0f3bf3ad462c189f65cc7c97b22e8a7de7a778362321205c8",
+      "evals/report.py": "426a43353e8dfac6e0bfcfd5d8bb436127c15641d901fcce4c5552e1d582265d",
+      "evals/retrieval_supplement.py": "9c75268bdd2a569ff074c56c72b4787192f66003c3934196562e91d2fa2740d9",
+      "evals/runner.py": "a210b17ba5d4d29a09738e26a4d546f6ff3156a05b00a52c12906eec63452999",
+      "evals/simulators.py": "4f1fce4e671eb3d583a769881253cf301917100a70bbea1d7979332d3d375151"
+    },
+    "request_model": "deepseek-flash",
+    "thinking": false,
+    "sampling": "provider default; no deterministic guarantee",
+    "context_targets_utf8_bytes": {
+      "interpretation": 10000,
+      "decision": 12000
+    },
+    "max_model_calls_per_event": 10,
+    "max_tools_per_event": 12,
+    "max_event_seconds": 120,
+    "ledger_path": "D:\\药明-test\\runtime\\usage.sqlite",
+    "prompt_version": "helpdesk-2026-11-02-v6-employee-prose",
+    "budget_before": {
+      "accounting_overrun": false,
+      "spent_usd": 2.634129369,
+      "reserved_usd": 0.0,
+      "limit_usd": 3.0,
+      "requests": 759
+    },
+    "source": "delivery_iteration_targeted_development_retest",
+    "batch": "delivery-iteration-v6-targeted",
+    "evaluation": {
+      "user_mode": "rule_user",
+      "max_events": 4,
+      "lexical_requested": false,
+      "grader_enabled": true,
+      "task_request_reservation_ceiling_usd": 2.85,
+      "case_ids": [
+        "D01",
+        "D05",
+        "D09",
+        "D13",
+        "D17",
+        "H01b",
+        "S01"
+      ],
+      "H01b_label": "previously exposed replacement reused as development retest; not fresh holdout"
+    }
+  },
+  "user_simulation": "rule_user; fact-card validity is a program check, not semantic proof",
+  "grader": "official deepseek-flash, separate context; same-model AI assessment, not independent human review",
+  "diagnostics_note": "Counts and visible lengths are diagnostics only; no automatic naturalness score. Synthetic account/session keys and standalone employee-directory keys counted separately from record IDs; necessary exact resource names excluded. All shown assistant messages are raw persisted content, including backend-appended reviewed KB guidance.",
+  "runtime_frozen_before_paid": true,
+  "budget_before": {
+    "accounting_overrun": false,
+    "spent_usd": 2.634129369,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 759
+  },
+  "budget_after": {
+    "accounting_overrun": false,
+    "spent_usd": 2.807842572,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 809
+  },
+  "attributed_cost_usd": 0.173713203,
+  "new_ledger_requests": 50,
+  "limitations": [
+    "One measurement per selected case; no final 30-case success claim.",
+    "Previously exposed H01b is a development retest, not fresh holdout.",
+    "No runtime changes or favorable reruns during batch.",
+    "Historical smoke comparison uses a different employee input and is descriptive, not a controlled improvement estimate."
+  ],
+  "results": [
+    {
+      "case": "D01",
+      "valid": true,
+      "goal_pass": true,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-1",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2350,
+            "completion_tokens": 154,
+            "total_tokens": 2504,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 2350
+          },
+          "latency_seconds": 1.7632872999965912,
+          "ledger_reservation_ids": [
+            "0b6f77f8e68e4a43ba44148b87d1d9ff"
+          ],
+          "estimated_spend_usd": 0.0008898,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.000705,
+          "estimated_output_usd": 0.0001848
+        },
+        {
+          "id": "CALL-2",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 7494,
+            "completion_tokens": 80,
+            "total_tokens": 7574,
+            "prompt_tokens_details": {
+              "cached_tokens": 1408
+            },
+            "prompt_cache_hit_tokens": 1408,
+            "prompt_cache_miss_tokens": 6086
+          },
+          "latency_seconds": 1.8845244999974966,
+          "ledger_reservation_ids": [
+            "91da31cf519b41c58fc28a0611aee6bc"
+          ],
+          "estimated_spend_usd": 0.0023442,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0022481999999999997,
+          "estimated_output_usd": 9.6e-05
+        },
+        {
+          "id": "CALL-3",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 9001,
+            "completion_tokens": 41,
+            "total_tokens": 9042,
+            "prompt_tokens_details": {
+              "cached_tokens": 7040
+            },
+            "prompt_cache_hit_tokens": 7040,
+            "prompt_cache_miss_tokens": 1961
+          },
+          "latency_seconds": 1.3011805999994976,
+          "ledger_reservation_ids": [
+            "b3922496e9a84442aa0c8abf516cd595"
+          ],
+          "estimated_spend_usd": 0.0027495,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0027002999999999997,
+          "estimated_output_usd": 4.9199999999999997e-05
+        },
+        {
+          "id": "CALL-4",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 12303,
+            "completion_tokens": 164,
+            "total_tokens": 12467,
+            "prompt_tokens_details": {
+              "cached_tokens": 7040
+            },
+            "prompt_cache_hit_tokens": 7040,
+            "prompt_cache_miss_tokens": 5263
+          },
+          "latency_seconds": 1.657092499997816,
+          "ledger_reservation_ids": [
+            "9c660f8674784ba68c677a2e8505a972"
+          ],
+          "estimated_spend_usd": 0.0038877,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0036908999999999996,
+          "estimated_output_usd": 0.00019679999999999999
+        },
+        {
+          "id": "CALL-5",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14585,
+            "completion_tokens": 509,
+            "total_tokens": 15094,
+            "prompt_tokens_details": {
+              "cached_tokens": 6528
+            },
+            "prompt_cache_hit_tokens": 6528,
+            "prompt_cache_miss_tokens": 8057
+          },
+          "latency_seconds": 2.618688300004578,
+          "ledger_reservation_ids": [
+            "a060c9e0686a483a8090e3f6aa5428cf"
+          ],
+          "estimated_spend_usd": 0.0049863,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0043755,
+          "estimated_output_usd": 0.0006108
+        },
+        {
+          "id": "CALL-6",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 5957,
+            "completion_tokens": 135,
+            "total_tokens": 6092,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 4165
+          },
+          "latency_seconds": 1.2553784999981872,
+          "ledger_reservation_ids": [
+            "4b562652de1d4da68afd20df837f46aa"
+          ],
+          "estimated_spend_usd": 0.0019491,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0017871,
+          "estimated_output_usd": 0.000162
+        },
+        {
+          "id": "CALL-7",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 11055,
+            "completion_tokens": 83,
+            "total_tokens": 11138,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 4655
+          },
+          "latency_seconds": 1.0342405999981565,
+          "ledger_reservation_ids": [
+            "4aedc2a4cf6644868ab91c49e08153b2"
+          ],
+          "estimated_spend_usd": 0.0034161,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0033165,
+          "estimated_output_usd": 9.96e-05
+        },
+        {
+          "id": "CALL-8",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 12329,
+            "completion_tokens": 601,
+            "total_tokens": 12930,
+            "prompt_tokens_details": {
+              "cached_tokens": 7808
+            },
+            "prompt_cache_hit_tokens": 7808,
+            "prompt_cache_miss_tokens": 4521
+          },
+          "latency_seconds": 2.9525473000030615,
+          "ledger_reservation_ids": [
+            "1ca241f0636e4f0fa11beb16eeebe93e"
+          ],
+          "estimated_spend_usd": 0.0044199,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0036986999999999996,
+          "estimated_output_usd": 0.0007212
+        },
+        {
+          "id": "CALL-9",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 6900,
+            "completion_tokens": 619,
+            "total_tokens": 7519,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 6260
+          },
+          "latency_seconds": 3.086048799996206,
+          "ledger_reservation_ids": [
+            "f17d0697f03243b9888c2369143d4bd2"
+          ],
+          "estimated_spend_usd": 0.002812801,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.00207,
+          "estimated_output_usd": 0.0007428
+        }
+      ],
+      "spend": 0.027455401,
+      "stop": "all_goals_terminal_or_external_wait",
+      "case_hash": "f216c8fd18683fa2dd908198fb3bae07af27cda054f113853aafef51f473fc41",
+      "family": "account",
+      "paid_request_count": 9,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "1fe5af48d3baf5bab898cf5f67d227246c949b5d6f92a80d878f2e0e63044906",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": [
+          {
+            "event": "employee_reply",
+            "question_id": "QUESTION-2341df3ce5074034ae6112ecbedc89b9",
+            "visible": {
+              "recovered": true,
+              "feedback": "Okta 现在能登录了。"
+            },
+            "text": "Okta 现在能登录了。"
+          }
+        ]
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "login_recovery",
+          "goal": "恢复 Okta 登录访问",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "okta"
+          ],
+          "id": "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+          "conversation_id": "CHAT-3a283529d56b4f2484ed96f515acea8c",
+          "actor_id": "alice.sales",
+          "status": "resolved",
+          "version": 6,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [
+        {
+          "answer_message_id": "MSG-71a6d1e419c24684a71b915152cff264",
+          "created_after_message_sequence": 1,
+          "history": [
+            {
+              "answer_message_id": null,
+              "status": "pending"
+            }
+          ],
+          "issue_refs": [
+            "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f"
+          ],
+          "question_intent": "attempt_result",
+          "text": "解锁后，你现在能正常登录 Okta 了吗？如果仍然不行，请说明出现的具体提示或错误。",
+          "id": "QUESTION-2341df3ce5074034ae6112ecbedc89b9",
+          "conversation_id": "CHAT-3a283529d56b4f2484ed96f515acea8c",
+          "actor_id": "alice.sales",
+          "status": "answered"
+        }
+      ],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-29f910e321984e40b2c2fff847ea19c6"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 2,
+            "refs": [
+              "MSG-05a2576185c343a0a80b1aca232bcea5",
+              "ACTION-29f910e321984e40b2c2fff847ea19c6",
+              "MSG-71a6d1e419c24684a71b915152cff264",
+              "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f"
+            ],
+            "reason": "Captured Okta lock symptom, unlocked account, verified user recovery, resolved issue correctly."
+          },
+          "diagnosis_applicability": {
+            "score": 2,
+            "refs": [
+              "HYPOTHESIS-de3fa66dab1c4be0a1c28cd3511e5ade",
+              "EVID-acc03bfd435c414d9d52ecd6834c0cfd",
+              "EVID-d133b749314045e4bc176b94d2a0ef87",
+              "OBS-2e9ee934ad5548e3b5a3159c521d8d61"
+            ],
+            "reason": "Lock hypothesis supported by directory lock and service operational state; recovery confirmed."
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-acc03bfd435c414d9d52ecd6834c0cfd",
+              "EVID-d133b749314045e4bc176b94d2a0ef87",
+              "EVID-0dcb5cbafdf94e909c55ac837973aaf9",
+              "EVID-0337ca8e7ad843e991bd1f9b6a28480a",
+              "OBS-2e9ee934ad5548e3b5a3159c521d8d61"
+            ],
+            "reason": "Traceable directory, service, receipt, and user-report evidence used consistently."
+          },
+          "communication": {
+            "score": 2,
+            "refs": [
+              "MSG-63f71fffa5da477790b11d65d857b836",
+              "MSG-6f22414b6c9d4bf99b7f5d50795b5e76"
+            ],
+            "reason": "Concise, asks user to verify login and handles report cleanly."
+          },
+          "outcome_handoff": {
+            "score": 2,
+            "refs": [
+              "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+              "MSG-6f22414b6c9d4bf99b7f5d50795b5e76",
+              "ACTION-29f910e321984e40b2c2fff847ea19c6"
+            ],
+            "reason": "Truthfully reports completed unlock, verified recovery, and resolved issue; no handoff required."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [
+          "User reported recovery consistent with observable locked=false and resolved issue."
+        ],
+        "failure_tags": []
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 2,
+        "visible_assistant_lengths_characters": [
+          94,
+          94
+        ],
+        "mean_characters": 94,
+        "max_characters": 94,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 1,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 1,
+        "internal_ids_shown": [
+          "okta.alice.sales"
+        ],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-05a2576185c343a0a80b1aca232bcea5",
+          "role": "user",
+          "content": "我又登不上 Okta 了。"
+        },
+        {
+          "id": "MSG-63f71fffa5da477790b11d65d857b836",
+          "role": "assistant",
+          "content": "我已处理好：你的 Okta 账号（okta.alice.sales）之前处于锁定状态，现已解锁，Okta 服务本身运行正常、没有区域性故障。请你现在正常登录一次 Okta，然后告诉我结果。"
+        },
+        {
+          "id": "MSG-71a6d1e419c24684a71b915152cff264",
+          "role": "user",
+          "content": "Okta 现在能登录了。"
+        },
+        {
+          "id": "MSG-6f22414b6c9d4bf99b7f5d50795b5e76",
+          "role": "assistant",
+          "content": "好的，已确认：你的 Okta 账号已解锁、状态正常，Okta 服务也没有区域性故障，你的登录恢复报告与实际情况一致。Okta 登录问题按已恢复处理；如果之后又出现异常，随时告诉我具体提示。"
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-036f178767134e93aa61c717ff8b8745",
+          "name": "inspect_account",
+          "arguments": {
+            "service_id": "okta"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-8677333a37d14652bfa75b01b98be1c2",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "okta"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-30bbcb13fbd04679b87d749a31ec19f9",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "unlock_account"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-344733a59fe54ae3aed375512cd14fe0",
+          "name": "unlock_account",
+          "arguments": {
+            "evidence_refs": [
+              "EVID-acc03bfd435c414d9d52ecd6834c0cfd",
+              "EVID-d133b749314045e4bc176b94d2a0ef87",
+              "EVID-b1042c51a212445f9434b50f665c3449"
+            ],
+            "issue_id": "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+            "service_id": "okta"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-0759ddb8e66d486c986c62c9796edb0f",
+          "name": "inspect_account",
+          "arguments": {
+            "service_id": "okta"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-efe28a7ee7434a038c8abdfd9712063d",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "okta"
+          },
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-acc03bfd435c414d9d52ecd6834c0cfd",
+          "source": "directory",
+          "record_id": "okta.alice.sales",
+          "revision": "1",
+          "content": {
+            "account_type": "ordinary",
+            "actor_id": "alice.sales",
+            "disabled_reason": null,
+            "id": "okta.alice.sales",
+            "locked": true,
+            "revision": 1,
+            "service_id": "okta",
+            "simulated": true,
+            "unlock_count": 0
+          }
+        },
+        {
+          "id": "EVID-d133b749314045e4bc176b94d2a0ef87",
+          "source": "service_state",
+          "record_id": "okta",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [],
+            "dependencies": [],
+            "incidents": [],
+            "service": {
+              "id": "okta",
+              "kind": "services",
+              "name": "Okta",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "operational",
+              "version": "2026.11"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-0dcb5cbafdf94e909c55ac837973aaf9",
+          "source": "tool_receipt",
+          "record_id": "ACTION-29f910e321984e40b2c2fff847ea19c6",
+          "revision": "1",
+          "content": {
+            "actor_id": "alice.sales",
+            "conversation_id": "CHAT-3a283529d56b4f2484ed96f515acea8c",
+            "created_at": 1793581200.0,
+            "fingerprint": "caf4b0a1f5951473faa3812473dfc2a09f162b84f65ed9f34073b491fc935267",
+            "id": "ACTION-29f910e321984e40b2c2fff847ea19c6",
+            "issue_id": "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+            "parameters": {
+              "account_id": "okta.alice.sales",
+              "service_id": "okta"
+            },
+            "receipt": {
+              "action": "unlock_account",
+              "action_id": "ACTION-29f910e321984e40b2c2fff847ea19c6",
+              "actor_id": "alice.sales",
+              "after_message_sequence": 1,
+              "approval_id": null,
+              "committed_at": "2026-11-02T01:00:00+00:00",
+              "confirmation_id": null,
+              "effect": {
+                "account_id": "okta.alice.sales",
+                "locked": false
+              },
+              "issue_id": "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+              "parameters": {
+                "account_id": "okta.alice.sales",
+                "service_id": "okta"
+              },
+              "policy_version": "2026.11.1",
+              "simulated": true
+            },
+            "status": "succeeded"
+          }
+        },
+        {
+          "id": "EVID-0337ca8e7ad843e991bd1f9b6a28480a",
+          "source": "directory",
+          "record_id": "okta.alice.sales",
+          "revision": "2",
+          "content": {
+            "account_type": "ordinary",
+            "actor_id": "alice.sales",
+            "disabled_reason": null,
+            "id": "okta.alice.sales",
+            "locked": false,
+            "revision": 2,
+            "service_id": "okta",
+            "simulated": true,
+            "unlock_count": 1
+          }
+        },
+        {
+          "id": "EVID-2a3a80b01b404c86a634c5f50c29803e",
+          "source": "service_state",
+          "record_id": "okta",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [],
+            "dependencies": [],
+            "incidents": [],
+            "service": {
+              "id": "okta",
+              "kind": "services",
+              "name": "Okta",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "operational",
+              "version": "2026.11"
+            },
+            "simulated": true
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "ACTION-29f910e321984e40b2c2fff847ea19c6",
+          "conversation_id": "CHAT-3a283529d56b4f2484ed96f515acea8c",
+          "actor_id": "alice.sales",
+          "issue_id": "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+          "fingerprint": "caf4b0a1f5951473faa3812473dfc2a09f162b84f65ed9f34073b491fc935267",
+          "status": "succeeded",
+          "created_at": 1793581200.0,
+          "parameters": {
+            "account_id": "okta.alice.sales",
+            "service_id": "okta"
+          },
+          "receipt": {
+            "action": "unlock_account",
+            "action_id": "ACTION-29f910e321984e40b2c2fff847ea19c6",
+            "actor_id": "alice.sales",
+            "after_message_sequence": 1,
+            "approval_id": null,
+            "committed_at": "2026-11-02T01:00:00+00:00",
+            "confirmation_id": null,
+            "effect": {
+              "account_id": "okta.alice.sales",
+              "locked": false
+            },
+            "issue_id": "ISSUE-a590f9f4ea8c401f91c3bc21e2eb535f",
+            "parameters": {
+              "account_id": "okta.alice.sales",
+              "service_id": "okta"
+            },
+            "policy_version": "2026.11.1",
+            "simulated": true
+          }
+        }
+      ],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    },
+    {
+      "case": "D05",
+      "valid": true,
+      "goal_pass": false,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-10",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2339,
+            "completion_tokens": 148,
+            "total_tokens": 2487,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 547
+          },
+          "latency_seconds": 1.5220423999999184,
+          "ledger_reservation_ids": [
+            "6995db2a29d6433d86beee18e608b326"
+          ],
+          "estimated_spend_usd": 0.0008793,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007017,
+          "estimated_output_usd": 0.0001776
+        },
+        {
+          "id": "CALL-11",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 7485,
+            "completion_tokens": 85,
+            "total_tokens": 7570,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 1085
+          },
+          "latency_seconds": 1.4936221999960253,
+          "ledger_reservation_ids": [
+            "9862a1554e8743dfa60b7e8d5060aa11"
+          ],
+          "estimated_spend_usd": 0.0023475,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0022455,
+          "estimated_output_usd": 0.000102
+        },
+        {
+          "id": "CALL-12",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 12293,
+            "completion_tokens": 75,
+            "total_tokens": 12368,
+            "prompt_tokens_details": {
+              "cached_tokens": 7040
+            },
+            "prompt_cache_hit_tokens": 7040,
+            "prompt_cache_miss_tokens": 5253
+          },
+          "latency_seconds": 1.3205623000030755,
+          "ledger_reservation_ids": [
+            "2a678fd8f5ce48debd1c48d7d2a48132"
+          ],
+          "estimated_spend_usd": 0.0037779,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0036878999999999996,
+          "estimated_output_usd": 9e-05
+        },
+        {
+          "id": "CALL-13",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14389,
+            "completion_tokens": 502,
+            "total_tokens": 14891,
+            "prompt_tokens_details": {
+              "cached_tokens": 7040
+            },
+            "prompt_cache_hit_tokens": 7040,
+            "prompt_cache_miss_tokens": 7349
+          },
+          "latency_seconds": 3.0878847999993013,
+          "ledger_reservation_ids": [
+            "3c4413824fb84acf9deddfacb4f9b456"
+          ],
+          "estimated_spend_usd": 0.0049191,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0043167,
+          "estimated_output_usd": 0.0006024
+        },
+        {
+          "id": "CALL-14",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 5440,
+            "completion_tokens": 551,
+            "total_tokens": 5991,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 4800
+          },
+          "latency_seconds": 3.3663197999994736,
+          "ledger_reservation_ids": [
+            "09e0a04c577f495b83a41f3ce03cd638"
+          ],
+          "estimated_spend_usd": 0.0022932,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.001632,
+          "estimated_output_usd": 0.0006611999999999999
+        }
+      ],
+      "spend": 0.014217,
+      "stop": "no_supported_next_step",
+      "case_hash": "b853f39abc9d4b49aed193ea0307f43e3a5d6f8e25756854840491d7f5d19c4f",
+      "family": "application",
+      "paid_request_count": 5,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "8f7558e24393cd1ac6c9d1a9a442f599801c873df4688886d1f917af18bb6f60",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": []
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "application_recovery",
+          "goal": "恢复 Salesforce 的正常访问速度",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "salesforce"
+          ],
+          "id": "ISSUE-daf13ce57f1f4fe98e4c6d2c3ab341f2",
+          "conversation_id": "CHAT-ff633452cfc04ac8a6e192ced7376c6a",
+          "actor_id": "alice.sales",
+          "status": "verifying",
+          "version": 3,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-daf13ce57f1f4fe98e4c6d2c3ab341f2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 1,
+            "refs": [
+              "MSG-c67e638e941248859f69cb7821210f44",
+              "MSG-167185e39b0940f2b818c69b58683c5a",
+              "ISSUE-daf13ce57f1f4fe98e4c6d2c3ab341f2"
+            ],
+            "reason": "识别了慢速症状与可能的事故关联，但未收集用户卡中的芝加哥范围/08:30 开始等关键事实，也未推进至 waiting_external。"
+          },
+          "diagnosis_applicability": {
+            "score": 2,
+            "refs": [
+              "EVID-bb9645a3bfbb4c59aeff5c6bd26ef60b",
+              "EVID-ce921a8660814b35b044668d21e40fc9",
+              "HYPOTHESIS-3dc60ca7405e4dcf9d3823618d83497b"
+            ],
+            "reason": "引用活跃 us-central 事故与 KB 区域/症状比对，并提示无关区域作为反证，推理贴合证据。"
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-bb9645a3bfbb4c59aeff5c6bd26ef60b",
+              "EVID-ce921a8660814b35b044668d21e40fc9",
+              "MSG-167185e39b0940f2b818c69b58683c5a"
+            ],
+            "reason": "引用了服务状态事故（区域/开始时间/症状）和已审核 KB 步骤，来源可追溯且适用。"
+          },
+          "communication": {
+            "score": 1,
+            "refs": [
+              "MSG-167185e39b0940f2b818c69b58683c5a"
+            ],
+            "reason": "说明清晰并请用户反馈，但未确认用户已提供的芝加哥/时间等事实，也未请求补齐以确认等待外部。"
+          },
+          "outcome_handoff": {
+            "score": 0,
+            "refs": [
+              "ISSUE-daf13ce57f1f4fe98e4c6d2c3ab341f2",
+              "MSG-167185e39b0940f2b818c69b58683c5a"
+            ],
+            "reason": "问题状态为 verifying 而非目标 waiting_external，无保存交接，也未说明外部等待与后续归属。"
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [
+          "无模拟用户消息，未观察到违反用户卡事实或虚假恢复声明。"
+        ],
+        "failure_tags": [
+          "incomplete_outcome",
+          "pending_clarification"
+        ]
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 1,
+        "visible_assistant_lengths_characters": [
+          273
+        ],
+        "mean_characters": 273,
+        "max_characters": 273,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 0,
+        "internal_ids_shown": [],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-c67e638e941248859f69cb7821210f44",
+          "role": "user",
+          "content": "Salesforce 慢得不行。"
+        },
+        {
+          "id": "MSG-167185e39b0940f2b818c69b58683c5a",
+          "role": "assistant",
+          "content": "Salesforce 目前确实处于降级状态，us-central（你所在的芝加哥区域）有一个正在进行的故障，症状正是页面加载缓慢，开始于今天约 08:25。所以这很可能是服务端问题，不是你本地环境的问题。\n\n建议先按已审核的排查步骤对照一下区域和症状，确认是否属于这个故障范围。如果比对后仍然很慢，请告诉我结果，我再继续处理。\n\n# Slow pages\n\nCompare region, onset and symptoms with current incident; unrelated region is counterevidence."
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-0e6482accc1842b798ad009f4c9c3437",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "salesforce"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-898843ef720a4ef8bae8f98cba150e11",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "request_approval"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-23e984b02e7a444ca85a97a9283da649",
+          "name": "search_kb",
+          "arguments": {
+            "filters": {
+              "region": "us-central",
+              "service_id": "salesforce"
+            },
+            "query": "Salesforce slow page loads performance degraded"
+          },
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-bb9645a3bfbb4c59aeff5c6bd26ef60b",
+          "source": "service_state",
+          "record_id": "salesforce",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [],
+            "dependencies": [],
+            "incidents": [
+              {
+                "id": "incident.sf.central",
+                "kind": "incidents",
+                "observed_at": "2026-11-02T09:00:00+08:00",
+                "region": "us-central",
+                "revision": 2,
+                "service_id": "salesforce",
+                "simulated": true,
+                "started_at": "2026-11-02T08:25:00+08:00",
+                "status": "active",
+                "symptoms": [
+                  "slow page loads"
+                ]
+              },
+              {
+                "id": "incident.sf.eu.old",
+                "kind": "incidents",
+                "observed_at": "2026-10-23T12:00:00+08:00",
+                "region": "eu-west",
+                "revision": 3,
+                "service_id": "salesforce",
+                "simulated": true,
+                "started_at": "2026-10-23T10:00:00+08:00",
+                "status": "resolved",
+                "symptoms": [
+                  "login failure"
+                ]
+              }
+            ],
+            "service": {
+              "id": "salesforce",
+              "kind": "services",
+              "name": "Salesforce",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "degraded",
+              "version": "2026.11"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-ce921a8660814b35b044668d21e40fc9",
+          "source": "kb",
+          "record_id": "kb.salesforce-slow",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.salesforce-slow:0",
+            "id": "kb.salesforce-slow",
+            "parent_id": "kb.salesforce-slow",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "check_incident_scope"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03278688524590164,
+            "service_id": "salesforce",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Slow pages\n\nCompare region, onset and symptoms with current incident; unrelated region is counterevidence.",
+            "title": "Slow pages",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-478986756b29435bb9b7e92a33177530",
+          "source": "kb",
+          "record_id": "kb.salesforce-browser",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.salesforce-browser:0",
+            "id": "kb.salesforce-browser",
+            "parent_id": "kb.salesforce-browser",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "browser_private_window"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03225806451612903,
+            "service_id": "salesforce",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Browser slowness\n\nCompare private window and another permitted browser. Do not change production settings.",
+            "title": "Browser slowness",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        }
+      ],
+      "actions": [],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    },
+    {
+      "case": "D09",
+      "valid": false,
+      "goal_pass": false,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-15",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2336,
+            "completion_tokens": 173,
+            "total_tokens": 2509,
+            "prompt_tokens_details": {
+              "cached_tokens": 1536
+            },
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 800
+          },
+          "latency_seconds": 1.657117599999765,
+          "ledger_reservation_ids": [
+            "2222e6bc1b7b486b87a54c64b4af1f36"
+          ],
+          "estimated_spend_usd": 0.0009084,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007007999999999999,
+          "estimated_output_usd": 0.0002076
+        },
+        {
+          "id": "CALL-16",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 7470,
+            "completion_tokens": 63,
+            "total_tokens": 7533,
+            "prompt_tokens_details": {
+              "cached_tokens": 6144
+            },
+            "prompt_cache_hit_tokens": 6144,
+            "prompt_cache_miss_tokens": 1326
+          },
+          "latency_seconds": 1.318683700003021,
+          "ledger_reservation_ids": [
+            "9b03f55ffe2b45978dc623938d43c138"
+          ],
+          "estimated_spend_usd": 0.0023166,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.002241,
+          "estimated_output_usd": 7.56e-05
+        },
+        {
+          "id": "CALL-17",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 9325,
+            "completion_tokens": 128,
+            "total_tokens": 9453,
+            "prompt_tokens_details": {
+              "cached_tokens": 6912
+            },
+            "prompt_cache_hit_tokens": 6912,
+            "prompt_cache_miss_tokens": 2413
+          },
+          "latency_seconds": 1.192549899998994,
+          "ledger_reservation_ids": [
+            "8917bb46bfbc4fa1a4a12accb220e9eb"
+          ],
+          "estimated_spend_usd": 0.0029511,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0027975,
+          "estimated_output_usd": 0.0001536
+        },
+        {
+          "id": "CALL-18",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14705,
+            "completion_tokens": 704,
+            "total_tokens": 15409,
+            "prompt_tokens_details": {
+              "cached_tokens": 7040
+            },
+            "prompt_cache_hit_tokens": 7040,
+            "prompt_cache_miss_tokens": 7665
+          },
+          "latency_seconds": 3.756431400004658,
+          "ledger_reservation_ids": [
+            "05c49175e4d9409ca017924f599f419e"
+          ],
+          "estimated_spend_usd": 0.0052563,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0044115,
+          "estimated_output_usd": 0.0008447999999999999
+        },
+        {
+          "id": "CALL-19",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 5595,
+            "completion_tokens": 211,
+            "total_tokens": 5806,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 3803
+          },
+          "latency_seconds": 1.5597092999960296,
+          "ledger_reservation_ids": [
+            "a5441d060ce24cc5a0fe587533d774e2"
+          ],
+          "estimated_spend_usd": 0.0019317,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0016785,
+          "estimated_output_usd": 0.0002532
+        },
+        {
+          "id": "CALL-20",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 10999,
+            "completion_tokens": 56,
+            "total_tokens": 11055,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 4599
+          },
+          "latency_seconds": 1.238990099998773,
+          "ledger_reservation_ids": [
+            "fc35509f32854c97b5c99aaead13cce2"
+          ],
+          "estimated_spend_usd": 0.0033669,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0032997,
+          "estimated_output_usd": 6.720000000000001e-05
+        },
+        {
+          "id": "CALL-21",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 13554,
+            "completion_tokens": 685,
+            "total_tokens": 14239,
+            "prompt_tokens_details": {
+              "cached_tokens": 7680
+            },
+            "prompt_cache_hit_tokens": 7680,
+            "prompt_cache_miss_tokens": 5874
+          },
+          "latency_seconds": 3.3351066000032006,
+          "ledger_reservation_ids": [
+            "6ebe3cd981824b0082bb0adafe315b17"
+          ],
+          "estimated_spend_usd": 0.0048882,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0040662,
+          "estimated_output_usd": 0.000822
+        },
+        {
+          "id": "CALL-22",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 7854,
+            "completion_tokens": 593,
+            "total_tokens": 8447,
+            "prompt_tokens_details": {
+              "cached_tokens": 512
+            },
+            "prompt_cache_hit_tokens": 512,
+            "prompt_cache_miss_tokens": 7342
+          },
+          "latency_seconds": 3.685476500002551,
+          "ledger_reservation_ids": [
+            "17b86810d51546158c3ea6141458405c"
+          ],
+          "estimated_spend_usd": 0.0030678,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0023561999999999997,
+          "estimated_output_usd": 0.0007116000000000001
+        }
+      ],
+      "spend": 0.024687,
+      "stop": "simulator_invalid",
+      "case_hash": "fab4cd796636f877f82004739366faa7d7eee9f26ddd332e35c54be75c2ec4f4",
+      "family": "connectivity",
+      "paid_request_count": 8,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "c9c32650a9d3654c6d482864ef341e17d708c6f9386139589892535381c66843",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": false,
+        "reasons": [
+          "unsupported question or visible question/intent mismatch"
+        ],
+        "steps": [
+          {
+            "event": "employee_reply",
+            "question_id": "QUESTION-b0f1569566a14326ab981425424ec6ad",
+            "visible": {
+              "recovered": false,
+              "feedback": null
+            },
+            "text": "VPN 5.2，家里有线网络，其他应用正常。"
+          }
+        ]
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "vpn_recovery",
+          "goal": "VPN 每十分钟断开一次，无法稳定使用",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "vpn"
+          ],
+          "id": "ISSUE-38f3903600904b499dde346881e10cd6",
+          "conversation_id": "CHAT-3af2c9625dc6426d8da8031230284154",
+          "actor_id": "bo.remote",
+          "status": "waiting_user",
+          "version": 5,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [
+        {
+          "answer_message_id": "MSG-e45b0c1efc0449cdb9bca0b86ce43209",
+          "created_after_message_sequence": 1,
+          "history": [
+            {
+              "answer_message_id": null,
+              "status": "pending"
+            }
+          ],
+          "issue_refs": [
+            "ISSUE-38f3903600904b499dde346881e10cd6"
+          ],
+          "question_intent": "environment",
+          "text": "断开的时候，你电脑上其他不经过 VPN 的应用或网站是否也同时断网？（还是只有 VPN 掉线、其他上网正常？）",
+          "id": "QUESTION-b0f1569566a14326ab981425424ec6ad",
+          "conversation_id": "CHAT-3af2c9625dc6426d8da8031230284154",
+          "actor_id": "bo.remote",
+          "status": "answered"
+        },
+        {
+          "created_after_message_sequence": 1,
+          "history": [],
+          "issue_refs": [
+            "ISSUE-38f3903600904b499dde346881e10cd6"
+          ],
+          "question_intent": "affected_scope",
+          "text": "是否同意对你当前的 VPN 会话执行一次重置？这会在后台确认卡下发后中断当前 VPN 连接并自动重连，之后需要观察约 15 分钟。",
+          "id": "QUESTION-760217142ad74a9c807d4f944a7d5c50",
+          "conversation_id": "CHAT-3af2c9625dc6426d8da8031230284154",
+          "actor_id": "bo.remote",
+          "status": "pending"
+        }
+      ],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-38f3903600904b499dde346881e10cd6"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 1,
+            "refs": [
+              "MSG-323d94d9a4d34577b99b22b80a733eb9",
+              "MSG-5c3855da931c4adb8919aab3353f1de5",
+              "ISSUE-38f3903600904b499dde346881e10cd6",
+              "STATE-final"
+            ],
+            "reason": "Correctly captured VPN periodic drop and excluded local link, but left consent for reset pending; goal not progressed."
+          },
+          "diagnosis_applicability": {
+            "score": 2,
+            "refs": [
+              "MSG-5c3855da931c4adb8919aab3353f1de5",
+              "EVID-44ef9b89045a45b1a9cdd8ed302a419b",
+              "EVID-50c78ec9452040c2a9d5b9b0b889d095",
+              "HYPOTHESIS-57962e476ec848cfaa33aebdd85ac154"
+            ],
+            "reason": "Used link-loss counterevidence and session-reset KB appropriately; reasoning supported and version-matched."
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-24c5d3962c9d45aea7dc5454c96c7f65",
+              "EVID-44ef9b89045a45b1a9cdd8ed302a419b",
+              "EVID-50c78ec9452040c2a9d5b9b0b889d095",
+              "OBS-04eea2a9bac44fa18f51008bc1d22a56"
+            ],
+            "reason": "Cited session state, service status, and relevant KB for context; traceable sources present."
+          },
+          "communication": {
+            "score": 1,
+            "refs": [
+              "MSG-5c3855da931c4adb8919aab3353f1de5",
+              "QUESTION-760217142ad74a9c807d4f944a7d5c50"
+            ],
+            "reason": "Clear question and explanation, but user query seemed to answer earlier question while agent re-asked same consent unexpectedly."
+          },
+          "outcome_handoff": {
+            "score": 0,
+            "refs": [
+              "ISSUE-38f3903600904b499dde346881e10cd6",
+              "STATE-final"
+            ],
+            "reason": "No reset performed, issue left waiting_user, no final outcome or saved handoff."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": false,
+        "simulator_reasons": [
+          "Employee reply contradicts pending environment question: user gave version/network/apps answer but did not explicitly answer other-apps-drop question or consent, causing mismatch and unsupported question/intent handling."
+        ],
+        "failure_tags": [
+          "goal_not_achieved",
+          "pending_user_consent",
+          "simulator_mismatch"
+        ]
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 2,
+        "visible_assistant_lengths_characters": [
+          172,
+          209
+        ],
+        "mean_characters": 190.5,
+        "max_characters": 209,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 0,
+        "internal_ids_shown": [],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-017e6822d6724915ab859185ef9098b6",
+          "role": "user",
+          "content": "VPN 十分钟就掉一次。"
+        },
+        {
+          "id": "MSG-323d94d9a4d34577b99b22b80a733eb9",
+          "role": "assistant",
+          "content": "我查了你自己的 VPN 会话和 VPN 服务状态：服务运行正常、没有区域故障，你的会话目前处于连接中，症状记录为周期性断开。按流程，重置会话前还需要两点确认：一是断开发生时，家里其他应用/网站是否也同时断网（这能区分是本地网络问题还是 VPN 会话问题）；二是在重置会中断当前 VPN 流量并短暂重连的前提下，你是否同意对当前这个会话执行重置。"
+        },
+        {
+          "id": "MSG-e45b0c1efc0449cdb9bca0b86ce43209",
+          "role": "user",
+          "content": "VPN 5.2，家里有线网络，其他应用正常。"
+        },
+        {
+          "id": "MSG-5c3855da931c4adb8919aab3353f1de5",
+          "role": "assistant",
+          "content": "谢谢，这就排除了家里的网络原因（其他应用都正常，只有 VPN 掉线），说明问题更可能出在 VPN 会话本身。\n\n我查了你当前这个会话：仍在连接中，症状记录为周期性断开，此前没有重置过。下一步可以对这个会话执行一次重置（会先中断当前 VPN 连接再自动重连，之后要观察约 15 分钟）。上一轮的确认问题还没有你的答复：是否同意对当前 VPN 会话执行这次重置？确认后系统会下发确认卡，你在卡片上确认即可，我这边随后执行。"
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-8b8f85dc7478411d87b4c30cfa11e8a0",
+          "name": "inspect_vpn",
+          "arguments": {},
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-0efcc315ff884a6a9a708afc5c2cd4b6",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "vpn"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-9df90cc4103047f5a302e2c816c38749",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "reset_vpn_session"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-b4029e62c4c04d198e109349b0276e6d",
+          "name": "search_kb",
+          "arguments": {
+            "filters": {
+              "region": "apac",
+              "service_id": "vpn"
+            },
+            "query": "VPN 周期性断开 periodic disconnect 5.2 client",
+            "top_k": 5
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-cd47f843f59a4edf8c2ce19466012b06",
+          "name": "inspect_vpn",
+          "arguments": {},
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-96f60b9d3017450c9fec8e93780f0f2a",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "reset_vpn_session"
+          },
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-24c5d3962c9d45aea7dc5454c96c7f65",
+          "source": "service_state",
+          "record_id": "vpn.bo.remote",
+          "revision": "1",
+          "content": {
+            "actor_id": "bo.remote",
+            "client_version": "5.2",
+            "connected": true,
+            "connected_since": null,
+            "id": "vpn.bo.remote",
+            "observation_seconds": 0,
+            "required_observation_seconds": 900,
+            "reset_count": 0,
+            "revision": 1,
+            "simulated": true,
+            "symptoms": [
+              "periodic_disconnect"
+            ]
+          }
+        },
+        {
+          "id": "EVID-d37e9c45e19e434ca99a0383bc288265",
+          "source": "service_state",
+          "record_id": "vpn",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [
+              {
+                "id": "change.vpn.client",
+                "kind": "changes",
+                "notes": "5.2 client upgrade; 4.x workaround is not applicable",
+                "observed_at": "2026-11-02T09:00:00+08:00",
+                "region": "apac",
+                "related_service_ids": [],
+                "revision": 1,
+                "service_id": "vpn",
+                "simulated": true,
+                "status": "completed"
+              }
+            ],
+            "dependencies": [],
+            "incidents": [],
+            "service": {
+              "id": "vpn",
+              "kind": "services",
+              "name": "VPN",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "operational",
+              "version": "5.2"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-44ef9b89045a45b1a9cdd8ed302a419b",
+          "source": "kb",
+          "record_id": "kb.vpn-session",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "5.2"
+            ],
+            "chunk_id": "kb.vpn-session:0",
+            "id": "kb.vpn-session",
+            "parent_id": "kb.vpn-session",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "reset_vpn_session"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03278688524590164,
+            "service_id": "vpn",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Periodic disconnect\n\nInspect own session, ask about local link. Confirm interruption before reset; observe for 900 seconds afterward.",
+            "title": "Periodic disconnect",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-50c78ec9452040c2a9d5b9b0b889d095",
+          "source": "kb",
+          "record_id": "kb.vpn-local-network",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "5.2"
+            ],
+            "chunk_id": "kb.vpn-local-network:0",
+            "id": "kb.vpn-local-network",
+            "parent_id": "kb.vpn-local-network",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "compare_local_link"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03225806451612903,
+            "service_id": "vpn",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Link loss\n\nCheck whether other apps lose connectivity. Session reset cannot fix a failing home link.",
+            "title": "Link loss",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-edd902956a0740ed8ff94dec6d4ee6f1",
+          "source": "service_state",
+          "record_id": "vpn.bo.remote",
+          "revision": "1",
+          "content": {
+            "actor_id": "bo.remote",
+            "client_version": "5.2",
+            "connected": true,
+            "connected_since": null,
+            "id": "vpn.bo.remote",
+            "observation_seconds": 0,
+            "required_observation_seconds": 900,
+            "reset_count": 0,
+            "revision": 1,
+            "simulated": true,
+            "symptoms": [
+              "periodic_disconnect"
+            ]
+          }
+        }
+      ],
+      "actions": [],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    },
+    {
+      "case": "D13",
+      "valid": true,
+      "goal_pass": true,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-23",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2351,
+            "completion_tokens": 330,
+            "total_tokens": 2681,
+            "prompt_tokens_details": {
+              "cached_tokens": 1536
+            },
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 815
+          },
+          "latency_seconds": 2.0285288999948534,
+          "ledger_reservation_ids": [
+            "18b9e955bb6f4654a5697e6369175613"
+          ],
+          "estimated_spend_usd": 0.0011013,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007053,
+          "estimated_output_usd": 0.000396
+        },
+        {
+          "id": "CALL-24",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 8091,
+            "completion_tokens": 228,
+            "total_tokens": 8319,
+            "prompt_tokens_details": {
+              "cached_tokens": 6144
+            },
+            "prompt_cache_hit_tokens": 6144,
+            "prompt_cache_miss_tokens": 1947
+          },
+          "latency_seconds": 1.6199129000015091,
+          "ledger_reservation_ids": [
+            "8afc40d673cf4545ab68b296d775400a"
+          ],
+          "estimated_spend_usd": 0.0027009,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0024273,
+          "estimated_output_usd": 0.0002736
+        },
+        {
+          "id": "CALL-25",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14555,
+            "completion_tokens": 233,
+            "total_tokens": 14788,
+            "prompt_tokens_details": {
+              "cached_tokens": 7424
+            },
+            "prompt_cache_hit_tokens": 7424,
+            "prompt_cache_miss_tokens": 7131
+          },
+          "latency_seconds": 2.1849317999949562,
+          "ledger_reservation_ids": [
+            "5560c36de9d546f4b1ae5dcecf720064"
+          ],
+          "estimated_spend_usd": 0.0046461,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0043665,
+          "estimated_output_usd": 0.00027959999999999997
+        },
+        {
+          "id": "CALL-26",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14922,
+            "completion_tokens": 208,
+            "total_tokens": 15130,
+            "prompt_tokens_details": {
+              "cached_tokens": 9984
+            },
+            "prompt_cache_hit_tokens": 9984,
+            "prompt_cache_miss_tokens": 4938
+          },
+          "latency_seconds": 1.6464791000034893,
+          "ledger_reservation_ids": [
+            "d6b1d2122c194f60b9f57b1e76a7aa34"
+          ],
+          "estimated_spend_usd": 0.0047262,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0044766,
+          "estimated_output_usd": 0.0002496
+        },
+        {
+          "id": "CALL-27",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 15542,
+            "completion_tokens": 180,
+            "total_tokens": 15722,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 9142
+          },
+          "latency_seconds": 1.9465312000029371,
+          "ledger_reservation_ids": [
+            "a8eae10c43df488fa1b8fe9be9e24f4d"
+          ],
+          "estimated_spend_usd": 0.0048786,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.004662599999999999,
+          "estimated_output_usd": 0.000216
+        },
+        {
+          "id": "CALL-28",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 16568,
+            "completion_tokens": 520,
+            "total_tokens": 17088,
+            "prompt_tokens_details": {
+              "cached_tokens": 6528
+            },
+            "prompt_cache_hit_tokens": 6528,
+            "prompt_cache_miss_tokens": 10040
+          },
+          "latency_seconds": 2.4841234999985318,
+          "ledger_reservation_ids": [
+            "cf6793868da24825a7eb9813c294ecc8"
+          ],
+          "estimated_spend_usd": 0.0055944,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0049704,
+          "estimated_output_usd": 0.000624
+        },
+        {
+          "id": "CALL-29",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 17155,
+            "completion_tokens": 518,
+            "total_tokens": 17673,
+            "prompt_tokens_details": {
+              "cached_tokens": 9728
+            },
+            "prompt_cache_hit_tokens": 9728,
+            "prompt_cache_miss_tokens": 7427
+          },
+          "latency_seconds": 2.6223058000032324,
+          "ledger_reservation_ids": [
+            "af287dfcf173461cb741bdc97cfc855d"
+          ],
+          "estimated_spend_usd": 0.0057681,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0051465,
+          "estimated_output_usd": 0.0006216
+        },
+        {
+          "id": "CALL-30",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 5972,
+            "completion_tokens": 199,
+            "total_tokens": 6171,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 4180
+          },
+          "latency_seconds": 1.6168352999957278,
+          "ledger_reservation_ids": [
+            "71a8fee77a8341948fdc2c6c44d00ace"
+          ],
+          "estimated_spend_usd": 0.0020304,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0017916,
+          "estimated_output_usd": 0.00023879999999999998
+        },
+        {
+          "id": "CALL-31",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 10995,
+            "completion_tokens": 177,
+            "total_tokens": 11172,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 4595
+          },
+          "latency_seconds": 1.4710249999989173,
+          "ledger_reservation_ids": [
+            "99c8b9bff229401f8ff192b25e87af8e"
+          ],
+          "estimated_spend_usd": 0.0035109,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0032985,
+          "estimated_output_usd": 0.0002124
+        },
+        {
+          "id": "CALL-32",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 13685,
+            "completion_tokens": 104,
+            "total_tokens": 13789,
+            "prompt_tokens_details": {
+              "cached_tokens": 8064
+            },
+            "prompt_cache_hit_tokens": 8064,
+            "prompt_cache_miss_tokens": 5621
+          },
+          "latency_seconds": 1.5144384000013815,
+          "ledger_reservation_ids": [
+            "835367f1ec5a408eb3f54ca7b9dd2594"
+          ],
+          "estimated_spend_usd": 0.0042303,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0041055,
+          "estimated_output_usd": 0.0001248
+        },
+        {
+          "id": "CALL-33",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14017,
+            "completion_tokens": 46,
+            "total_tokens": 14063,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 7617
+          },
+          "latency_seconds": 1.3460593999989214,
+          "ledger_reservation_ids": [
+            "8f000853c6564df896c07155889bd3c8"
+          ],
+          "estimated_spend_usd": 0.0042603,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0042051,
+          "estimated_output_usd": 5.519999999999999e-05
+        },
+        {
+          "id": "CALL-34",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 14387,
+            "completion_tokens": 243,
+            "total_tokens": 14630,
+            "prompt_tokens_details": {
+              "cached_tokens": 8064
+            },
+            "prompt_cache_hit_tokens": 8064,
+            "prompt_cache_miss_tokens": 6323
+          },
+          "latency_seconds": 1.7175396000020555,
+          "ledger_reservation_ids": [
+            "1845f04efccc41f08117ef873211acc6"
+          ],
+          "estimated_spend_usd": 0.0046077,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0043161,
+          "estimated_output_usd": 0.0002916
+        },
+        {
+          "id": "CALL-35",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 16280,
+            "completion_tokens": 455,
+            "total_tokens": 16735,
+            "prompt_tokens_details": {
+              "cached_tokens": 6656
+            },
+            "prompt_cache_hit_tokens": 6656,
+            "prompt_cache_miss_tokens": 9624
+          },
+          "latency_seconds": 2.449220199996489,
+          "ledger_reservation_ids": [
+            "71dd9881d5404bc2a62dd3f73d24ae76"
+          ],
+          "estimated_spend_usd": 0.00543,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.004884,
+          "estimated_output_usd": 0.000546
+        },
+        {
+          "id": "CALL-36",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 16802,
+            "completion_tokens": 452,
+            "total_tokens": 17254,
+            "prompt_tokens_details": {
+              "cached_tokens": 11008
+            },
+            "prompt_cache_hit_tokens": 11008,
+            "prompt_cache_miss_tokens": 5794
+          },
+          "latency_seconds": 2.3219868000014685,
+          "ledger_reservation_ids": [
+            "4a4792e7950445b6b1b773fd401bddd4"
+          ],
+          "estimated_spend_usd": 0.005583,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.005040599999999999,
+          "estimated_output_usd": 0.0005424
+        },
+        {
+          "id": "CALL-37",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 9319,
+            "completion_tokens": 625,
+            "total_tokens": 9944,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 8551
+          },
+          "latency_seconds": 4.2378534999952535,
+          "ledger_reservation_ids": [
+            "cfb71013391a49d188c03bd158d46c5c"
+          ],
+          "estimated_spend_usd": 0.0035457,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0027957,
+          "estimated_output_usd": 0.00075
+        }
+      ],
+      "spend": 0.0626139,
+      "stop": "no_supported_next_step",
+      "case_hash": "244a4d962bc2d3e32dd61291cf805cf52825921b6f2ba89063b4272f6f78a88f",
+      "family": "access",
+      "paid_request_count": 15,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "dda61a39e337c8dedcd6fc928c0b0241af6c939cc6836260c904211a2be7341f",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": [
+          {
+            "event": "employee_reply",
+            "question_id": "QUESTION-ce5e4509b8fe4682848a12aabd3504c9",
+            "visible": {
+              "recovered": true,
+              "feedback": "Grafana 能打开了。"
+            },
+            "text": "生产库是 snowflake.prod.analytics，只要查询。"
+          }
+        ]
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "application_recovery",
+          "goal": "Grafana 访问权限开通",
+          "lifecycle": 1,
+          "resource_id": "grafana.data",
+          "service_refs": [
+            "grafana"
+          ],
+          "id": "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+          "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+          "actor_id": "chen.data",
+          "status": "verifying",
+          "version": 5,
+          "created_at": 1793581200.0
+        },
+        {
+          "acceptance_criteria_id": "application_recovery",
+          "goal": "生产库（Snowflake）访问权限开通",
+          "lifecycle": 1,
+          "resource_id": "snowflake.prod.analytics",
+          "service_refs": [
+            "snowflake"
+          ],
+          "id": "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+          "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+          "actor_id": "chen.data",
+          "status": "waiting_approval",
+          "version": 8,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [
+        {
+          "answer_message_id": "MSG-45ed543bad324285bd37b56653f75ee8",
+          "created_after_message_sequence": 1,
+          "history": [
+            {
+              "answer_message_id": null,
+              "status": "pending"
+            }
+          ],
+          "issue_refs": [
+            "ISSUE-038e5a3c60f8417996fb255d5fa35b5b"
+          ],
+          "question_intent": "target_resource",
+          "text": "请确认需要开通哪个生产库只读资源：snowflake.prod.analytics（分析）还是 snowflake.prod.finance（财务）？两者都需要对应资源负责人审批。",
+          "id": "QUESTION-ce5e4509b8fe4682848a12aabd3504c9",
+          "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+          "actor_id": "chen.data",
+          "status": "answered"
+        }
+      ],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-573ef77ded23476a9e1fd9ca6320a83f"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-038e5a3c60f8417996fb255d5fa35b5b"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 2,
+            "refs": [
+              "MSG-ae65bdc6e7b64d41a64790579a9e0424",
+              "MSG-45ed543bad324285bd37b56653f75ee8",
+              "MSG-21cf06fc5aa24c008b433bbc8607e7bf",
+              "MSG-2c5a54a5f65943299deb4e05bfd7922d",
+              "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+              "ISSUE-038e5a3c60f8417996fb255d5fa35b5b"
+            ],
+            "reason": "Correctly clarified ambiguous production DB, locked to analytics read-only, tracked both goals with accurate statuses."
+          },
+          "diagnosis_applicability": {
+            "score": 2,
+            "refs": [
+              "EVID-9f125f7c934d4f61a4c30a41ba0ad427",
+              "EVID-4d590ebd02844112924be6dda0d9c493",
+              "APPROVAL-8e76318638c94378aad632f62d1eaf60"
+            ],
+            "reason": "Applied correct policies: exact read resource, production approval requirement, routed to resource owner."
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-b500b1ffd6fd49988fcc24f1d66ee72c",
+              "ACTION-193854820c4a406eac0c272d51ed1f4e",
+              "EVID-cc361cf3067b422dab0336c816404bb3",
+              "EVID-bc8c304e9f3d4b55aa4afac285a62d85"
+            ],
+            "reason": "Grounded claims in directory and tool receipt; grant effect verifiable."
+          },
+          "communication": {
+            "score": 2,
+            "refs": [
+              "MSG-21cf06fc5aa24c008b433bbc8607e7bf",
+              "MSG-2c5a54a5f65943299deb4e05bfd7922d"
+            ],
+            "reason": "Concise, asked a useful clarifying question, explained approval status and next steps."
+          },
+          "outcome_handoff": {
+            "score": 2,
+            "refs": [
+              "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+              "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+              "APPROVAL-8e76318638c94378aad632f62d1eaf60"
+            ],
+            "reason": "Truthfully reports grafana verifying and snowflake waiting on pending owner approval; no false claims."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [
+          "User facts match observable state: Grafana grant present, production request clarified to analytics read-only."
+        ],
+        "failure_tags": []
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 2,
+        "visible_assistant_lengths_characters": [
+          209,
+          240
+        ],
+        "mean_characters": 224.5,
+        "max_characters": 240,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 1,
+        "raw_internal_id_occurrences": 1,
+        "internal_ids_shown": [
+          "pat.approver"
+        ],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-ae65bdc6e7b64d41a64790579a9e0424",
+          "role": "user",
+          "content": "帮我开下 Grafana，还有生产库。"
+        },
+        {
+          "id": "MSG-21cf06fc5aa24c008b433bbc8607e7bf",
+          "role": "assistant",
+          "content": "Grafana 这块已处理：你的账号现在对 Grafana Data dashboard 有只读权限（grafana.data），请打开页面确认能否正常看到数据。\n\n生产库（Snowflake）还差一个关键信息：生产库有 snowflake.prod.analytics 和 snowflake.prod.finance 两个只读目录，权限不同，且都需要对应的资源负责人审批。你要开通哪一个？如果两个都要，请分别说明。"
+        },
+        {
+          "id": "MSG-45ed543bad324285bd37b56653f75ee8",
+          "role": "user",
+          "content": "生产库是 snowflake.prod.analytics，只要查询。"
+        },
+        {
+          "id": "MSG-2c5a54a5f65943299deb4e05bfd7922d",
+          "role": "assistant",
+          "content": "明白，生产库目标已锁定为 snowflake.prod.analytics，只申请只读（查询）权限。\n\n该资源当前对你没有任何权限，已向资源负责人 pat.approver 提交只读权限审批申请，正在等待其审批（申请 24 小时内有效）。审批通过后我会继续开通，你无需回到聊天里操作。\n\n另外 Grafana Data dashboard 的只读权限此前已开通，如果打开页面仍看不到数据，请告诉我具体报错。财务库 snowflake.prod.finance 按你的说明没有申请。"
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-0beded8d0c96420694002edf4c6d1ede",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "grant_catalog_access"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-48aac9c639d8481daa1bec944b929879",
+          "name": "inspect_access",
+          "arguments": {
+            "resource_id": "grafana.data"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-1b3e43130682470d9ee46a36333cf7f9",
+          "name": "inspect_access",
+          "arguments": {
+            "resource_id": "grafana.platform"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-9b7f80db10ff420fa87fd3a40287b58a",
+          "name": "inspect_access",
+          "arguments": {
+            "resource_id": "grafana.sales"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-62afd0afd5dd4b22aaee57a0b4b44564",
+          "name": "inspect_access",
+          "arguments": {
+            "resource_id": "snowflake.prod.analytics"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-f23cece3b0fc4855aeac974b3e942c43",
+          "name": "inspect_access",
+          "arguments": {
+            "resource_id": "snowflake.prod.finance"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-e2f789052dfb4250abfdfc2f8ff98a53",
+          "name": "grant_catalog_access",
+          "arguments": {
+            "evidence_refs": [
+              "EVID-cc361cf3067b422dab0336c816404bb3",
+              "EVID-2b4c0a7e919843bca59a95f67458938e"
+            ],
+            "issue_id": "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+            "permission": "read",
+            "resource_id": "grafana.data"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-894129b418364260a51b04d237bd729c",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "request_approval"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-4eb9d1d309f04ec6b741b4696bad9a9b",
+          "name": "inspect_access",
+          "arguments": {
+            "resource_id": "snowflake.prod.analytics"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-8c7e0e6e9c6a47a89ec9cfc005695ac9",
+          "name": "request_approval",
+          "arguments": {
+            "evidence_refs": [
+              "EVID-4d590ebd02844112924be6dda0d9c493",
+              "EVID-9f125f7c934d4f61a4c30a41ba0ad427"
+            ],
+            "issue_id": "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+            "permission": "read",
+            "reason": "Data Engineering 员工 chen.data 需要一个生产库只读（查询）权限以进行数据分析工作；目标资源已明确为 snowflake.prod.analytics，需资源负责人 pat.approver 审批后开通。",
+            "resource_id": "snowflake.prod.analytics"
+          },
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-cc361cf3067b422dab0336c816404bb3",
+          "source": "directory",
+          "record_id": "grafana.data",
+          "revision": "1:",
+          "content": {
+            "grants": [],
+            "permissions": [],
+            "resource_id": "grafana.data",
+            "service_id": "grafana"
+          }
+        },
+        {
+          "id": "EVID-b5a938e1ce52469f9219a8206ce81bf0",
+          "source": "directory",
+          "record_id": "grafana.platform",
+          "revision": "1:",
+          "content": {
+            "grants": [],
+            "permissions": [],
+            "resource_id": "grafana.platform",
+            "service_id": "grafana"
+          }
+        },
+        {
+          "id": "EVID-d4de4e24154643eca6f892f26d735d95",
+          "source": "directory",
+          "record_id": "grafana.sales",
+          "revision": "1:",
+          "content": {
+            "grants": [],
+            "permissions": [],
+            "resource_id": "grafana.sales",
+            "service_id": "grafana"
+          }
+        },
+        {
+          "id": "EVID-bc8c304e9f3d4b55aa4afac285a62d85",
+          "source": "directory",
+          "record_id": "snowflake.prod.analytics",
+          "revision": "1:",
+          "content": {
+            "grants": [],
+            "permissions": [],
+            "resource_id": "snowflake.prod.analytics",
+            "service_id": "snowflake"
+          }
+        },
+        {
+          "id": "EVID-8cf1d3fe81ff43e383faca2a44cf8ebf",
+          "source": "directory",
+          "record_id": "snowflake.prod.finance",
+          "revision": "1:",
+          "content": {
+            "grants": [],
+            "permissions": [],
+            "resource_id": "snowflake.prod.finance",
+            "service_id": "snowflake"
+          }
+        },
+        {
+          "id": "EVID-b500b1ffd6fd49988fcc24f1d66ee72c",
+          "source": "tool_receipt",
+          "record_id": "ACTION-193854820c4a406eac0c272d51ed1f4e",
+          "revision": "1",
+          "content": {
+            "actor_id": "chen.data",
+            "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+            "created_at": 1793581200.0,
+            "fingerprint": "93a977fa553a24d6bc8fa4fba0cb41b5d67b6168195c6f90a590cdc30ee36634",
+            "id": "ACTION-193854820c4a406eac0c272d51ed1f4e",
+            "issue_id": "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+            "parameters": {
+              "permission": "read",
+              "resource_id": "grafana.data"
+            },
+            "receipt": {
+              "action": "grant_catalog_access",
+              "action_id": "ACTION-193854820c4a406eac0c272d51ed1f4e",
+              "actor_id": "chen.data",
+              "after_message_sequence": 1,
+              "approval_id": null,
+              "committed_at": "2026-11-02T01:00:00+00:00",
+              "confirmation_id": null,
+              "effect": {
+                "permission": "read",
+                "present": true,
+                "resource_id": "grafana.data"
+              },
+              "issue_id": "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+              "parameters": {
+                "permission": "read",
+                "resource_id": "grafana.data"
+              },
+              "policy_version": "2026.11.1",
+              "simulated": true
+            },
+            "status": "succeeded"
+          }
+        },
+        {
+          "id": "EVID-4d590ebd02844112924be6dda0d9c493",
+          "source": "directory",
+          "record_id": "snowflake.prod.analytics",
+          "revision": "1:",
+          "content": {
+            "grants": [],
+            "permissions": [],
+            "resource_id": "snowflake.prod.analytics",
+            "service_id": "snowflake"
+          }
+        },
+        {
+          "id": "EVID-901166f8035c4a97afe51d6119f3476c",
+          "source": "approval_event",
+          "record_id": "APPROVAL-8e76318638c94378aad632f62d1eaf60",
+          "revision": "1",
+          "content": {
+            "approval": {
+              "actor_id": "chen.data",
+              "approver_role": "resource_owner",
+              "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+              "created_at": 1793581200.0,
+              "evidence_refs": [
+                "EVID-4d590ebd02844112924be6dda0d9c493",
+                "EVID-9f125f7c934d4f61a4c30a41ba0ad427"
+              ],
+              "expires_at": 1793667600.0,
+              "id": "APPROVAL-8e76318638c94378aad632f62d1eaf60",
+              "issue_id": "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+              "lifecycle": 1,
+              "permission": "read",
+              "policy_version": "2026.11.1",
+              "reason": "Data Engineering 员工 chen.data 需要一个生产库只读（查询）权限以进行数据分析工作；目标资源已明确为 snowflake.prod.analytics，需资源负责人 pat.approver 审批后开通。",
+              "resource_id": "snowflake.prod.analytics",
+              "resource_revision": 1,
+              "revision": 1,
+              "scope": {
+                "issue_id": "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+                "permission": "read",
+                "requester": "chen.data",
+                "resource_id": "snowflake.prod.analytics"
+              },
+              "simulated": true,
+              "status": "pending"
+            }
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "ACTION-193854820c4a406eac0c272d51ed1f4e",
+          "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+          "actor_id": "chen.data",
+          "issue_id": "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+          "fingerprint": "93a977fa553a24d6bc8fa4fba0cb41b5d67b6168195c6f90a590cdc30ee36634",
+          "status": "succeeded",
+          "created_at": 1793581200.0,
+          "parameters": {
+            "permission": "read",
+            "resource_id": "grafana.data"
+          },
+          "receipt": {
+            "action": "grant_catalog_access",
+            "action_id": "ACTION-193854820c4a406eac0c272d51ed1f4e",
+            "actor_id": "chen.data",
+            "after_message_sequence": 1,
+            "approval_id": null,
+            "committed_at": "2026-11-02T01:00:00+00:00",
+            "confirmation_id": null,
+            "effect": {
+              "permission": "read",
+              "present": true,
+              "resource_id": "grafana.data"
+            },
+            "issue_id": "ISSUE-573ef77ded23476a9e1fd9ca6320a83f",
+            "parameters": {
+              "permission": "read",
+              "resource_id": "grafana.data"
+            },
+            "policy_version": "2026.11.1",
+            "simulated": true
+          }
+        }
+      ],
+      "approvals": [
+        {
+          "approver_role": "resource_owner",
+          "evidence_refs": [
+            "EVID-4d590ebd02844112924be6dda0d9c493",
+            "EVID-9f125f7c934d4f61a4c30a41ba0ad427"
+          ],
+          "lifecycle": 1,
+          "policy_version": "2026.11.1",
+          "reason": "Data Engineering 员工 chen.data 需要一个生产库只读（查询）权限以进行数据分析工作；目标资源已明确为 snowflake.prod.analytics，需资源负责人 pat.approver 审批后开通。",
+          "resource_revision": 1,
+          "scope": {
+            "issue_id": "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+            "permission": "read",
+            "requester": "chen.data",
+            "resource_id": "snowflake.prod.analytics"
+          },
+          "simulated": true,
+          "id": "APPROVAL-8e76318638c94378aad632f62d1eaf60",
+          "conversation_id": "CHAT-0fd965c7398b491693ed3c6a4d599dde",
+          "actor_id": "chen.data",
+          "issue_id": "ISSUE-038e5a3c60f8417996fb255d5fa35b5b",
+          "resource_id": "snowflake.prod.analytics",
+          "permission": "read",
+          "status": "pending",
+          "revision": 1,
+          "created_at": 1793581200.0,
+          "expires_at": 1793667600.0
+        }
+      ],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    },
+    {
+      "case": "D17",
+      "valid": true,
+      "goal_pass": true,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [
+        {
+          "id": "RUN-ae3b167658f94d7fbaf3b0acc7693604",
+          "status": "budget_exhausted",
+          "code": "PROJECT_BUDGET_EXHAUSTED"
+        }
+      ],
+      "calls": [
+        {
+          "id": "CALL-38",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2359,
+            "completion_tokens": 378,
+            "total_tokens": 2737,
+            "prompt_tokens_details": {
+              "cached_tokens": 1536
+            },
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 823
+          },
+          "latency_seconds": 1.7640519999986282,
+          "ledger_reservation_ids": [
+            "e5b747322c5c4f68bf351c0f54d91f05"
+          ],
+          "estimated_spend_usd": 0.0011613,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007076999999999999,
+          "estimated_output_usd": 0.00045359999999999997
+        },
+        {
+          "id": "CALL-39",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 8243,
+            "completion_tokens": 71,
+            "total_tokens": 8314,
+            "prompt_tokens_details": {
+              "cached_tokens": 6144
+            },
+            "prompt_cache_hit_tokens": 6144,
+            "prompt_cache_miss_tokens": 2099
+          },
+          "latency_seconds": 0.9980990000040038,
+          "ledger_reservation_ids": [
+            "72ec99dd579a42058d2b07b689126c91"
+          ],
+          "estimated_spend_usd": 0.0025581,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0024729,
+          "estimated_output_usd": 8.52e-05
+        },
+        {
+          "id": "CALL-40",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 11243,
+            "completion_tokens": 214,
+            "total_tokens": 11457,
+            "prompt_tokens_details": {
+              "cached_tokens": 7552
+            },
+            "prompt_cache_hit_tokens": 7552,
+            "prompt_cache_miss_tokens": 3691
+          },
+          "latency_seconds": 1.4056232000002638,
+          "ledger_reservation_ids": [
+            "303b3531bce347889553f3f29f33e51c"
+          ],
+          "estimated_spend_usd": 0.003629701,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0033729000000000003,
+          "estimated_output_usd": 0.0002568
+        },
+        {
+          "id": "CALL-41",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 20196,
+            "completion_tokens": 42,
+            "total_tokens": 20238,
+            "prompt_tokens_details": {
+              "cached_tokens": 7552
+            },
+            "prompt_cache_hit_tokens": 7552,
+            "prompt_cache_miss_tokens": 12644
+          },
+          "latency_seconds": 1.0463237000003573,
+          "ledger_reservation_ids": [
+            "b2e6ec39cf404373881daa140e4df737"
+          ],
+          "estimated_spend_usd": 0.0061092,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0060588000000000005,
+          "estimated_output_usd": 5.04e-05
+        },
+        {
+          "id": "CALL-42",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 22146,
+            "completion_tokens": 1138,
+            "total_tokens": 23284,
+            "prompt_tokens_details": {
+              "cached_tokens": 7552
+            },
+            "prompt_cache_hit_tokens": 7552,
+            "prompt_cache_miss_tokens": 14594
+          },
+          "latency_seconds": 5.971622099998058,
+          "ledger_reservation_ids": [
+            "1aa3e0bc7e794c329792e5bf342639f1"
+          ],
+          "estimated_spend_usd": 0.0080094,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0066438,
+          "estimated_output_usd": 0.0013656
+        },
+        {
+          "id": "CALL-43",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 26699,
+            "completion_tokens": 860,
+            "total_tokens": 27559,
+            "prompt_tokens_details": {
+              "cached_tokens": 6528
+            },
+            "prompt_cache_hit_tokens": 6528,
+            "prompt_cache_miss_tokens": 20171
+          },
+          "latency_seconds": 4.296469200002321,
+          "ledger_reservation_ids": [
+            "f8390b1f181741699a9e0f43498607b0"
+          ],
+          "estimated_spend_usd": 0.009041701,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0080097,
+          "estimated_output_usd": 0.001032
+        },
+        {
+          "id": "CALL-44",
+          "purpose": "agent_decision",
+          "error": "BudgetExceeded",
+          "latency_seconds": 0.0010818000009749085,
+          "ledger_reservation_ids": [],
+          "estimated_spend_usd": 0.0,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0,
+          "estimated_output_usd": 0.0
+        },
+        {
+          "id": "CALL-45",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 10986,
+            "completion_tokens": 641,
+            "total_tokens": 11627,
+            "prompt_tokens_details": {
+              "cached_tokens": 512
+            },
+            "prompt_cache_hit_tokens": 512,
+            "prompt_cache_miss_tokens": 10474
+          },
+          "latency_seconds": 3.2820423000011942,
+          "ledger_reservation_ids": [
+            "b910f9e4ee59457d9281cc7036ed4389"
+          ],
+          "estimated_spend_usd": 0.004065,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0032957999999999998,
+          "estimated_output_usd": 0.0007691999999999999
+        }
+      ],
+      "spend": 0.034574402,
+      "stop": "all_goals_terminal_or_external_wait",
+      "case_hash": "4f56064638f96fac256b6a10ae9c2743c2ec16023bd67faa27268162daf80805",
+      "family": "cross_system",
+      "paid_request_count": 7,
+      "prevented_request_attempts": [
+        {
+          "purpose": "agent_decision",
+          "error": "BudgetExceeded"
+        }
+      ],
+      "event_stop_classification": "evaluation_margin_stop_original_global_budget_not_exhausted",
+      "artifact_sha256": "d3f4d7ead4d188eb5b1e1f9826c69715b0b738816a8fbaad328ac738d7e6023a",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": []
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "application_recovery",
+          "goal": "解决 Jenkins 持续超时的问题",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "jenkins"
+          ],
+          "id": "ISSUE-151cb423b4074ed8bdaccedd38379714",
+          "conversation_id": "CHAT-6a8b3d06c5a84e70a3c1a61ae9efe484",
+          "actor_id": "dana.platform",
+          "status": "handed_off",
+          "version": 3,
+          "created_at": 1793581200.0
+        },
+        {
+          "acceptance_criteria_id": "application_recovery",
+          "goal": "解决 Tableau 报表不更新的问题",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "tableau"
+          ],
+          "id": "ISSUE-ae57b51ae44f46ec852895c3d30eccc6",
+          "conversation_id": "CHAT-6a8b3d06c5a84e70a3c1a61ae9efe484",
+          "actor_id": "dana.platform",
+          "status": "handed_off",
+          "version": 3,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-151cb423b4074ed8bdaccedd38379714"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-ae57b51ae44f46ec852895c3d30eccc6"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [
+        {
+          "id": "RUN-ae3b167658f94d7fbaf3b0acc7693604",
+          "status": "budget_exhausted",
+          "code": "PROJECT_BUDGET_EXHAUSTED"
+        }
+      ],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 1,
+            "refs": [
+              "MSG-9ac621a1328b463caa5f2d9723e21f07",
+              "ISSUE-151cb423b4074ed8bdaccedd38379714",
+              "ISSUE-ae57b51ae44f46ec852895c3d30eccc6"
+            ],
+            "reason": "Identified both Jenkins timeout and Tableau stale goals, but no assistant diagnosis or reply beyond budget stop; incomplete state updates."
+          },
+          "diagnosis_applicability": {
+            "score": 1,
+            "refs": [
+              "HANDOFF-edce2955992e43cc8734b2701ea687fa",
+              "HANDOFF-59ac2ec2263f4a9aa919bb880e10cc27"
+            ],
+            "reason": "Handoffs contain plausible hypotheses and counterevidence, but assistant gave no reasoning to user; isolated from conversation."
+          },
+          "evidence": {
+            "score": 2,
+            "refs": [
+              "EVID-a4c98942c78e46d992a63e45d3e44434",
+              "EVID-65162da6010d4c10b04b57d78e32c141",
+              "EVID-0fac800b55cf4f5d95ef97765c577e39",
+              "EVID-342215b55a2b45738fefb24e410a8e91",
+              "EVID-0850a390b0524eac8414bb77ad9e4f10",
+              "EVID-c9f29bff019847ac8e5c62b76a100235"
+            ],
+            "reason": "Handoffs cite traceable applicable service state, KB, and history; counterevidence noted."
+          },
+          "communication": {
+            "score": 0,
+            "refs": [
+              "MSG-791d584c03954b73b7ee8b1acdc27ce5"
+            ],
+            "reason": "Assistant only states budget exhausted; no useful question or explanation to user."
+          },
+          "outcome_handoff": {
+            "score": 2,
+            "refs": [
+              "HANDOFF-edce2955992e43cc8734b2701ea687fa",
+              "HANDOFF-59ac2ec2263f4a9aa919bb880e10cc27",
+              "ISSUE-151cb423b4074ed8bdaccedd38379714",
+              "ISSUE-ae57b51ae44f46ec852895c3d30eccc6"
+            ],
+            "reason": "Both issues handed_off; saved handoffs contain goals, facts, evidence, hypotheses, open questions, reason, team."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [],
+        "failure_tags": []
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 1,
+        "visible_assistant_lengths_characters": [
+          24
+        ],
+        "mean_characters": 24,
+        "max_characters": 24,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 0,
+        "internal_ids_shown": [],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-9ac621a1328b463caa5f2d9723e21f07",
+          "role": "user",
+          "content": "Jenkins 一直超时，Tableau 报表也不更新了。"
+        },
+        {
+          "id": "MSG-791d584c03954b73b7ee8b1acdc27ce5",
+          "role": "assistant",
+          "content": "项目调用预算已用尽，本轮已停止，已保存当前进度。"
+        }
+      ],
+      "tool_trace": [
+        {
+          "id": "TOOL-48bc0686a99f48e8b886c6b4c886fbfe",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "jenkins"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-320fd760e6614493bd5a168406465cb8",
+          "name": "get_service_context",
+          "arguments": {
+            "service_id": "tableau"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-54d0f5e7f6e24342a2968d040accbc32",
+          "name": "search_kb",
+          "arguments": {
+            "filters": {
+              "service_id": "jenkins"
+            },
+            "query": "Jenkins job timeout troubleshooting",
+            "top_k": 5
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-26a20612c4c346b58e7d74c687d6a9fd",
+          "name": "search_kb",
+          "arguments": {
+            "filters": {
+              "service_id": "tableau"
+            },
+            "query": "Tableau extract queue delayed reports not refreshing",
+            "top_k": 5
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-44ba8811ba7f4bc0a4fa8aa77b957887",
+          "name": "search_history",
+          "arguments": {
+            "query": "Jenkins timeout and Tableau reports not updating together",
+            "top_k": 5
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-9d393f566f9e49d398073eb707fb4157",
+          "name": "get_action_requirements",
+          "arguments": {
+            "action": "create_handoff"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-4ca4c7c918ef45c3b14bd85f9e632063",
+          "name": "create_handoff",
+          "arguments": {
+            "attempt_refs": [],
+            "evidence_refs": [
+              "EVID-a4c98942c78e46d992a63e45d3e44434",
+              "EVID-19db30446ad64e1391ebaab87a3c3330",
+              "EVID-0fac800b55cf4f5d95ef97765c577e39",
+              "EVID-0850a390b0524eac8414bb77ad9e4f10",
+              "OBS-d92ebd19c46c48799cc7239882db522f"
+            ],
+            "facts": [
+              "员工报告 Jenkins 持续超时（eu-west，2026.11）。",
+              "Jenkins 服务状态 operational，无进行中事件。",
+              "token_service 签名证书轮换已于 08:30 完成，Jenkins token 探测在 08:40 健康；依赖存在但当前因果未确认。",
+              "历史案例 history.09/history.10 显示 Jenkins 超时曾分别由过期 token 与独立运行器饱和导致，属历史相关性，不构成当前病因。"
+            ],
+            "hypotheses": [
+              "流水线运行器饱和而非 token 过期是当前超时的可能原因（tentative）。",
+              "Jenkins 与 Tableau 的同期异常共享 token 根因的可能性较低，表观重叠不足为证（tentative）。"
+            ],
+            "issue_refs": [
+              "ISSUE-151cb423b4074ed8bdaccedd38379714"
+            ],
+            "open_questions": [
+              "超时发生在哪些具体流水线/任务，报错原文是什么？",
+              "超时是否在所有流水线还是特定运行器标签上出现？"
+            ],
+            "reason": "按 KB kb.jenkins-escalate 的 remedy handoff_platform，生产流水线变更需 Platform 团队处理；本地无可用自动修复路径。",
+            "summary": "Jenkins 持续超时：服务状态为 operational、无事件，token 服务已完成签名证书轮换，08:40 token 探测正常，因此现有证据不支持持续的 token 故障；按 KB（Production pipeline timeout, 2026.11）转交 Platform 团队收集错误与维护证据后处理流水线/运行器问题。",
+            "team_hint": "platform"
+          },
+          "ok": true,
+          "error": null
+        },
+        {
+          "id": "TOOL-b3c4ea2ce11b46d0b109f009ddf0f098",
+          "name": "create_handoff",
+          "arguments": {
+            "attempt_refs": [],
+            "evidence_refs": [
+              "EVID-65162da6010d4c10b04b57d78e32c141",
+              "EVID-079ca4d7461b43d5b1fb892eec9d9c65",
+              "EVID-342215b55a2b45738fefb24e410a8e91",
+              "EVID-c9f29bff019847ac8e5c62b76a100235",
+              "OBS-424314c7f8c04cdd960cea95250d831b"
+            ],
+            "facts": [
+              "员工报告 Tableau 报表不再更新（eu-west，2026.11）。",
+              "Tableau 服务状态 operational，无进行中事件。",
+              "token_service 变更记录显示 Tableau 抽取队列仍延迟；Tableau 依赖 token 但队列积压有独立原因，重叠不足以证明 token 根因。",
+              "历史案例 history.11 显示同类报表陈旧问题源于独立抽取队列积压，token 健康。"
+            ],
+            "hypotheses": [
+              "当前报表陈旧由独立抽取队列积压导致，而非 token 轮换（tentative）。"
+            ],
+            "issue_refs": [
+              "ISSUE-ae57b51ae44f46ec852895c3d30eccc6"
+            ],
+            "open_questions": [
+              "具体是哪几个数据源/工作簿不更新？",
+              "不更新是从什么时候开始、最近一次成功刷新时间是什么？"
+            ],
+            "reason": "按 KB kb.tableau-escalate 的 remedy handoff_data，生产抽取队列不可自动修改，需 Data Platform 团队跟进。",
+            "summary": "Tableau 报表不更新：服务状态 operational、无事件，但变更记录显示抽取队列仍延迟；按 KB（Extract backlog, 2026.11）不允许自动修改生产队列，转交 Data Platform 团队处理。",
+            "team_hint": "data_platform"
+          },
+          "ok": true,
+          "error": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "EVID-a4c98942c78e46d992a63e45d3e44434",
+          "source": "service_state",
+          "record_id": "jenkins",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [
+              {
+                "ended_at": "2026-11-02T08:30:00+08:00",
+                "id": "change.token.rotation",
+                "kind": "changes",
+                "notes": "Signing certificate rotation; Jenkins token probe healthy at 08:40; Tableau extract queue still delayed. Temporal overlap alone is not proof.",
+                "observed_at": "2026-11-02T09:00:00+08:00",
+                "region": "eu-west",
+                "related_service_ids": [
+                  "jenkins",
+                  "tableau"
+                ],
+                "revision": 2,
+                "service_id": "token_service",
+                "simulated": true,
+                "started_at": "2026-11-02T08:00:00+08:00",
+                "status": "completed"
+              }
+            ],
+            "dependencies": [
+              {
+                "depends_on": "token_service",
+                "id": "dependency.jenkins.token",
+                "kind": "dependencies",
+                "notes": "Dependency exists; probe healthy after rotation, causation unconfirmed",
+                "revision": 1,
+                "service_id": "jenkins",
+                "simulated": true
+              }
+            ],
+            "incidents": [],
+            "service": {
+              "id": "jenkins",
+              "kind": "services",
+              "name": "Jenkins",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "operational",
+              "version": "2026.11"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-65162da6010d4c10b04b57d78e32c141",
+          "source": "service_state",
+          "record_id": "tableau",
+          "revision": "1",
+          "content": {
+            "as_of": "2026-11-02T09:00:00+08:00",
+            "changes": [
+              {
+                "ended_at": "2026-11-02T08:30:00+08:00",
+                "id": "change.token.rotation",
+                "kind": "changes",
+                "notes": "Signing certificate rotation; Jenkins token probe healthy at 08:40; Tableau extract queue still delayed. Temporal overlap alone is not proof.",
+                "observed_at": "2026-11-02T09:00:00+08:00",
+                "region": "eu-west",
+                "related_service_ids": [
+                  "jenkins",
+                  "tableau"
+                ],
+                "revision": 2,
+                "service_id": "token_service",
+                "simulated": true,
+                "started_at": "2026-11-02T08:00:00+08:00",
+                "status": "completed"
+              }
+            ],
+            "dependencies": [
+              {
+                "depends_on": "token_service",
+                "id": "dependency.tableau.token",
+                "kind": "dependencies",
+                "notes": "Token required at extract start; queue backlog has independent causes",
+                "revision": 1,
+                "service_id": "tableau",
+                "simulated": true
+              }
+            ],
+            "incidents": [],
+            "service": {
+              "id": "tableau",
+              "kind": "services",
+              "name": "Tableau",
+              "observed_at": "2026-11-02T09:00:00+08:00",
+              "revision": 1,
+              "simulated": true,
+              "status": "operational",
+              "version": "2026.11"
+            },
+            "simulated": true
+          }
+        },
+        {
+          "id": "EVID-0fac800b55cf4f5d95ef97765c577e39",
+          "source": "kb",
+          "record_id": "kb.jenkins-escalate",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.jenkins-escalate:0",
+            "id": "kb.jenkins-escalate",
+            "parent_id": "kb.jenkins-escalate",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "handoff_platform"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03278688524590164,
+            "service_id": "jenkins",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Production pipeline timeout\n\nPipeline changes and restarts require Platform team; collect errors and maintenance evidence.",
+            "title": "Production pipeline timeout",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-19db30446ad64e1391ebaab87a3c3330",
+          "source": "kb",
+          "record_id": "kb.jenkins-token",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.jenkins-token:0",
+            "id": "kb.jenkins-token",
+            "parent_id": "kb.jenkins-token",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "inspect_token_dependency"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03225806451612903,
+            "service_id": "jenkins",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Token timeout\n\nCheck recent maintenance and token probe. Healthy probe is counterevidence against a continuing token outage.",
+            "title": "Token timeout",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-342215b55a2b45738fefb24e410a8e91",
+          "source": "kb",
+          "record_id": "kb.tableau-escalate",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.tableau-escalate:0",
+            "id": "kb.tableau-escalate",
+            "parent_id": "kb.tableau-escalate",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "handoff_data"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03252247488101534,
+            "service_id": "tableau",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Extract backlog\n\nNo automatic production queue edits. Send Data Platform facts, counterevidence, attempts and questions.",
+            "title": "Extract backlog",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-079ca4d7461b43d5b1fb892eec9d9c65",
+          "source": "kb",
+          "record_id": "kb.tableau-extract",
+          "revision": "1",
+          "content": {
+            "applicable_versions": [
+              "2026.11"
+            ],
+            "chunk_id": "kb.tableau-extract:0",
+            "id": "kb.tableau-extract",
+            "parent_id": "kb.tableau-extract",
+            "prerequisites": [
+              "Match service, version, scope and policy"
+            ],
+            "remedy_ids": [
+              "inspect_extract_queue"
+            ],
+            "reviewed": true,
+            "revision": 1,
+            "rrf_score": 0.03252247488101534,
+            "service_id": "tableau",
+            "simulated": true,
+            "source_type": "kb",
+            "status": "current",
+            "text": "# Stale dashboard\n\nInspect extract age and queue data; dependency overlap does not prove token root cause.",
+            "title": "Stale dashboard",
+            "valid_from": "2026-10-01",
+            "valid_until": null
+          }
+        },
+        {
+          "id": "EVID-a2883d536e2d40cdaf807f4809024ed9",
+          "source": "history",
+          "record_id": "history.09",
+          "revision": "1",
+          "content": {
+            "chunk_id": "history.09:0",
+            "curated": true,
+            "environment": {
+              "region": "eu-west",
+              "version": "2026.10"
+            },
+            "id": "history.09",
+            "outcome": "Platform corrected token",
+            "parent_id": "history.09",
+            "remedy_ids": [
+              "handoff_platform"
+            ],
+            "resolved_at": "2026-10-20T15:00:00+08:00",
+            "revision": 1,
+            "rrf_score": 0.03278688524590164,
+            "service_id": "jenkins",
+            "simulated": true,
+            "source_type": "history",
+            "steps": [
+              "handoff_platform"
+            ],
+            "symptoms": [
+              "timeout"
+            ],
+            "text": "{\"id\": \"history.09\", \"service_id\": \"jenkins\", \"revision\": 1, \"simulated\": true, \"curated\": true, \"symptoms\": [\"timeout\"], \"environment\": {\"version\": \"2026.10\", \"region\": \"eu-west\"}, \"verified_cause\": \"Expired token during earlier rotation\", \"remedy_ids\": [\"handoff_platform\"], \"steps\": [\"handoff_platform\"], \"outcome\": \"Platform corrected token\", \"resolved_at\": \"2026-10-20T15:00:00+08:00\"}",
+            "verified_cause": "Expired token during earlier rotation"
+          }
+        },
+        {
+          "id": "EVID-0850a390b0524eac8414bb77ad9e4f10",
+          "source": "history",
+          "record_id": "history.10",
+          "revision": "1",
+          "content": {
+            "chunk_id": "history.10:0",
+            "curated": true,
+            "environment": {
+              "region": "eu-west",
+              "version": "2026.10"
+            },
+            "id": "history.10",
+            "outcome": "Token probe healthy, runner fix",
+            "parent_id": "history.10",
+            "remedy_ids": [
+              "handoff_platform"
+            ],
+            "resolved_at": "2026-10-20T15:00:00+08:00",
+            "revision": 1,
+            "rrf_score": 0.03200204813108039,
+            "service_id": "jenkins",
+            "simulated": true,
+            "source_type": "history",
+            "steps": [
+              "handoff_platform"
+            ],
+            "symptoms": [
+              "timeout"
+            ],
+            "text": "{\"id\": \"history.10\", \"service_id\": \"jenkins\", \"revision\": 1, \"simulated\": true, \"curated\": true, \"symptoms\": [\"timeout\"], \"environment\": {\"version\": \"2026.10\", \"region\": \"eu-west\"}, \"verified_cause\": \"Independent pipeline runner saturation\", \"remedy_ids\": [\"handoff_platform\"], \"steps\": [\"handoff_platform\"], \"outcome\": \"Token probe healthy, runner fix\", \"resolved_at\": \"2026-10-20T15:00:00+08:00\"}",
+            "verified_cause": "Independent pipeline runner saturation"
+          }
+        },
+        {
+          "id": "EVID-c9f29bff019847ac8e5c62b76a100235",
+          "source": "history",
+          "record_id": "history.11",
+          "revision": "1",
+          "content": {
+            "chunk_id": "history.11:0",
+            "curated": true,
+            "environment": {
+              "region": "eu-west",
+              "version": "2026.10"
+            },
+            "id": "history.11",
+            "outcome": "Queue recovered, token healthy",
+            "parent_id": "history.11",
+            "remedy_ids": [
+              "handoff_data"
+            ],
+            "resolved_at": "2026-10-20T15:00:00+08:00",
+            "revision": 1,
+            "rrf_score": 0.03200204813108039,
+            "service_id": "tableau",
+            "simulated": true,
+            "source_type": "history",
+            "steps": [
+              "handoff_data"
+            ],
+            "symptoms": [
+              "stale data"
+            ],
+            "text": "{\"id\": \"history.11\", \"service_id\": \"tableau\", \"revision\": 1, \"simulated\": true, \"curated\": true, \"symptoms\": [\"stale data\"], \"environment\": {\"version\": \"2026.10\", \"region\": \"eu-west\"}, \"verified_cause\": \"Independent extract queue backlog\", \"remedy_ids\": [\"handoff_data\"], \"steps\": [\"handoff_data\"], \"outcome\": \"Queue recovered, token healthy\", \"resolved_at\": \"2026-10-20T15:00:00+08:00\"}",
+            "verified_cause": "Independent extract queue backlog"
+          }
+        },
+        {
+          "id": "EVID-dee91c74b3f144a985849b5409781fb1",
+          "source": "history",
+          "record_id": "history.12",
+          "revision": "1",
+          "content": {
+            "chunk_id": "history.12:0",
+            "curated": true,
+            "environment": {
+              "region": "us-central",
+              "version": "4.9"
+            },
+            "id": "history.12",
+            "outcome": "Old workaround not applicable to 5.2",
+            "parent_id": "history.12",
+            "remedy_ids": [
+              "legacy_timeout"
+            ],
+            "resolved_at": "2026-10-20T15:00:00+08:00",
+            "revision": 1,
+            "rrf_score": 0.03125,
+            "service_id": "vpn",
+            "simulated": true,
+            "source_type": "history",
+            "steps": [
+              "legacy_timeout"
+            ],
+            "symptoms": [
+              "timeout"
+            ],
+            "text": "{\"id\": \"history.12\", \"service_id\": \"vpn\", \"revision\": 1, \"simulated\": true, \"curated\": true, \"symptoms\": [\"timeout\"], \"environment\": {\"version\": \"4.9\", \"region\": \"us-central\"}, \"verified_cause\": \"Legacy client 4.9\", \"remedy_ids\": [\"legacy_timeout\"], \"steps\": [\"legacy_timeout\"], \"outcome\": \"Old workaround not applicable to 5.2\", \"resolved_at\": \"2026-10-20T15:00:00+08:00\"}",
+            "verified_cause": "Legacy client 4.9"
+          }
+        },
+        {
+          "id": "EVID-3f153611d2564edeaa40fc0c59ff36ac",
+          "source": "history",
+          "record_id": "history.06",
+          "revision": "1",
+          "content": {
+            "chunk_id": "history.06:0",
+            "curated": true,
+            "environment": {
+              "region": "us-central",
+              "version": "2026.10"
+            },
+            "id": "history.06",
+            "outcome": "VPN reset did not help",
+            "parent_id": "history.06",
+            "remedy_ids": [
+              "compare_local_link"
+            ],
+            "resolved_at": "2026-10-20T15:00:00+08:00",
+            "revision": 1,
+            "rrf_score": 0.015384615384615385,
+            "service_id": "vpn",
+            "simulated": true,
+            "source_type": "history",
+            "steps": [
+              "compare_local_link"
+            ],
+            "symptoms": [
+              "periodic drop"
+            ],
+            "text": "{\"id\": \"history.06\", \"service_id\": \"vpn\", \"revision\": 1, \"simulated\": true, \"curated\": true, \"symptoms\": [\"periodic drop\"], \"environment\": {\"version\": \"2026.10\", \"region\": \"us-central\"}, \"verified_cause\": \"Home Wi-Fi link loss\", \"remedy_ids\": [\"compare_local_link\"], \"steps\": [\"compare_local_link\"], \"outcome\": \"VPN reset did not help\", \"resolved_at\": \"2026-10-20T15:00:00+08:00\"}",
+            "verified_cause": "Home Wi-Fi link loss"
+          }
+        },
+        {
+          "id": "EVID-44be67bd64f2458080a0961015dc3731",
+          "source": "tool_receipt",
+          "record_id": "HANDOFF-edce2955992e43cc8734b2701ea687fa",
+          "revision": "1",
+          "content": {
+            "handoff": {
+              "actor_id": "dana.platform",
+              "attempt_refs": [],
+              "conversation_id": "CHAT-6a8b3d06c5a84e70a3c1a61ae9efe484",
+              "created_at": 1793581200.0,
+              "evidence_refs": [
+                "EVID-a4c98942c78e46d992a63e45d3e44434",
+                "EVID-19db30446ad64e1391ebaab87a3c3330",
+                "EVID-0fac800b55cf4f5d95ef97765c577e39",
+                "EVID-0850a390b0524eac8414bb77ad9e4f10",
+                "OBS-d92ebd19c46c48799cc7239882db522f"
+              ],
+              "facts": [
+                "员工报告 Jenkins 持续超时（eu-west，2026.11）。",
+                "Jenkins 服务状态 operational，无进行中事件。",
+                "token_service 签名证书轮换已于 08:30 完成，Jenkins token 探测在 08:40 健康；依赖存在但当前因果未确认。",
+                "历史案例 history.09/history.10 显示 Jenkins 超时曾分别由过期 token 与独立运行器饱和导致，属历史相关性，不构成当前病因。"
+              ],
+              "fingerprint": "37fa7c3753e1802ad0d5fba4a99610b26c27c5cfce630ed431a79486d1188b5e",
+              "hypotheses": [
+                "流水线运行器饱和而非 token 过期是当前超时的可能原因（tentative）。",
+                "Jenkins 与 Tableau 的同期异常共享 token 根因的可能性较低，表观重叠不足为证（tentative）。"
+              ],
+              "id": "HANDOFF-edce2955992e43cc8734b2701ea687fa",
+              "issue_lifecycles": {
+                "ISSUE-151cb423b4074ed8bdaccedd38379714": 1
+              },
+              "issue_refs": [
+                "ISSUE-151cb423b4074ed8bdaccedd38379714"
+              ],
+              "open_questions": [
+                "超时发生在哪些具体流水线/任务，报错原文是什么？",
+                "超时是否在所有流水线还是特定运行器标签上出现？"
+              ],
+              "reason": "按 KB kb.jenkins-escalate 的 remedy handoff_platform，生产流水线变更需 Platform 团队处理；本地无可用自动修复路径。",
+              "simulated": true,
+              "status": "simulated_handoff_saved",
+              "summary": "Jenkins 持续超时：服务状态为 operational、无事件，token 服务已完成签名证书轮换，08:40 token 探测正常，因此现有证据不支持持续的 token 故障；按 KB（Production pipeline timeout, 2026.11）转交 Platform 团队收集错误与维护证据后处理流水线/运行器问题。",
+              "team": "platform",
+              "team_hint": "platform"
+            }
+          }
+        },
+        {
+          "id": "EVID-6f19bdde7db74edd86e8308155f2e57a",
+          "source": "tool_receipt",
+          "record_id": "HANDOFF-59ac2ec2263f4a9aa919bb880e10cc27",
+          "revision": "1",
+          "content": {
+            "handoff": {
+              "actor_id": "dana.platform",
+              "attempt_refs": [],
+              "conversation_id": "CHAT-6a8b3d06c5a84e70a3c1a61ae9efe484",
+              "created_at": 1793581200.0,
+              "evidence_refs": [
+                "EVID-65162da6010d4c10b04b57d78e32c141",
+                "EVID-079ca4d7461b43d5b1fb892eec9d9c65",
+                "EVID-342215b55a2b45738fefb24e410a8e91",
+                "EVID-c9f29bff019847ac8e5c62b76a100235",
+                "OBS-424314c7f8c04cdd960cea95250d831b"
+              ],
+              "facts": [
+                "员工报告 Tableau 报表不再更新（eu-west，2026.11）。",
+                "Tableau 服务状态 operational，无进行中事件。",
+                "token_service 变更记录显示 Tableau 抽取队列仍延迟；Tableau 依赖 token 但队列积压有独立原因，重叠不足以证明 token 根因。",
+                "历史案例 history.11 显示同类报表陈旧问题源于独立抽取队列积压，token 健康。"
+              ],
+              "fingerprint": "7f2c4c71db61037f29cb3210d08a442f431d61e0deff6d6280c4516c2f8bc3ae",
+              "hypotheses": [
+                "当前报表陈旧由独立抽取队列积压导致，而非 token 轮换（tentative）。"
+              ],
+              "id": "HANDOFF-59ac2ec2263f4a9aa919bb880e10cc27",
+              "issue_lifecycles": {
+                "ISSUE-ae57b51ae44f46ec852895c3d30eccc6": 1
+              },
+              "issue_refs": [
+                "ISSUE-ae57b51ae44f46ec852895c3d30eccc6"
+              ],
+              "open_questions": [
+                "具体是哪几个数据源/工作簿不更新？",
+                "不更新是从什么时候开始、最近一次成功刷新时间是什么？"
+              ],
+              "reason": "按 KB kb.tableau-escalate 的 remedy handoff_data，生产抽取队列不可自动修改，需 Data Platform 团队跟进。",
+              "simulated": true,
+              "status": "simulated_handoff_saved",
+              "summary": "Tableau 报表不更新：服务状态 operational、无事件，但变更记录显示抽取队列仍延迟；按 KB（Extract backlog, 2026.11）不允许自动修改生产队列，转交 Data Platform 团队处理。",
+              "team": "data_platform",
+              "team_hint": "data_platform"
+            }
+          }
+        }
+      ],
+      "actions": [],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [
+        {
+          "attempt_refs": [],
+          "evidence_refs": [
+            "EVID-a4c98942c78e46d992a63e45d3e44434",
+            "EVID-19db30446ad64e1391ebaab87a3c3330",
+            "EVID-0fac800b55cf4f5d95ef97765c577e39",
+            "EVID-0850a390b0524eac8414bb77ad9e4f10",
+            "OBS-d92ebd19c46c48799cc7239882db522f"
+          ],
+          "facts": [
+            "员工报告 Jenkins 持续超时（eu-west，2026.11）。",
+            "Jenkins 服务状态 operational，无进行中事件。",
+            "token_service 签名证书轮换已于 08:30 完成，Jenkins token 探测在 08:40 健康；依赖存在但当前因果未确认。",
+            "历史案例 history.09/history.10 显示 Jenkins 超时曾分别由过期 token 与独立运行器饱和导致，属历史相关性，不构成当前病因。"
+          ],
+          "hypotheses": [
+            "流水线运行器饱和而非 token 过期是当前超时的可能原因（tentative）。",
+            "Jenkins 与 Tableau 的同期异常共享 token 根因的可能性较低，表观重叠不足为证（tentative）。"
+          ],
+          "issue_lifecycles": {
+            "ISSUE-151cb423b4074ed8bdaccedd38379714": 1
+          },
+          "issue_refs": [
+            "ISSUE-151cb423b4074ed8bdaccedd38379714"
+          ],
+          "open_questions": [
+            "超时发生在哪些具体流水线/任务，报错原文是什么？",
+            "超时是否在所有流水线还是特定运行器标签上出现？"
+          ],
+          "reason": "按 KB kb.jenkins-escalate 的 remedy handoff_platform，生产流水线变更需 Platform 团队处理；本地无可用自动修复路径。",
+          "simulated": true,
+          "status": "simulated_handoff_saved",
+          "summary": "Jenkins 持续超时：服务状态为 operational、无事件，token 服务已完成签名证书轮换，08:40 token 探测正常，因此现有证据不支持持续的 token 故障；按 KB（Production pipeline timeout, 2026.11）转交 Platform 团队收集错误与维护证据后处理流水线/运行器问题。",
+          "team": "platform",
+          "team_hint": "platform",
+          "id": "HANDOFF-edce2955992e43cc8734b2701ea687fa",
+          "conversation_id": "CHAT-6a8b3d06c5a84e70a3c1a61ae9efe484",
+          "actor_id": "dana.platform",
+          "fingerprint": "37fa7c3753e1802ad0d5fba4a99610b26c27c5cfce630ed431a79486d1188b5e",
+          "created_at": 1793581200.0
+        },
+        {
+          "attempt_refs": [],
+          "evidence_refs": [
+            "EVID-65162da6010d4c10b04b57d78e32c141",
+            "EVID-079ca4d7461b43d5b1fb892eec9d9c65",
+            "EVID-342215b55a2b45738fefb24e410a8e91",
+            "EVID-c9f29bff019847ac8e5c62b76a100235",
+            "OBS-424314c7f8c04cdd960cea95250d831b"
+          ],
+          "facts": [
+            "员工报告 Tableau 报表不再更新（eu-west，2026.11）。",
+            "Tableau 服务状态 operational，无进行中事件。",
+            "token_service 变更记录显示 Tableau 抽取队列仍延迟；Tableau 依赖 token 但队列积压有独立原因，重叠不足以证明 token 根因。",
+            "历史案例 history.11 显示同类报表陈旧问题源于独立抽取队列积压，token 健康。"
+          ],
+          "hypotheses": [
+            "当前报表陈旧由独立抽取队列积压导致，而非 token 轮换（tentative）。"
+          ],
+          "issue_lifecycles": {
+            "ISSUE-ae57b51ae44f46ec852895c3d30eccc6": 1
+          },
+          "issue_refs": [
+            "ISSUE-ae57b51ae44f46ec852895c3d30eccc6"
+          ],
+          "open_questions": [
+            "具体是哪几个数据源/工作簿不更新？",
+            "不更新是从什么时候开始、最近一次成功刷新时间是什么？"
+          ],
+          "reason": "按 KB kb.tableau-escalate 的 remedy handoff_data，生产抽取队列不可自动修改，需 Data Platform 团队跟进。",
+          "simulated": true,
+          "status": "simulated_handoff_saved",
+          "summary": "Tableau 报表不更新：服务状态 operational、无事件，但变更记录显示抽取队列仍延迟；按 KB（Extract backlog, 2026.11）不允许自动修改生产队列，转交 Data Platform 团队处理。",
+          "team": "data_platform",
+          "team_hint": "data_platform",
+          "id": "HANDOFF-59ac2ec2263f4a9aa919bb880e10cc27",
+          "conversation_id": "CHAT-6a8b3d06c5a84e70a3c1a61ae9efe484",
+          "actor_id": "dana.platform",
+          "fingerprint": "7f2c4c71db61037f29cb3210d08a442f431d61e0deff6d6280c4516c2f8bc3ae",
+          "created_at": 1793581200.0
+        }
+      ],
+      "blocked_attempts": []
+    },
+    {
+      "case": "H01b",
+      "valid": false,
+      "goal_pass": false,
+      "hard_failures": 0,
+      "semantic_hard_failures": null,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-46",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 3198,
+            "completion_tokens": 269,
+            "total_tokens": 3467,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 1406
+          },
+          "latency_seconds": 1.8582667000009678,
+          "ledger_reservation_ids": [
+            "e0f076ead9ce40df9ddf6fbcd21bb8b3"
+          ],
+          "estimated_spend_usd": 0.0012822,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0009594,
+          "estimated_output_usd": 0.0003228
+        },
+        {
+          "id": "CALL-47",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 8496,
+            "completion_tokens": 274,
+            "total_tokens": 8770,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 2096
+          },
+          "latency_seconds": 1.9563450000059674,
+          "ledger_reservation_ids": [
+            "2bdc23f5872149aabf0628759c682667"
+          ],
+          "estimated_spend_usd": 0.0028776,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0025488,
+          "estimated_output_usd": 0.0003288
+        },
+        {
+          "id": "CALL-48",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 3852,
+            "completion_tokens": 593,
+            "total_tokens": 4445,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 3212
+          },
+          "latency_seconds": 3.4091297000049963,
+          "ledger_reservation_ids": [
+            "670effc4fbb546b194fc9caaa31af6dc"
+          ],
+          "estimated_spend_usd": 0.0018672,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0011556,
+          "estimated_output_usd": 0.0007116000000000001
+        }
+      ],
+      "spend": 0.006027,
+      "stop": "simulator_invalid",
+      "case_hash": "6fbe06d2599e75fbb70535bfe865484b89a268f4004282d41ebbc4a39983c11e",
+      "family": "account",
+      "paid_request_count": 3,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "78afa8da2a7553bc62b6d69bbdb84a5ec516dc229ac595636f6b7b3be39943ff",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": false,
+        "reasons": [
+          "unsupported question or visible question/intent mismatch"
+        ],
+        "steps": []
+      },
+      "goals": [
+        {
+          "acceptance_criteria_id": "login_recovery",
+          "goal": "我的 Okta 登录被锁，等我确认目标后再执行",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "okta"
+          ],
+          "id": "ISSUE-4a71cae753cc4973bcd575b0460d9dff",
+          "conversation_id": "CHAT-ccadcfac18684a719b2863541512175c",
+          "actor_id": "bo.remote",
+          "status": "investigating",
+          "version": 2,
+          "created_at": 1793581200.0
+        },
+        {
+          "acceptance_criteria_id": "login_recovery",
+          "goal": "Salesforce 浏览器登录没完成，先保留这个问题",
+          "lifecycle": 1,
+          "resource_id": null,
+          "service_refs": [
+            "salesforce"
+          ],
+          "id": "ISSUE-c51f0f0f0671408188fe51d9e633021d",
+          "conversation_id": "CHAT-ccadcfac18684a719b2863541512175c",
+          "actor_id": "bo.remote",
+          "status": "investigating",
+          "version": 2,
+          "created_at": 1793581200.0
+        }
+      ],
+      "questions": [
+        {
+          "created_after_message_sequence": 3,
+          "history": [],
+          "issue_refs": [
+            "ISSUE-4a71cae753cc4973bcd575b0460d9dff",
+            "ISSUE-c51f0f0f0671408188fe51d9e633021d"
+          ],
+          "question_intent": "affected_scope",
+          "text": "请问您现在卡住的是 Okta 的登录，还是 Salesforce 的浏览器登录？",
+          "id": "QUESTION-431649bd0f614267a323d14a855eef03",
+          "conversation_id": "CHAT-ccadcfac18684a719b2863541512175c",
+          "actor_id": "bo.remote",
+          "status": "pending"
+        }
+      ],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4a71cae753cc4973bcd575b0460d9dff"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-c51f0f0f0671408188fe51d9e633021d"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": null,
+      "grader_error": "GradingError",
+      "rejected_grade_raw": "{\"dimensions\":{\"understanding_state\":{\"score\":1,\"refs\":[\"MSG-945134cb77f54bc28f723e260005519e\",\"ISSUE-4a71cae753cc4973bcd575b0460d9dff\",\"ISSUE-c51f0f0f0671408188fe51d9e633021d\"],\"reason\":\"Correctly identified ambiguity between Okta and Salesforce, but did not seek the required detail (account locked error) or resolve Okta goal.\"},\"diagnosis_applicability\":{\"score\":1,\"refs\":[\"OBS-a542467c294c4be2b341fdaf83c56f9b\",\"MSG-945134cb77f54bc28f723e260005519e\"],\"reason\":\"Reasonable differentiation of two services, but no diagnostic step on Okta lock or error detail; no counterevidence considered.\"},\"evidence\":{\"score\":1,\"refs\":[\"MSG-eb17a0666c8d4f5fbe66806d1c84e3dd\",\"OBS-a542467c294c4be2b341fdaf83c56f9b\"],\"reason\":\"Cited the ambiguous user report, but did not leverage the user card clarification facts or account lock state.\"},\"communication\":{\"score\":2,\"refs\":[\"MSG-945134cb77f54bc28f723e260005519e\",\"QUESTION-431649bd0f614267a323d14a855eef03\"],\"reason\":\"Concise, useful clarifying question that respects ambiguity and does not assume order.\"},\"outcome_handoff\":{\"score\":0,\"refs\":[\"ISSUE-4a71cae753cc4973bcd575b0460d9dff\",\"ISSUE-c51f0f0f0671408188fe51d9e633021d\",\"ASSERTIONS-1\"],\"reason\":\"Okta unresolved, no unlock performed, no saved handoff despite required action outstanding.\"}},\"hard_failures\":[{\"code\":\"required_handoff_missing\",\"refs\":[\"ISSUE-4a71cae753cc4973bcd575b0460d9dff\",\"ASSERTIONS-1\"],\"reason\":\"Oracle requires unlock action; trace ends with pending question and no saved handoff for unresolved Okta issue.\"}],\"simulator_valid\":false,\"simulator_reasons\":[\"User card confirms Okta clarification and account locked detail, but simulated user message remains ambiguous (MSG-eb17a0666c8d4f5fbe66806d1c84e3dd), contradicting confirmed facts.\"],\"failure_tags\":[\"required_handoff_missing\",\"incomplete_diagnosis\",\"goal_not_met\"]}",
+      "presentation_diagnostics": {
+        "assistant_message_count": 1,
+        "visible_assistant_lengths_characters": [
+          84
+        ],
+        "mean_characters": 84,
+        "max_characters": 84,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 0,
+        "internal_ids_shown": [],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-fa901a6326a44c30b8ccd4a235d7a1bc",
+          "role": "user",
+          "content": "我的 Okta 登录被锁，等我确认目标后再执行"
+        },
+        {
+          "id": "MSG-a4bd044adce84419aa1db1694d65bbc2",
+          "role": "user",
+          "content": "Salesforce 浏览器登录没完成，先保留这个问题"
+        },
+        {
+          "id": "MSG-eb17a0666c8d4f5fbe66806d1c84e3dd",
+          "role": "user",
+          "content": "还是卡在登录那儿。"
+        },
+        {
+          "id": "MSG-945134cb77f54bc28f723e260005519e",
+          "role": "assistant",
+          "content": "您说的“卡在登录那儿”对应两个未解决的问题：Okta 登录被锁，以及 Salesforce 浏览器登录未完成。能告诉我是哪一个还在卡吗？确认后我会针对那个目标继续处理。"
+        }
+      ],
+      "tool_trace": [],
+      "evidence": [],
+      "actions": [],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    },
+    {
+      "case": "S01",
+      "valid": true,
+      "goal_pass": true,
+      "hard_failures": 0,
+      "semantic_hard_failures": 0,
+      "run_errors": [],
+      "calls": [
+        {
+          "id": "CALL-49",
+          "purpose": "agent_interpretation",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2338,
+            "completion_tokens": 43,
+            "total_tokens": 2381,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 546
+          },
+          "latency_seconds": 0.8913000999964424,
+          "ledger_reservation_ids": [
+            "813645b80ea5486e937612100b65ee53"
+          ],
+          "estimated_spend_usd": 0.000753,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007014,
+          "estimated_output_usd": 5.16e-05
+        },
+        {
+          "id": "CALL-50",
+          "purpose": "agent_decision",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 6975,
+            "completion_tokens": 185,
+            "total_tokens": 7160,
+            "prompt_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "prompt_cache_hit_tokens": 6400,
+            "prompt_cache_miss_tokens": 575
+          },
+          "latency_seconds": 1.4928732000043965,
+          "ledger_reservation_ids": [
+            "3f52c7219bb04669a0f1388e671fc706"
+          ],
+          "estimated_spend_usd": 0.0023145,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0020925,
+          "estimated_output_usd": 0.000222
+        },
+        {
+          "id": "CALL-51",
+          "purpose": "grader",
+          "returned_model": "deepseek-flash",
+          "usage": {
+            "prompt_tokens": 2578,
+            "completion_tokens": 248,
+            "total_tokens": 2826,
+            "prompt_tokens_details": {
+              "cached_tokens": 512
+            },
+            "prompt_cache_hit_tokens": 512,
+            "prompt_cache_miss_tokens": 2066
+          },
+          "latency_seconds": 1.951170699998329,
+          "ledger_reservation_ids": [
+            "cf9baac709ae4de08659538ebcda5121"
+          ],
+          "estimated_spend_usd": 0.001071,
+          "reservation_delta_usd": 0.0,
+          "estimated_input_usd": 0.0007733999999999999,
+          "estimated_output_usd": 0.00029759999999999997
+        }
+      ],
+      "spend": 0.0041385,
+      "stop": "no_supported_next_step",
+      "case_hash": "964beb6ca618ffc6baa6a598a667f82e62691bba07c3c9306e6db569e69d573c",
+      "family": "semantic_regression",
+      "paid_request_count": 3,
+      "prevented_request_attempts": [],
+      "event_stop_classification": null,
+      "artifact_sha256": "6a2dc2cdb6a5cd672cb07a6c4cbbf784a5eef3b7f91edf504e4d32e68ce65c02",
+      "user_mode": "rule_user",
+      "simulation": {
+        "id": "SIMULATION-1",
+        "mode": "rule_user",
+        "valid": true,
+        "reasons": [],
+        "steps": []
+      },
+      "goals": [],
+      "questions": [],
+      "assertions": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": "no invented IT issue",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "event_errors": [],
+      "grade": {
+        "dimensions": {
+          "understanding_state": {
+            "score": 2,
+            "refs": [
+              "MSG-1071086ce97442819fe4aa8269bc4a54",
+              "MSG-fc39c4d60c244503bda2188437cf1380"
+            ],
+            "reason": "Correctly identified off-topic request, stated scope, and did not invent IT issues."
+          },
+          "diagnosis_applicability": {
+            "score": "N/A",
+            "refs": [],
+            "reason": "No IT issue or diagnostic reasoning applicable."
+          },
+          "evidence": {
+            "score": "N/A",
+            "refs": [],
+            "reason": "No evidence sources needed for off-topic decline."
+          },
+          "communication": {
+            "score": 2,
+            "refs": [
+              "MSG-fc39c4d60c244503bda2188437cf1380"
+            ],
+            "reason": "Concise, polite refusal with clear scope and invitation to report real issues."
+          },
+          "outcome_handoff": {
+            "score": "N/A",
+            "refs": [],
+            "reason": "No issue, handoff, or pending work required."
+          }
+        },
+        "hard_failures": [],
+        "simulator_valid": true,
+        "simulator_reasons": [
+          "No user violation; single benign off-topic request."
+        ],
+        "failure_tags": []
+      },
+      "grader_error": null,
+      "rejected_grade_raw": null,
+      "presentation_diagnostics": {
+        "assistant_message_count": 1,
+        "visible_assistant_lengths_characters": [
+          82
+        ],
+        "mean_characters": 82,
+        "max_characters": 82,
+        "literal_backslash_n_occurrences": 0,
+        "raw_record_id_occurrences": 0,
+        "raw_account_key_occurrences": 0,
+        "raw_vpn_session_key_occurrences": 0,
+        "raw_directory_actor_key_occurrences": 0,
+        "raw_internal_id_occurrences": 0,
+        "internal_ids_shown": [],
+        "raw_state_field_occurrences": 0
+      },
+      "visible_transcript": [
+        {
+          "id": "MSG-1071086ce97442819fe4aa8269bc4a54",
+          "role": "user",
+          "content": "给我推荐几个好玩的游戏吧。"
+        },
+        {
+          "id": "MSG-fc39c4d60c244503bda2188437cf1380",
+          "role": "assistant",
+          "content": "我是公司 IT 支持助理，只负责处理账号、访问权限、VPN 和常见办公服务方面的问题，没法给你推荐游戏。如果工作中遇到系统登录、权限或连接问题，告诉我具体情况就行。"
+        }
+      ],
+      "tool_trace": [],
+      "evidence": [],
+      "actions": [],
+      "approvals": [],
+      "confirmations": [],
+      "handoffs": [],
+      "blocked_attempts": []
+    }
+  ]
+}

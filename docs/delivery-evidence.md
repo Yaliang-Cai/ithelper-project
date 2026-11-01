@@ -2,6 +2,8 @@
 
 2026-11-02（Asia/Shanghai）。本页先保留65743f3的集成检查，最后记录2026-11-02最终边界修复的离线验证；正式评测保留为历史版本测量，没有真人专家、真实企业系统或外部发布。
 
+新增 v6 `5055722` 的七次定向实测及最终 v7 `baca519` 的 D05/D09 配对检查另见[员工交互迭代结果](delivery-iteration-result.md)、[v6 证据](evidence/delivery-iteration-v6.json)和[v7 证据](evidence/delivery-iteration-v7.json)。这是单独的新证据，含未完成、无效模拟和评测余量停止；不替换本页旧 smoke 或正式历史汇总，最终 v7 不继承 v6 的五类覆盖。
+
 ## 实际检查
 
 | 检查 | 模式与结果 | 证据/复现 |
