@@ -68,3 +68,54 @@ def test_context_preference_or_cancel_cannot_clear(ambiguity,category,intents,te
     interpret(d,chat,text,[{'candidate_key':'later','target_refs':[okta['id']],'category':category,'claim':text,'quote':text,'mapping_status':'tentative'}],intents=intents)
     result=t.call('unlock_account',{'issue_id':okta['id'],'service_id':'okta','evidence_refs':[]},'alice.sales',chat)
     assert not result['ok'] and result['error']['code']=='AMBIGUOUS_SCOPE'
+
+
+def resolved_pair(tmp_path):
+    d=Domain(Store(tmp_path/'pair.sqlite').initialize());chat=d.create_conversation('alice.sales')['id'];t=ToolExecutor(d)
+    issues=[]
+    for resource,service in [('grafana.sales','grafana'),('snowflake.prod.analytics','snowflake')]:
+        i=d.create_issue('alice.sales',chat,'Read '+resource,[service],'precise_access',resource);args={'issue_id':i['id'],'resource_id':resource,'permission':'read','evidence_refs':[]}
+        if service=='snowflake':
+            approval=t.call('request_approval',{**args,'reason':'report'},'alice.sales',chat)['data']['approval'];d.decide_approval('pat.approver',approval['id'],'approved');args['approval_id']=approval['id']
+        t.call('grant_catalog_access',args,'alice.sales',chat)
+        evidence=t.call('inspect_access',{'resource_id':resource},'alice.sales',chat)['evidence'][0]
+        current=next(x for x in d.snapshot('alice.sales',chat)['issues'] if x['id']==i['id'])
+        d.apply_issue_updates('alice.sales',chat,[{'issue_id':i['id'],'expected_version':current['version'],'requested_status':'resolved','criterion_id':'precise_access','evidence_refs':[evidence['id']]}]);issues.append(i)
+    return d,chat,issues
+
+
+def test_ambiguous_negative_feedback_preserves_verified_goals_and_flags_uncertainty(tmp_path):
+    d,chat,issues=resolved_pair(tmp_path)
+    assert d.snapshot('alice.sales',chat)['all_resolved']
+    interpret(d,chat,'That one failed again.',[{'candidate_key':'o','target_refs':[i['id'] for i in issues],'category':'reported_failure','claim':'Unassigned regression report','quote':'That one failed again.','mapping_status':'needs_clarification'}])
+    s=d.snapshot('alice.sales',chat)
+    assert all(i['status']=='resolved' and i['lifecycle']==1 for i in s['issues'])
+    assert not s['all_resolved'] and s['unassigned_feedback']
+    old=s['observations'][0]
+    m=d.append_message('alice.sales',chat,'user','Actually I meant the other one.','ambiguous-correction')
+    proposal={k:[] for k in ('message_intents','new_issue_candidates','observations','corrections','relation_candidates','unresolved_references')};proposal['message_intents']=['correction']
+    proposal['corrections']=[{'candidate_key':'c','observation_id':old['id'],'expected_version':old['version'],'claim':'Still ambiguous target','quote':'Actually I meant the other one.'}]
+    d.apply_candidates('alice.sales',chat,m['id'],proposal,d.snapshot('alice.sales',chat)['conversation']['version'])
+    s=d.snapshot('alice.sales',chat)
+    assert all(i['status']=='resolved' and i['lifecycle']==1 for i in s['issues'])
+    assert s['observations'][-1]['mapping_status']=='needs_clarification' and not s['all_resolved']
+    interpret(d,chat,'Grafana failed again.',[{'candidate_key':'specific','target_refs':[issues[0]['id']],'category':'reported_failure','claim':'Grafana regression','quote':'Grafana failed again.','mapping_status':'tentative'}],intents=['progress_report'])
+    s=d.snapshot('alice.sales',chat);byid={i['id']:i for i in s['issues']}
+    assert byid[issues[0]['id']]['status']=='investigating' and byid[issues[0]['id']]['lifecycle']==2
+    assert byid[issues[1]['id']]['status']=='resolved' and byid[issues[1]['id']]['lifecycle']==1
+    assert not s['unassigned_feedback'] and not s['all_resolved']
+
+
+@pytest.mark.parametrize('new_ambiguity',[False,True])
+def test_inherited_correction_cannot_relatch_valid_same_batch_clarification(ambiguity,new_ambiguity):
+    d,chat,okta,prod,grafana,t=ambiguity;old=d.snapshot('alice.sales',chat)['observations'][0]
+    text='I mean Okta, please unlock it. The other reference is still unclear.'
+    m=d.append_message('alice.sales',chat,'user',text,'clarify-with-correction')
+    p={k:[] for k in ('message_intents','new_issue_candidates','observations','corrections','relation_candidates','unresolved_references')};p['message_intents']=['correction','new_request']
+    p['corrections']=[{'candidate_key':'c','observation_id':old['id'],'expected_version':old['version'],'claim':'Supersede previous ambiguous report','quote':'I mean Okta'}]
+    p['observations']=[{'candidate_key':'specific','target_refs':[okta['id']],'category':'request','claim':'Explicit Okta unlock','quote':'I mean Okta, please unlock it.','mapping_status':'tentative'}]
+    if new_ambiguity:p['unresolved_references']=[{'candidate_key':'new','quote':'The other reference is still unclear.','candidate_issue_ids':[okta['id'],prod['id']],'clarification_question':'Which reference?'}]
+    d.apply_candidates('alice.sales',chat,m['id'],p,d.snapshot('alice.sales',chat)['conversation']['version'])
+    result=t.call('unlock_account',{'issue_id':okta['id'],'service_id':'okta','evidence_refs':[]},'alice.sales',chat)
+    assert result['ok'] is (not new_ambiguity)
+    assert bool(d.snapshot('alice.sales',chat)['unassigned_feedback']) is new_ambiguity

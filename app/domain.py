@@ -107,7 +107,8 @@ class Domain:
             result={'conversation':self._conversation(c,actor_id,conversation_id)}
             for table in ('messages','issues','observations','relations','hypotheses','evidence','attempts','actions','confirmations','approvals','handoffs','questions','events','runs'):
                 result[table]=[unpack(r) for r in c.execute(f'SELECT * FROM {table} WHERE conversation_id=? ORDER BY rowid',(conversation_id,))]
-            result['all_resolved']=bool(result['issues']) and all(i['status']=='resolved' for i in result['issues'])
+            result['unassigned_feedback']=self._scope_uncertainty(c,actor_id,conversation_id)['unassigned_feedback']
+            result['all_resolved']=bool(result['issues']) and all(i['status']=='resolved' for i in result['issues']) and not result['unassigned_feedback']
             return result
 
     def append_message(self,actor_id,conversation_id,role,content,idempotency_key):
@@ -272,7 +273,7 @@ class Domain:
                 c.execute('INSERT INTO observations VALUES(?,?,?,?,?,?,?)',(oid,conversation_id,message_id,actor_id,1,self.store.clock(),dumps(payload)))
                 observation=unpack(c.execute('SELECT * FROM observations WHERE id=?',(oid,)).fetchone())
                 refs[item['candidate_key']]=oid;result['observations'].append(observation)
-                if item['category'] in ('reported_failure','symptom','correction'):
+                if item['category'] in ('reported_failure','symptom','correction') and item['mapping_status']=='tentative':
                     self._reopen_resolved(c,actor_id,conversation_id,targets)
             for item in candidates['corrections']:
                 candidate(item,{'candidate_key','observation_id','expected_version','claim','quote'}, {'candidate_key','observation_id','expected_version','claim','quote'})
@@ -283,10 +284,11 @@ class Domain:
                 touched.update(old_obs['issue_refs'])
                 old_payload=json.loads(c.execute('SELECT payload FROM observations WHERE id=?',(old_obs['id'],)).fetchone()[0]);old_payload['status']='superseded'
                 c.execute('UPDATE observations SET version=version+1,payload=? WHERE id=?',(dumps(old_payload),old_obs['id']))
-                oid=new_id('OBS');payload={**item,'category':'correction','issue_refs':old_obs['issue_refs'],'source_kind':'user_report','source_id':message_id,'status':'active','mapping_status':'tentative'}
+                mapping='needs_clarification' if old_obs.get('mapping_status')=='needs_clarification' else 'tentative'
+                oid=new_id('OBS');payload={**item,'category':'correction','issue_refs':old_obs['issue_refs'],'source_kind':'user_report','source_id':message_id,'status':'active','mapping_status':mapping}
                 c.execute('INSERT INTO observations VALUES(?,?,?,?,?,?,?)',(oid,conversation_id,message_id,actor_id,1,self.store.clock(),dumps(payload)))
                 result['corrections'].append(unpack(c.execute('SELECT * FROM observations WHERE id=?',(oid,)).fetchone()));refs[item['candidate_key']]=oid
-                self._reopen_resolved(c,actor_id,conversation_id,old_obs['issue_refs'])
+                if mapping=='tentative':self._reopen_resolved(c,actor_id,conversation_id,old_obs['issue_refs'])
             for item in candidates['relation_candidates']:
                 candidate(item,{'candidate_key','from_ref','to_ref','type','support_refs'}, {'candidate_key','from_ref','to_ref','type','support_refs'})
                 require(isinstance(item['type'],str) and item['type'] in RELATIONS)
@@ -325,21 +327,25 @@ class Domain:
             row=c.execute('SELECT result FROM candidate_batches WHERE message_id=?',(message_id,)).fetchone()
             return json.loads(row['result']) if row else None
 
-    def _ambiguity_blocks(self,c,actor_id,conversation_id):
+    def _scope_uncertainty(self,c,actor_id,conversation_id):
         """Immutable interpretation history latches known multi-target ambiguity.
 
         Only a later single-target user interpretation clears that target. Turn
         finalization, question status and authority events cannot rewrite history.
         """
         self._conversation(c,actor_id,conversation_id)
-        blocked={}
+        blocked={};unassigned={}
         rows=c.execute('SELECT m.id,b.result FROM messages m JOIN candidate_batches b ON b.message_id=m.id WHERE m.conversation_id=? AND m.actor_id=? AND m.role=\'user\' ORDER BY m.rowid',(conversation_id,actor_id))
         for row in rows:
             batch=json.loads(row['result'])
             intents=set(batch.get('message_intents',[]))
             may_clear=bool(intents&{'new_request','additional_info','correction'}) and not intents&{'cancel_request','handoff_request','unclear','unrelated'}
+            may_assign=bool(intents&{'new_request','additional_info','correction','progress_report'}) and not intents&{'cancel_request','unclear','unrelated'}
             for observation in batch.get('observations',[])+batch.get('corrections',[]):
                 targets=set(observation.get('issue_refs',[]))
+                if may_assign and observation.get('category') in ('request','correction','reported_failure','reported_recovery') and observation.get('mapping_status')=='tentative' and len(targets)==1:
+                    for key,value in list(unassigned.items()):
+                        if targets.intersection(value['candidate_issue_ids']):unassigned.pop(key)
                 if may_clear and observation.get('category') in ('request','correction') and observation.get('mapping_status')=='tentative' and len(targets)==1:
                     blocked.pop(next(iter(targets)),None)
             groups=[set(r.get('candidate_issue_ids',[])) for r in batch.get('unresolved_references',[])]
@@ -349,7 +355,11 @@ class Domain:
             for group in groups:
                 if len(group)>1:
                     for iid in group:blocked[iid]={'issue_id':iid,'source_message_id':row['id'],'candidate_issue_ids':sorted(group)}
-        return list(blocked.values())
+                    unassigned[(row['id'],tuple(sorted(group)))]={'source_message_id':row['id'],'candidate_issue_ids':sorted(group)}
+        return {'write_blocks':list(blocked.values()),'unassigned_feedback':list(unassigned.values())}
+
+    def _ambiguity_blocks(self,c,actor_id,conversation_id):
+        return self._scope_uncertainty(c,actor_id,conversation_id)['write_blocks']
 
     def ambiguity_blocks(self,actor_id,conversation_id):
         with self.store.read() as c:return self._ambiguity_blocks(c,actor_id,conversation_id)
