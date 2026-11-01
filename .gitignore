@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.sqlite*
+runtime/
+evals/results/
+.superpowers/
+docs/_review/

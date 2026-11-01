@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IT Helpdesk Agent 设计与答辩材料</title><style>
+:root { color-scheme: light; --ink:#172638; --muted:#5b6877; --line:#dce3eb; --accent:#225cc5; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:24px; }
+body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
+a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
+a:hover { text-decoration:underline; }
+.sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
+.brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
+.meta { color:var(--muted); font-size:12px; }
+.pages { display:grid; gap:4px; margin:22px 0; }
+.pages a { display:block; padding:7px 10px; border-radius:6px; }
+.pages a[aria-current=page] { background:#dce8fc; color:#19438c; font-weight:700; }
+.toc { border-top:1px solid var(--line); padding-top:14px; font-size:13px; }
+.toc summary { cursor:pointer; font-weight:700; margin-bottom:10px; }
+.toc a { display:block; color:#48566b; padding:5px 2px; line-height:1.6; }
+main { margin-left:268px; padding:38px 42px 72px; }
+article { max-width:1100px; margin:auto; background:white; border:1px solid var(--line); border-radius:12px; padding:40px 46px; min-width:0; }
+.status { display:inline-block; background:#eaf2ff; color:#24549c; padding:3px 10px; border-radius:5px; font-size:12px; letter-spacing:.04em; margin-bottom:12px; }
+h1 { font-size:32px; line-height:1.4; letter-spacing:-.025em; margin:12px 0 25px; }
+h2 { font-size:24px; line-height:1.5; margin:44px 0 18px; border-top:1px solid var(--line); padding-top:25px; }
+h3 { font-size:19px; line-height:1.6; margin:29px 0 12px; }
+p { margin:14px 0; overflow-wrap:anywhere; }
+li { margin:7px 0; }
+ul,ol { padding-left:1.65em; }
+.table-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:7px; }
+table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.75; }
+th,td { vertical-align:top; text-align:left; padding:11px 13px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; min-width:105px; }
+th { background:#edf3fc; color:#244466; font-weight:700; }
+tr:last-child td { border-bottom:0; }
+tbody tr:nth-child(even) { background:#fafbfd; }
+pre { border:1px solid #dce3ee; border-radius:8px; padding:19px; background:#f4f7fb; line-height:1.65; font-size:13px; overflow:auto; }
+code { font-family:Consolas,'Microsoft YaHei',monospace; }
+p code,li code { background:#f1f4f9; padding:2px 4px; border-radius:3px; }
+blockquote { border-left:3px solid #9ab9ec; margin-left:0; padding-left:18px; color:#435269; }
+footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--muted); font-size:12px; }
+@media(max-width:1050px) {
+  .sidebar { position:static; width:auto; padding:20px 22px; border-right:0; border-bottom:1px solid var(--line); }
+  .pages { display:flex; flex-wrap:wrap; gap:5px; margin:12px 0; font-size:14px; }
+  .toc { display:none; }
+  main { margin-left:0; padding:20px; }
+  article { padding:28px; }
+}
+@media(max-width:600px) {
+  body { font-size:15px; }
+  main { padding:10px; }
+  article { padding:23px 18px; border-radius:8px; }
+  h1 { font-size:26px; }
+  h2 { font-size:21px; }
+  table { min-width:620px; }
+  pre { font-size:12px; padding:13px; }
+}
+@media print {
+  .sidebar,.status { display:none; }
+  body { background:white; font-size:10pt; }
+  main { margin:0; padding:0; }
+  article { max-width:none; border:0; padding:0; }
+  h2,h3 { break-after:avoid; }
+  tr { break-inside:avoid; }
+  .table-wrap { overflow:visible; }
+  pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+  a { color:inherit; }
+}
+</style></head><body>
+<aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
+<nav class="pages" aria-label="文档导航"><a href="index.html" aria-current="page">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a></nav><details class="toc" open><summary>本页目录</summary></details></aside>
+<main><article><div class="status">设计材料 · 尚未实现或实测</div><h1 id="section-1">IT Helpdesk Agent 设计与答辩材料</h1>
+<p>这组材料记录已经讨论确定的方案，并补充可供实现、评估和答辩使用的具体设计。它不是已完成实现或已通过评测的证明。</p>
+<p>设计日期：2026 年 11 月 2 日。<a href="../agentic_ai_take_home_candidate_instructions_v20260421_01.html">原始题目</a>。</p>
+<ol>
+<li><a href="01-system-design.html">系统设计</a>：需求映射、架构、模型调用、上下文、状态、工具、权限、审批、模拟数据、故障与界面。</li>
+<li><a href="02-evaluation.html">评估设计与案例</a>：测试分层、30 个场景、自然用户模拟、断言、评分、对照与结果报告。</li>
+<li><a href="03-defense-and-extensions.html">答辩与扩展设计</a>：选择依据、已知局限、演示流程、常见追问及未实现扩展。</li>
+<li><a href="04-prompts-and-contracts.html">提示词与数据契约</a>：两阶段提示词、有限分类、输入输出、程序检查、工具错误及完整示例。</li>
+</ol>
+<p>建议先阅读系统设计，再用提示词与数据契约核对执行过程，最后查看评估与答辩材料。浏览器阅读入口为同目录 index.html；HTML 由这些 Markdown 文件生成。</p>
+<p>用户已确认的架构选择与本文补充的工程默认值会分别标注。调用上限、数据数量、具体字段和技术栈是可在实现中调整的默认值；改变核心产品行为、权限范围或评估口径时，应同步修订设计。</p>
+<p>当前不开始应用开发。后续日常编码、自动化测试、模拟审批和 AI 辅助评审可由开发助手完成。模型 API 凭据应在本地配置，评测预算需要明确；没有真人参与的评分不称为人工专家评测。</p>
+
+<footer>本页来自 <a href="README.md">README.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
+</article></main></body></html>
