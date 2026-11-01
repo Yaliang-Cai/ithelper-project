@@ -1,0 +1,77 @@
+{
+  "id": "H09",
+  "split": "holdout",
+  "family": "cross_system",
+  "actor": "alice.sales",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Grafana 页面好了，Jenkins 还在转圈，另外 VPN 今天老掉。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {
+    "prior_issues": [
+      {
+        "service": "grafana",
+        "goal": "销售仪表盘页面无法加载",
+        "message": "销售仪表盘页面无法加载"
+      },
+      {
+        "service": "jenkins",
+        "goal": "团队 Jenkins runner timeout",
+        "message": "团队 Jenkins runner timeout"
+      }
+    ]
+  },
+  "user_card": {
+    "facts": {
+      "environment": "芝加哥，VPN 5.2，有线网络，其他应用正常。",
+      "error_detail": "Jenkins runner timeout；VPN 大约十分钟掉一次。",
+      "attempt_result": "还没有重置过 VPN。",
+      "affected_scope": "VPN 只有我，流水线是团队的。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "grafana",
+        "statuses": [
+          "resolved"
+        ]
+      },
+      {
+        "service": "jenkins",
+        "statuses": [
+          "handed_off"
+        ]
+      },
+      {
+        "service": "vpn",
+        "statuses": [
+          "resolved",
+          "handed_off",
+          "waiting_user",
+          "verifying"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ]
+  },
+  "fault_plan": {},
+  "sealed_after_freeze_sha256": "7539b3403b53d7ee3fbb3e38f00d5586014b608dcc4b1e7040d1ea58d5fe3d9e",
+  "authored_utc": "20261101T202933707711Z"
+}

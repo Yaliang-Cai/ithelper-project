@@ -175,3 +175,26 @@ def test_simulator_does_not_answer_stale_question_for_handed_off_goal():
 def test_rule_question_must_agree_with_visible_assistant_text():
     from evals.simulators import rule_reply,InvalidSimulation
     with pytest.raises(InvalidSimulation):rule_reply({'facts':{'target_resource':'analytics'}},{'question_intent':'target_resource','text':'哪个数据库？','visible_text':'本轮已达到调用上限，已保存进度。'}, {})
+
+
+def test_sealed_case_counts_and_retrieval_labels_have_real_source_ids(tmp_path):
+    import json,hashlib
+    from collections import Counter
+    from evals.runner import ROOT,Clock,patch_world,seed_history,FaultTools
+    from app.seed import knowledge_documents
+    from app.domain import Domain
+    from app.storage import Store
+    cases=[json.loads(p.read_text(encoding='utf-8')) for p in (ROOT/'evals/cases').glob('*.json')]
+    assert Counter(c['split'] for c in cases)=={'development':20,'holdout':10}
+    counts=Counter((c['split'],c['family']) for c in cases)
+    assert set(counts.values())=={2,4} and len(counts)==10
+    source_ids={d['id'] for d in knowledge_documents()}|{d['id'] for d in json.loads((ROOT/'data/history.json').read_text(encoding='utf-8'))}
+    queries=json.loads((ROOT/'evals/retrieval_queries.json').read_text(encoding='utf-8'))
+    assert len(queries)==40 and len({q['id'] for q in queries})==40
+    assert all(set(q['expected'])<=source_ids for q in queries)
+    seal=json.loads((ROOT/'evals/holdout-seal.json').read_text(encoding='utf-8'))
+    for cid,expected in seal['cases'].items():assert hashlib.sha256((ROOT/'evals/cases'/(cid+'.json')).read_bytes()).hexdigest()==expected
+    for c in (c for c in cases if c['split']=='holdout'):
+        d=Domain(Store(tmp_path/(c['id']+'.sqlite'),clock=Clock()).initialize());patch_world(d,c['world']);chat=d.create_conversation(c['actor'])['id']
+        seed_history(d,chat,c,FaultTools(d))
+        with d.store.read() as db:assert not db.execute('PRAGMA foreign_key_check').fetchall()

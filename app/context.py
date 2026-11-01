@@ -70,6 +70,7 @@ class ContextBuilder:
         data={'identity':self.domain.employee(actor_id),'catalog':self.domain.context_catalog(actor_id),'event':compact_owned(event,'event'),'state_version':state['conversation']['version'],
               'current_message':compact_owned(current,'message'),'issues':[{k:i[k] for k in summary_keys if k in i} for i in state['issues']],
               'authority':{'approvals':[compact_owned(r,'approval') for r in state['approvals']],'confirmations':[compact_owned(r,'confirmation') for r in state['confirmations']]},
+              'ambiguity_blocks':self.domain.ambiguity_blocks(actor_id,conversation_id),
               'constraints':['User reports and hypotheses are tentative; actual authorization is backend-owned.',
                 'Each independent goal requires its own acceptance; relationships never propagate success.',
                 'At most two distinct remedies, respect prior failures and user refusals.',

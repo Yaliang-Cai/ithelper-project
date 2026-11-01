@@ -177,6 +177,7 @@ class ToolExecutor:
         if old and (old['status'] in ('rejected','cancelled') or (old['status'] in ('pending','approved') and old['expires_at']>self.store.clock())):
             item=unpack(old)
         else:
+            self.domain._require_clear_scope(c,actor,chat,issue['id'])
             aid=new_id('APPROVAL');payload={'reason':a['reason'],'evidence_refs':a['evidence_refs'],'policy_version':POLICY_VERSION,'resource_revision':resource['revision'],'approver_role':'resource_owner',
                 'scope':{'requester':actor,'issue_id':issue['id'],'resource_id':resource['id'],'permission':a['permission']},'lifecycle':issue['lifecycle'],'simulated':True}
             c.execute('INSERT INTO approvals VALUES(?,?,?,?,?,?,?,?,?,?,?)',(aid,chat,actor,issue['id'],resource['id'],a['permission'],'pending',1,self.store.clock(),self.store.clock()+86400,dumps(payload)))
@@ -221,6 +222,7 @@ class ToolExecutor:
         old=unpack(c.execute('SELECT * FROM actions WHERE fingerprint=?',(fingerprint,)).fetchone())
         if old:
             result,_=self._read(c,actor,chat,'tool_receipt',old['id'],1,old,{'actor_id':actor,'issue_id':issue['id']});result['action_id']=old['id'];return result,False
+        self.domain._require_clear_scope(c,actor,chat,issue['id'])
         approval=None;confirmation=None
         if resource and resource['approval_required']:approval=self._approval(c,a.get('approval_id'),actor,issue,resource,a['permission'])
         if vpn:

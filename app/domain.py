@@ -210,6 +210,7 @@ class Domain:
             if old:
                 require(old['normalized_parameters']==normalized_parameters,'CONFLICT','Remedy parameters changed')
                 return old
+            self._require_clear_scope(c,actor_id,conversation_id,issue_id)
             prior=[unpack(r) for r in c.execute('SELECT * FROM attempts WHERE issue_id=?',(issue_id,))]
             require(len(prior)<2,'ATTEMPT_LIMIT','Two distinct repair paths already attempted')
             if prior:
@@ -242,7 +243,7 @@ class Domain:
                 require(old['content_hash']==digest(candidates),'CONFLICT','Message candidates already applied')
                 return json.loads(old['result'])
             require(chat['version']==expected_version,'STALE_STATE','Conversation changed')
-            result={'issues':[],'observations':[],'corrections':[],'relations':[],'unresolved_references':[]}
+            result={'issues':[],'observations':[],'corrections':[],'relations':[],'unresolved_references':[],'message_intents':list(candidates['message_intents'])}
             refs={};keys=set();touched=set()
             def candidate(item,allowed,required):
                 fields(item,allowed,required)
@@ -323,6 +324,39 @@ class Domain:
             require(c.execute('SELECT 1 FROM messages WHERE id=? AND conversation_id=?',(message_id,conversation_id)).fetchone() is not None,'FORBIDDEN','Message unavailable')
             row=c.execute('SELECT result FROM candidate_batches WHERE message_id=?',(message_id,)).fetchone()
             return json.loads(row['result']) if row else None
+
+    def _ambiguity_blocks(self,c,actor_id,conversation_id):
+        """Immutable interpretation history latches known multi-target ambiguity.
+
+        Only a later single-target user interpretation clears that target. Turn
+        finalization, question status and authority events cannot rewrite history.
+        """
+        self._conversation(c,actor_id,conversation_id)
+        blocked={}
+        rows=c.execute('SELECT m.id,b.result FROM messages m JOIN candidate_batches b ON b.message_id=m.id WHERE m.conversation_id=? AND m.actor_id=? AND m.role=\'user\' ORDER BY m.rowid',(conversation_id,actor_id))
+        for row in rows:
+            batch=json.loads(row['result'])
+            intents=set(batch.get('message_intents',[]))
+            may_clear=bool(intents&{'new_request','additional_info','correction'}) and not intents&{'cancel_request','handoff_request','unclear','unrelated'}
+            for observation in batch.get('observations',[])+batch.get('corrections',[]):
+                targets=set(observation.get('issue_refs',[]))
+                if may_clear and observation.get('category') in ('request','correction') and observation.get('mapping_status')=='tentative' and len(targets)==1:
+                    blocked.pop(next(iter(targets)),None)
+            groups=[set(r.get('candidate_issue_ids',[])) for r in batch.get('unresolved_references',[])]
+            groups.extend(set(o.get('issue_refs',[])) for o in batch.get('observations',[]) if o.get('mapping_status')=='needs_clarification')
+            # Add this batch's ambiguity last: other proposals in the same
+            # interpretation/finalization cannot erase a known unresolved scope.
+            for group in groups:
+                if len(group)>1:
+                    for iid in group:blocked[iid]={'issue_id':iid,'source_message_id':row['id'],'candidate_issue_ids':sorted(group)}
+        return list(blocked.values())
+
+    def ambiguity_blocks(self,actor_id,conversation_id):
+        with self.store.read() as c:return self._ambiguity_blocks(c,actor_id,conversation_id)
+
+    def _require_clear_scope(self,c,actor_id,conversation_id,issue_id):
+        block=next((b for b in self._ambiguity_blocks(c,actor_id,conversation_id) if b['issue_id']==issue_id),None)
+        if block is not None:raise DomainError('AMBIGUOUS_SCOPE','Known multi-goal feedback is not clarified for this issue. Ask a focused question; only a later single-target employee interpretation can enable a new repair or authorization write.',block)
 
     def _validate_refs(self,c,actor_id,conversation_id,refs,issue_id=None):
         require(isinstance(refs,list) and len(refs)<=100)

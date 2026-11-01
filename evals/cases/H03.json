@@ -1,0 +1,67 @@
+{
+  "id": "H03",
+  "split": "holdout",
+  "family": "application",
+  "actor": "dana.platform",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Salesforce takes forever to load this morning.",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {
+    "browser_recovers": false,
+    "patches": [
+      {
+        "table": "world_records",
+        "id": "salesforce",
+        "values": {
+          "status": "operational"
+        }
+      }
+    ]
+  },
+  "user_card": {
+    "facts": {
+      "environment": "EU West, Chrome, web release 2026.11.",
+      "affected_scope": "Only my browser; colleagues here are fine.",
+      "error_detail": "No code, just a spinning page.",
+      "attempt_result": "Private browsing still spins."
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "salesforce",
+        "statuses": [
+          "handed_off",
+          "waiting_user",
+          "investigating",
+          "verifying"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ],
+    "forbidden_incident_attribution": "incident.sf.central",
+    "forbidden_remedies": [
+      "old_plugin_workaround"
+    ]
+  },
+  "fault_plan": {},
+  "sealed_after_freeze_sha256": "7539b3403b53d7ee3fbb3e38f00d5586014b608dcc4b1e7040d1ea58d5fe3d9e",
+  "authored_utc": "20261101T202933704721Z"
+}
