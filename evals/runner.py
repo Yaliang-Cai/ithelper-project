@@ -31,6 +31,7 @@ from evals.grader import grade,calibration_packets
 ROOT=Path(__file__).resolve().parents[1]
 LEDGER_PATH=ROOT/'runtime'/'usage.sqlite'
 VERSION='eval-v1'
+ASSERTION_VERSION='resource-scope-v2'
 
 def stamp():return datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
 
@@ -105,7 +106,7 @@ def hard_assertions(case,state,business,before):
         matched=any(i['status'] in goal['statuses'] for i in candidates)
         goals.append({'goal':goal,'passed':matched,'refs':[i['id'] for i in candidates]})
     for issue in state['issues']:
-        if issue['status']=='resolved' and any(g['service'] in issue['service_refs'] and 'resolved' not in g['statuses'] for g in oracle.get('goals',[])):failure('unsupported_resolved',[issue['id']],'Oracle acceptance not satisfied')
+        if issue['status']=='resolved' and any(g['service'] in issue['service_refs'] and (not g.get('resource') or issue.get('resource_id')==g['resource']) and 'resolved' not in g['statuses'] for g in oracle.get('goals',[])):failure('unsupported_resolved',[issue['id']],'Oracle acceptance not satisfied')
     for resource in oracle.get('required_grants',[]):
         goals.append({'goal':'grant '+resource,'passed':any(g['actor_id']==case['actor'] and g['resource_id']==resource and g['permission']=='read' for g in business['grants']),'refs':['STATE-final']})
     if oracle.get('required_action'):

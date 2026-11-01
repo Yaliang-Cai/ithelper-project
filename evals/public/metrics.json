@@ -1,0 +1,234 @@
+{
+  "ledger": {
+    "accounting_overrun": false,
+    "spent_usd": 2.608177868,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 751
+  },
+  "task5_settled_estimate_usd": 2.29500876,
+  "task5_request_delta": 656,
+  "roles": {
+    "agent_interpretation": {
+      "calls": 124,
+      "prompt_tokens": 484105,
+      "completion_tokens": 32857,
+      "estimated_spend_usd": 0.18465991100000057,
+      "uncertain_reserved_usd": 0.0,
+      "latency_seconds": 232.0055234000829
+    },
+    "agent_decision": {
+      "calls": 410,
+      "prompt_tokens": 5634289,
+      "completion_tokens": 151464,
+      "estimated_spend_usd": 1.8720435310000003,
+      "uncertain_reserved_usd": 0.0,
+      "latency_seconds": 967.0962542999405
+    },
+    "simulator": {
+      "calls": 38,
+      "prompt_tokens": 25782,
+      "completion_tokens": 1879,
+      "estimated_spend_usd": 0.009989407999999998,
+      "uncertain_reserved_usd": 0.0,
+      "latency_seconds": 46.130663600000844
+    },
+    "grader": {
+      "calls": 84,
+      "prompt_tokens": 571705,
+      "completion_tokens": 47337,
+      "estimated_spend_usd": 0.22831590999999993,
+      "uncertain_reserved_usd": 0.0,
+      "latency_seconds": 290.6289153000398
+    }
+  },
+  "coverage": [
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D07",
+    "D08",
+    "D09",
+    "D10",
+    "D11",
+    "D12",
+    "D13",
+    "D14",
+    "D15",
+    "D16",
+    "D17",
+    "D18",
+    "D19",
+    "D20",
+    "H01",
+    "H01b",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H06",
+    "H07",
+    "H08",
+    "H09",
+    "H10"
+  ],
+  "design_slots_covered": 30,
+  "original_H01_moved_to_development": true,
+  "replacement_measured": true,
+  "initial_development_mixed_versions": {
+    "runs": 20,
+    "unique_cases": 20,
+    "program_simulator_valid": 14,
+    "ai_simulator_invalid": 4,
+    "valid_after_available_checks": 14,
+    "goal_assertion_pass": 9,
+    "program_hard_failure_runs": 0,
+    "program_hard_failure_count": 0,
+    "semantic_flag_runs": 6,
+    "grader_missing_invalid": 4,
+    "goal_and_hard_and_valid_and_available_grade_pass": 6,
+    "judged_valid_denominator": 12,
+    "durable_agent_runs": 37,
+    "agent_run_errors": 7,
+    "error_codes": {
+      "CONTEXT_CAPACITY": 5,
+      "NO_PROGRESS": 1,
+      "MODEL_CALL_LIMIT": 1
+    }
+  },
+  "frozen_profile_all_measurements": {
+    "runs": 17,
+    "unique_cases": 10,
+    "program_simulator_valid": 16,
+    "ai_simulator_invalid": 0,
+    "valid_after_available_checks": 16,
+    "goal_assertion_pass": 12,
+    "program_hard_failure_runs": 0,
+    "program_hard_failure_count": 0,
+    "semantic_flag_runs": 0,
+    "grader_missing_invalid": 3,
+    "goal_and_hard_and_valid_and_available_grade_pass": 11,
+    "judged_valid_denominator": 14,
+    "durable_agent_runs": 34,
+    "agent_run_errors": 4,
+    "error_codes": {
+      "MODEL_PROTOCOL": 3,
+      "TOOL_CALL_LIMIT": 1
+    }
+  },
+  "all_formal_versions_descriptive_only": {
+    "runs": 63,
+    "unique_cases": 31,
+    "program_simulator_valid": 54,
+    "ai_simulator_invalid": 6,
+    "valid_after_available_checks": 54,
+    "goal_assertion_pass": 37,
+    "program_hard_failure_runs": 1,
+    "program_hard_failure_count": 2,
+    "semantic_flag_runs": 8,
+    "grader_missing_invalid": 10,
+    "goal_and_hard_and_valid_and_available_grade_pass": 31,
+    "judged_valid_denominator": 47,
+    "durable_agent_runs": 129,
+    "agent_run_errors": 19,
+    "error_codes": {
+      "CONTEXT_CAPACITY": 8,
+      "NO_PROGRESS": 2,
+      "MODEL_CALL_LIMIT": 2,
+      "MODEL_PROTOCOL": 6,
+      "TOOL_CALL_LIMIT": 1
+    }
+  },
+  "critical_repeats": {
+    "D04": {
+      "all_versions": 3,
+      "frozen_profile": 1
+    },
+    "D13": {
+      "all_versions": 5,
+      "frozen_profile": 1
+    },
+    "D14": {
+      "all_versions": 3,
+      "frozen_profile": 1
+    },
+    "D19": {
+      "all_versions": 4,
+      "frozen_profile": 1
+    },
+    "H01b": {
+      "all_versions": 3,
+      "frozen_profile": 3
+    },
+    "H06": {
+      "all_versions": 3,
+      "frozen_profile": 2
+    },
+    "H07": {
+      "all_versions": 3,
+      "frozen_profile": 2
+    },
+    "H10": {
+      "all_versions": 3,
+      "frozen_profile": 2
+    }
+  },
+  "calibration": [
+    {
+      "batch": "calibration-v1",
+      "matched": 3,
+      "total": 6
+    },
+    {
+      "batch": "calibration-v2",
+      "matched": 4,
+      "total": 6
+    },
+    {
+      "batch": "calibration-v3",
+      "matched": 5,
+      "total": 6
+    }
+  ],
+  "frozen_missing_cases": [
+    "D02",
+    "D03",
+    "D06",
+    "D07",
+    "D08",
+    "D09",
+    "D10",
+    "D11",
+    "D12",
+    "D15",
+    "D16",
+    "D17",
+    "D18",
+    "D20",
+    "H01",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H08",
+    "H09"
+  ],
+  "business_program_proxies_latest_candidate": {
+    "valid_measurements": 16,
+    "self_service_strict_oracle_denominator": 3,
+    "self_service_program_pass": 3,
+    "self_service_handoff_observed": 0,
+    "required_handoff_denominator": 3,
+    "required_handoff_saved_and_goal_mapped": 2,
+    "goal_conditions_satisfied": 18,
+    "goal_conditions_total": 24,
+    "program_false_resolved_runs": 0,
+    "semantic_false_claim_candidates": 0,
+    "semantic_unjudged": 2
+  },
+  "grade_scores_provisional": true,
+  "no_single_final_30_case_success_rate": true
+}

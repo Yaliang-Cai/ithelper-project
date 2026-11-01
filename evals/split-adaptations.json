@@ -8,7 +8,7 @@
       "reason": "Used to add conservative persisted known-ambiguity write guard after controller ruling; original stricter oracle and all measurements preserved.",
       "original_case_sha256": "fd84702827f3f8cbaf291d8720ec2efd2f5186c571be7c8a2e4d1c37c5ab60d6",
       "replacement_id": "H01b",
-      "replacement_status": "to_be_authored_after_candidate_v2_freeze"
+      "replacement_status": "sealed_after_candidate_v3"
     }
   ]
 }

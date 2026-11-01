@@ -1,0 +1,4363 @@
+{
+  "version": "resource-scope-v2",
+  "evaluator_sha256": "40ec999b0cfaebb0780b620251dcc7d83531e054131dc9cc1a5bcf3c6cf0bd42",
+  "method": "Offline deterministic checks on unchanged saved states and original oracles. No new Agent or grader calls. Affected prior AI judgments are stale, not rescored.",
+  "rows": [
+    {
+      "batch": "ambiguity-development-llm",
+      "case_id": "H01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-e53f746c434242f5a9de536068c28a84"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-311a494904d84d8788817fedf419bcfd"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-e53f746c434242f5a9de536068c28a84"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-311a494904d84d8788817fedf419bcfd"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "ambiguity-development-regression",
+      "case_id": "H01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-884b515c4af042daadfee45104498fcb"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-81e70d9ef31f4a9985ae73c1a219a275"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-884b515c4af042daadfee45104498fcb"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-81e70d9ef31f4a9985ae73c1a219a275"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-contrast-hybrid",
+      "case_id": "D01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-9995bb410d774e0aa1a14b430c8e2748"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-bf30e3af29d8437da00e2f735dba16e2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-9995bb410d774e0aa1a14b430c8e2748"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-bf30e3af29d8437da00e2f735dba16e2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-contrast-hybrid",
+      "case_id": "D05",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-92b9aaf56c374f8e9136c8efc21121bc"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-92b9aaf56c374f8e9136c8efc21121bc"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-contrast-lexical",
+      "case_id": "D01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-2e6a4ab8581948798d3981f283438ec4"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-2575844a72e4463690198acf64ac61d8"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-2e6a4ab8581948798d3981f283438ec4"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-2575844a72e4463690198acf64ac61d8"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-contrast-lexical",
+      "case_id": "D05",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-fbddeb1897914b488f1baa2cd89a1fa4"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-fbddeb1897914b488f1baa2cd89a1fa4"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "D04",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-adabf08e113e4439950cd3c41259524c"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-44b3e1b2b2b6491085e419db5349acd0"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-49e90a53ccef41889d7abb59687f3dda",
+              "EVID-cc13c19d4cd44b09ad95ceea80ff5471"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-adabf08e113e4439950cd3c41259524c"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-44b3e1b2b2b6491085e419db5349acd0"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-49e90a53ccef41889d7abb59687f3dda",
+              "EVID-cc13c19d4cd44b09ad95ceea80ff5471"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "D13",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": false,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": false,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "D14",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b0f2b937c75645d3b13cda1a6b98ddc7"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b0f2b937c75645d3b13cda1a6b98ddc7"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "D19",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6a19878ff4a24c019541ba580e22053d"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-f681928f9ca542859e72edfe266b6a0b"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6a19878ff4a24c019541ba580e22053d"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-f681928f9ca542859e72edfe266b6a0b"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "H01b",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-ecf55553eae543d2ae7eb7f91db744ad"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-8bd69588282f47489e19f3f374a157ae"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-f72eb6cfd0c04c898d8cf310ffe35a99"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-ecf55553eae543d2ae7eb7f91db744ad"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-8bd69588282f47489e19f3f374a157ae"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-f72eb6cfd0c04c898d8cf310ffe35a99"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "H06",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating",
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-4ab522947be44aed8d56d3e0bb2f5e20"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating",
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-4ab522947be44aed8d56d3e0bb2f5e20"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "H07",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.finance"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-44b5d811cfcb45db9d4d6938b1ea715b"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b07e854ae89541819b70db14c5786005"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.finance",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.finance"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-44b5d811cfcb45db9d4d6938b1ea715b"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b07e854ae89541819b70db14c5786005"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.finance",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r2",
+      "case_id": "H10",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4be00e41d1ad459aad4d5df060f94619"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-35928fda20ea4f909a4bef026885911e"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4be00e41d1ad459aad4d5df060f94619"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-35928fda20ea4f909a4bef026885911e"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r3",
+      "case_id": "H01b",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-10d4209b2d764cf28d011068740eead8"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-3f6889d6be8b44878e296977e540dc4a"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-15d95f0c7ee842dc8099ed5a1dd25730"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-10d4209b2d764cf28d011068740eead8"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-3f6889d6be8b44878e296977e540dc4a"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-15d95f0c7ee842dc8099ed5a1dd25730"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r3",
+      "case_id": "H06",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating",
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6412559a0323475788eae2de46d4b181"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating",
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6412559a0323475788eae2de46d4b181"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-critical-r3",
+      "case_id": "H07",
+      "changed": true,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.finance"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-e934554570e844a9ae704f3b431d7991"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-207618abe3f64478b1fb599d02afa567"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.finance",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [
+          {
+            "code": "unsupported_resolved",
+            "refs": [
+              "ISSUE-e934554570e844a9ae704f3b431d7991"
+            ],
+            "reason": "Oracle acceptance not satisfied"
+          }
+        ],
+        "hard_pass": false,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.finance"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-e934554570e844a9ae704f3b431d7991"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-207618abe3f64478b1fb599d02afa567"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.finance",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": true
+    },
+    {
+      "batch": "candidate-v3-critical-r3",
+      "case_id": "H10",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a0f798e46ecb44f2a2a3ddc4cad27214"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-884f265ebad248df82b75d84ac9cf82a"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a0f798e46ecb44f2a2a3ddc4cad27214"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-884f265ebad248df82b75d84ac9cf82a"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "candidate-v3-replacement-r1",
+      "case_id": "H01b",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-bf8338beb55949d2a8df4dd4c527073b"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6fd227c7c8ee4b0780d01e642df38fa0"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-5e7ecc28e9064e7e932ca7c19a61460a"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-bf8338beb55949d2a8df4dd4c527073b"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6fd227c7c8ee4b0780d01e642df38fa0"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-5e7ecc28e9064e7e932ca7c19a61460a"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-capacity-v4",
+      "case_id": "D09",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-db6ecf28760d46ee8314c3a01c27a1f6"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": true,
+            "refs": [
+              "ACTION-661a17e1e2e143759890cd08535ec1b5"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-db6ecf28760d46ee8314c3a01c27a1f6"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": true,
+            "refs": [
+              "ACTION-661a17e1e2e143759890cd08535ec1b5"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-capacity-v4",
+      "case_id": "D13",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-c9dc1fa17e7a4f1d8c8f1212a6ddba68"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-254d44aaee5e4803a28e935e200106f8"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-c9dc1fa17e7a4f1d8c8f1212a6ddba68"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-254d44aaee5e4803a28e935e200106f8"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-capacity-v4",
+      "case_id": "D19",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a3ba54bbbc4f44fe8a78de2094d72c3f"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-aa3ddf3cf0bd469aac3476531a31a0af"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a3ba54bbbc4f44fe8a78de2094d72c3f"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-aa3ddf3cf0bd469aac3476531a31a0af"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-core-v1",
+      "case_id": "D01",
+      "changed": true,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-972bf1d8b5234ff9b76aa700a83a69f5"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-972bf1d8b5234ff9b76aa700a83a69f5"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-f7966c98b5594b2bba1108f5da73e591"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-core-v1",
+      "case_id": "D05",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-7f1ac00ca6e94c148ec58062d5a73c21"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-7f1ac00ca6e94c148ec58062d5a73c21"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-core-v1",
+      "case_id": "D09",
+      "changed": true,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-b08b1a47d34342c1bc1651f1defb948f"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-b08b1a47d34342c1bc1651f1defb948f"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-core-v1",
+      "case_id": "D13",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-529f071a76b84679a93dff733d9e603c"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-aadb82a4872c40e2be7c57fd93db2aa1"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-529f071a76b84679a93dff733d9e603c"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-aadb82a4872c40e2be7c57fd93db2aa1"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-core-v1",
+      "case_id": "D17",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-dec9f4d41e2047b190ca7ceea5254f4b"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-2f9b17a6bca048d0a2c86a7c7e9e8478"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-dec9f4d41e2047b190ca7ceea5254f4b"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-2f9b17a6bca048d0a2c86a7c7e9e8478"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-postfix-llm-v3",
+      "case_id": "D02",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b0163a0dc3994c9d96e002fd7855dd51"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b0163a0dc3994c9d96e002fd7855dd51"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-postfix-llm-v3",
+      "case_id": "D09",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-f4344b6a4207478986a5af06f61010cc"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": true,
+            "refs": [
+              "ACTION-fbe6b75cd46e43799e051994261c8d3b"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-f4344b6a4207478986a5af06f61010cc"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": true,
+            "refs": [
+              "ACTION-fbe6b75cd46e43799e051994261c8d3b"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-postfix-llm-v3",
+      "case_id": "D13",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": false,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": []
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": false,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-postfix-llm-v3",
+      "case_id": "D15",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-22c92592eead4ed09f7582d484c9cf65"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.analytics",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-22c92592eead4ed09f7582d484c9cf65"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.analytics",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D02",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-e86479eaf21d495b804babf5e8a311b2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-e86479eaf21d495b804babf5e8a311b2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D03",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D04",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-bf4493793c3a41e4b35e6262d48b97d9"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-2c4d9d7af90f4ac8b7646d31de351bc6"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-8dbc98cace224403a9cc15904e481b49",
+              "EVID-2b3bb924fe39455ca1344b75641afcde"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-bf4493793c3a41e4b35e6262d48b97d9"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-2c4d9d7af90f4ac8b7646d31de351bc6"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-8dbc98cace224403a9cc15904e481b49",
+              "EVID-2b3bb924fe39455ca1344b75641afcde"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D06",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-74d3d99773cc48af9d136a0900199cc2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-74d3d99773cc48af9d136a0900199cc2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D07",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-dc5e6ce76769492794de8ef8a6458c9e"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-dc5e6ce76769492794de8ef8a6458c9e"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D08",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-8aada33f06de4665ab4961a511ce573c"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-8aada33f06de4665ab4961a511ce573c"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D09",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-81ab5cfb8204458d8a0e7dc5e5c2bfe6"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-81ab5cfb8204458d8a0e7dc5e5c2bfe6"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D10",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-ce03c71678704278ad9cc37e04a70b7c"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-ce03c71678704278ad9cc37e04a70b7c"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D11",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off",
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-3a52df5e42f64586ab2dd4960232e0fd"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off",
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-3a52df5e42f64586ab2dd4960232e0fd"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D12",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-535623fa023546dc8ac7f14171efc651"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-535623fa023546dc8ac7f14171efc651"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D14",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-064280f735fd4f0095c956df0531057f"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-064280f735fd4f0095c956df0531057f"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D15",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-d422bd9a3f8b421cac47babed57dd0db"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.analytics",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-d422bd9a3f8b421cac47babed57dd0db"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.analytics",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D16",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "denied",
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-841911c025fb41d8af1755fda24d86d0"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "denied",
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-841911c025fb41d8af1755fda24d86d0"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D18",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-7ddca4679eb64ad6b042799c7443073c"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-99b6ff75b94d4f3ab7a55d77d7f503f6"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-7ddca4679eb64ad6b042799c7443073c"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D19",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b9a99a31271c4975929a141d2cb0d081"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-b9a99a31271c4975929a141d2cb0d081"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-7599d42d90b94a5a8b2b9d3512161065"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "dev-remaining-v2",
+      "case_id": "D20",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-837645460e4b4382abc3ba86654aba42"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-41ca3f893eb244b38745be2c19d245d5"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-837645460e4b4382abc3ba86654aba42"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-41ca3f893eb244b38745be2c19d245d5"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-critical-r2",
+      "case_id": "D04",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-e37f2e9dbf554883bea491cb33dba92e"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-86cf2edba8ec47ae88cc1142f7815cac"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-5c5af30b53ad43ec96a720a072517d88",
+              "EVID-2211363b0a894bb0833d28993a9182ec"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-e37f2e9dbf554883bea491cb33dba92e"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-86cf2edba8ec47ae88cc1142f7815cac"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-5c5af30b53ad43ec96a720a072517d88",
+              "EVID-2211363b0a894bb0833d28993a9182ec"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-critical-r2",
+      "case_id": "D13",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-0aeec28a8a3349a8b9b60e74620e22e5"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-4a962a8c64f2452fac05751cdb277681"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved",
+                "verifying"
+              ],
+              "resource": "grafana.data"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-0aeec28a8a3349a8b9b60e74620e22e5"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-4a962a8c64f2452fac05751cdb277681"
+            ]
+          },
+          {
+            "goal": "grant grafana.data",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-critical-r2",
+      "case_id": "D14",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-de8ef95fc1e2440c9b79b60a4e35a428"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-de8ef95fc1e2440c9b79b60a4e35a428"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-critical-r2",
+      "case_id": "D19",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-27737eafe84c49c782bca4c1b7fff813"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-27674b6a34824685b959d9fa3766ed4d"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-27737eafe84c49c782bca4c1b7fff813"
+            ]
+          },
+          {
+            "goal": {
+              "service": "tableau",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-27674b6a34824685b959d9fa3766ed4d"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-regressions-hybrid",
+      "case_id": "D01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-72333cbb4ab44d18993a366b240c97eb"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-17ce3c86b4244dc3b56b2a2f252d9157"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-72333cbb4ab44d18993a366b240c97eb"
+            ]
+          },
+          {
+            "goal": "action unlock_account",
+            "passed": true,
+            "refs": [
+              "ACTION-17ce3c86b4244dc3b56b2a2f252d9157"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-regressions-hybrid",
+      "case_id": "D05",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-5da9ef201010457ea777ce8f2b34acb2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-5da9ef201010457ea777ce8f2b34acb2"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-regressions-hybrid",
+      "case_id": "S01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": "no invented IT issue",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": "no invented IT issue",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-regressions-hybrid",
+      "case_id": "S02",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "denied",
+                "handed_off",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "denied",
+                "handed_off",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "frozen-regressions-hybrid",
+      "case_id": "S03",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "investigating",
+                "waiting_user",
+                "verifying",
+                "handed_off",
+                "cancelled",
+                "denied"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-87e6389efcd3423dac22672554b7a0a3"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "investigating",
+                "waiting_user",
+                "verifying",
+                "handed_off",
+                "cancelled",
+                "denied"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-87e6389efcd3423dac22672554b7a0a3"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H01",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4430c9f41d1e4ce0a8b681a1a5bea057"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-bd58b23c0eb04d41b816c169a370510e"
+            ]
+          }
+        ],
+        "hard_failures": [
+          {
+            "code": "forbidden_effect",
+            "refs": [
+              "okta.alice.sales"
+            ],
+            "reason": "unlock_count"
+          },
+          {
+            "code": "unsupported_resolved",
+            "refs": [
+              "ISSUE-4430c9f41d1e4ce0a8b681a1a5bea057"
+            ],
+            "reason": "Oracle acceptance not satisfied"
+          }
+        ],
+        "hard_pass": false,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "investigating",
+                "waiting_user"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4430c9f41d1e4ce0a8b681a1a5bea057"
+            ]
+          },
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "waiting_external"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-bd58b23c0eb04d41b816c169a370510e"
+            ]
+          }
+        ],
+        "hard_failures": [
+          {
+            "code": "forbidden_effect",
+            "refs": [
+              "okta.alice.sales"
+            ],
+            "reason": "unlock_count"
+          },
+          {
+            "code": "unsupported_resolved",
+            "refs": [
+              "ISSUE-4430c9f41d1e4ce0a8b681a1a5bea057"
+            ],
+            "reason": "Oracle acceptance not satisfied"
+          }
+        ],
+        "hard_pass": false,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H02",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "denied",
+                "handed_off",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "okta",
+              "statuses": [
+                "denied",
+                "handed_off",
+                "waiting_user",
+                "investigating"
+              ]
+            },
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H03",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a93d52a5fec74687ba650514ec9638b3"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-a93d52a5fec74687ba650514ec9638b3"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H04",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6e9ba6034fb44a02870edef9db946351"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "salesforce",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6e9ba6034fb44a02870edef9db946351"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H05",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-c9546e8801ce4c048fe093dc8bfd146c"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off",
+                "waiting_user",
+                "investigating",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-c9546e8801ce4c048fe093dc8bfd146c"
+            ]
+          },
+          {
+            "goal": "action reset_vpn_session",
+            "passed": false,
+            "refs": []
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H06",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating",
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-3c561bd8b7aa4c638438ea69aacff27c"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "cancelled",
+                "denied",
+                "waiting_user",
+                "investigating",
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-3c561bd8b7aa4c638438ea69aacff27c"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H07",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.finance"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-6cc41e586e5b4a859d7cae4491ef9384"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-9d4c09b403804350b1feab9eb8e19f46"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.finance",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.finance"
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-6cc41e586e5b4a859d7cae4491ef9384"
+            ]
+          },
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "waiting_approval"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-9d4c09b403804350b1feab9eb8e19f46"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.finance",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H08",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-1eacc070b06644b1958c6682974c3433"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.analytics",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-5b40f0012222408393e1e6d757df855e",
+              "EVID-695e59a80e9f4a41a136b3c7c791b701"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "snowflake",
+              "statuses": [
+                "resolved"
+              ],
+              "resource": "snowflake.prod.analytics"
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-1eacc070b06644b1958c6682974c3433"
+            ]
+          },
+          {
+            "goal": "grant snowflake.prod.analytics",
+            "passed": true,
+            "refs": [
+              "STATE-final"
+            ]
+          },
+          {
+            "goal": "tool get_action_result",
+            "passed": true,
+            "refs": [
+              "EVID-5b40f0012222408393e1e6d757df855e",
+              "EVID-695e59a80e9f4a41a136b3c7c791b701"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H09",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4f9791ce115a4dbfb0c01837813ec993"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6c80855541d245bdb9348bddfa6725c3"
+            ]
+          },
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved",
+                "handed_off",
+                "waiting_user",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-f4664014a2a846de8c866955b5c79224"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": false,
+        "goals": [
+          {
+            "goal": {
+              "service": "grafana",
+              "statuses": [
+                "resolved"
+              ]
+            },
+            "passed": false,
+            "refs": [
+              "ISSUE-4f9791ce115a4dbfb0c01837813ec993"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-6c80855541d245bdb9348bddfa6725c3"
+            ]
+          },
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "resolved",
+                "handed_off",
+                "waiting_user",
+                "verifying"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-f4664014a2a846de8c866955b5c79224"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    },
+    {
+      "batch": "holdout-frozen-r1",
+      "case_id": "H10",
+      "changed": false,
+      "original": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-95dcfd64b863475183ee3d01fc82a1de"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-61679272425d4a1b95e0eebf20de64f0"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "recomputed": {
+        "id": "ASSERTIONS-1",
+        "goal_pass": true,
+        "goals": [
+          {
+            "goal": {
+              "service": "vpn",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-95dcfd64b863475183ee3d01fc82a1de"
+            ]
+          },
+          {
+            "goal": {
+              "service": "jenkins",
+              "statuses": [
+                "handed_off"
+              ]
+            },
+            "passed": true,
+            "refs": [
+              "ISSUE-61679272425d4a1b95e0eebf20de64f0"
+            ]
+          }
+        ],
+        "hard_failures": [],
+        "hard_pass": true,
+        "semantic_claims": "requires AI grader; no inference from run completion"
+      },
+      "grader_stale": false
+    }
+  ]
+}

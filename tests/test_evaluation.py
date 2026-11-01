@@ -150,6 +150,19 @@ def test_non_it_oracle_requires_no_invented_issue():
     assert not result['goal_pass'] and result['hard_failures']
 
 
+def test_resolved_oracle_matches_exact_resource_not_only_shared_service():
+    from evals.runner import hard_assertions
+    case={'actor':'employee','oracle':{'goals':[{'service':'database','resource':'finance','statuses':['resolved']},{'service':'database','resource':'analytics','statuses':['waiting_approval']}]}}
+    state={'issues':[{'id':'finance-issue','service_refs':['database'],'resource_id':'finance','status':'resolved'},{'id':'analytics-issue','service_refs':['database'],'resource_id':'analytics','status':'waiting_approval'}],'actions':[],'approvals':[],'confirmations':[],'handoffs':[],'runs':[]}
+    business={'accounts':[],'vpn':[],'grants':[]}
+    result=hard_assertions(case,state,business,business)
+    assert result['goal_pass'] and not result['hard_failures']
+    state['issues'][1]['status']='resolved'
+    result=hard_assertions(case,state,business,business)
+    assert not result['goal_pass']
+    assert [f['refs'] for f in result['hard_failures']]==[['analytics-issue']]
+
+
 def test_grader_cannot_use_user_only_claim_as_assistant_false_success():
     from evals.grader import validate_grade,DIMENSIONS,evidence_ids
     packet={'state':{'id':'STATE-final','messages':[{'id':'USER-1','role':'user','content':'恢复了'}],'issues':[],'actions':[]},'assertions':{'hard_failures':[]},'oracle':{'goals':[]}}
@@ -184,7 +197,7 @@ def test_sealed_case_counts_and_retrieval_labels_have_real_source_ids(tmp_path):
     from app.seed import knowledge_documents
     from app.domain import Domain
     from app.storage import Store
-    cases=[json.loads(p.read_text(encoding='utf-8')) for p in (ROOT/'evals/cases').glob('*.json')]
+    cases=[json.loads(p.read_text(encoding='utf-8')) for p in (ROOT/'evals/cases').glob('[DH][0-9][0-9].json')]
     assert Counter(c['split'] for c in cases)=={'development':20,'holdout':10}
     counts=Counter((c['split'],c['family']) for c in cases)
     assert set(counts.values())=={2,4} and len(counts)==10

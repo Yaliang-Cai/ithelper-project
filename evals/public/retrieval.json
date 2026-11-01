@@ -1,0 +1,1447 @@
+{
+  "config": {
+    "id": "CONFIG-1",
+    "eval_version": "eval-v1",
+    "timestamp": "2026-11-01T20:11:32.082990+00:00",
+    "git_head": "a6a074c28f005d7971d1c83c39239405a135a23a",
+    "hashes": {
+      "app/__init__.py": "41d1c9cdcfa1d5717a4209c6e75b5946594bedc04c14ade06dd92fabaf693b9e",
+      "app/agent.py": "6af0b047f77dd1b8e882bb3b20a4101b039c4cfc3c2acccc6e383f336f46bc9f",
+      "app/auth.py": "d2f41beba199937fa5e4f0be2f710152441f7e3d007fa070630ab4ecb108d078",
+      "app/budget.py": "5b30409d8fcbfcab6b8e67d9676cca044902b8fa2b282d226978b07160cafd6d",
+      "app/catalog.py": "ff0684194e53cc942e671996ee3c5f45b15d7bf08cd4a828ae52d1486561ab56",
+      "app/config.py": "d82dc3f909bd641cc3148c90b645d8b78599cd0ecfd9184dbc233782373c5cb9",
+      "app/context.py": "ef5f48a973979971becf8ace7d445695fe5625131caddbad0c1a73e627fc6499",
+      "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
+      "app/domain.py": "612cfbd29ee5eeffab667cff8967d04d88c01cf4f07eb7647df58d43b1f7c9d4",
+      "app/main.py": "bfd9729f38af41076689d337a0e83481b6e09661b510fc455e1cd56b1a5ab0b5",
+      "app/prompts.py": "f67f727acac582b512edac2ddddc76fecc343a991bc418a655fa769be86f67d1",
+      "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
+      "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
+      "app/seed.py": "274a5159406e47e0d6139e365f177dfae502b217eeb2f6c22ee255ea3df8f60b",
+      "app/storage.py": "888e781b3d29fd12d2af6c99ca462a6137371a47f94c75f3bc759783f37611cc",
+      "app/tools.py": "f2dcd1721f940b6c886ef33551e3963d02c668fb4691e9613f9dc9a0afe370f2",
+      "app/worker.py": "3008ea2be94eae5dd6e74475c73d1271469ab069a886847b33a4ab9818f664b3",
+      "data/history.json": "f314e9f2a838cdad86c9a89719b1524d78306006ae376fce30a1641feb7ed8c9",
+      "data/kb/01-account-unlock.md": "4af26aed33938e1952ee8af2ea39def0f00bead03bdba989f943d2ed50fc330c",
+      "data/kb/02-account-security.md": "fd7df642511af0c670845c27f6661d66458d0b65b2c441fb23c0fe35c83b56e5",
+      "data/kb/03-account-browser.md": "c8d00542a89ab50f012c9853cf97e59f549ad95b6247d22d3d411e880639dbaa",
+      "data/kb/04-account-mfa.md": "35344fedb0309354ad0d27739d8e4c1ef20da29e4f70b432380d4549f222a008",
+      "data/kb/05-salesforce-slow.md": "cc494c0515300a4806f69c03fdb9cde07c486c1a13be63415c0b51021e9aaac7",
+      "data/kb/06-salesforce-browser.md": "7610fcf9c0eefdcff22db7873bbae80fc2650803e7c1086111e23b0c814e3027",
+      "data/kb/07-salesforce-old.md": "eefd315b3abd7e655f040b97d028ccc820c4290b419497a2af99482c52f629f7",
+      "data/kb/08-vpn-session.md": "23ab894629bd099c7128476ef42db5dfaec3a580761b75f42f7cc92c945a0edc",
+      "data/kb/09-vpn-local-network.md": "c96189da244efd85e2d8055f3b71ff7ece14bdcb4f4b471eaa49ba89c7609b09",
+      "data/kb/10-vpn-old.md": "156d3cc11b84d40d4489993627d053ecbff26500584600baf56acd23f9792365",
+      "data/kb/11-grafana-sales.md": "5b97dd8d18300ed828e9c8da9dbee0aff320b3b18af7d0f46d3b92b48291dadd",
+      "data/kb/12-grafana-data.md": "c7ba46021aa35e7da0cac9b1b62c64323b5c5cee50c674ce704ad8ac13e408d3",
+      "data/kb/13-grafana-platform.md": "f8d6c6477fc8f7a03513103e08f27be41d5849baf48259195a8ef2e34a680f51",
+      "data/kb/14-snowflake-read.md": "dbf64a92a86df958305685b67d6f22ec84988b2aee6b4003d5876e062e53be9d",
+      "data/kb/15-snowflake-no-write.md": "e8284f8bc5297c1e544fdfebc7f4820696f9bd3b355c48abb415af5505f0cbe5",
+      "data/kb/16-snowflake-verify.md": "ca9db2984e3e0d6e6aef2b33432d16f84214c1dee13e8ba4f150dfa062be4395",
+      "data/kb/17-jenkins-token.md": "a7fcb6455a647bcd9f3c1996cfa735846070fa3bdf983d4f2efe7d0a74b2240f",
+      "data/kb/18-jenkins-escalate.md": "79cf209fd43487aab50778b6d323bb1df910bfd2f094b0edfed4fcf4a5fb2e16",
+      "data/kb/19-tableau-extract.md": "7e9f8c4972d178f1db60eb83b9b6c85af660654fc536be96f11119b99cedaa72",
+      "data/kb/20-tableau-escalate.md": "b292ab09791ff0817c16a539d605380ec63267f995710a3028390438e5350fc8",
+      "data/kb/21-token-rotation.md": "f01182a9fa30cea9468f3aca74f82047235e6d0fb8c10c9b9b93feeec28a0939",
+      "data/kb/22-cross-system.md": "d8d9b22e151081bf90e601ca6b37e74103d68c6be1cd409fe3b7a19858de35a5",
+      "data/world.json": "57fc53a40ed52081baa157cff95f6b1b260d72bbaae73ca3ed4a3d2d2fc4063c",
+      "evals/__init__.py": "5a71cef9221fa035cac51de4a4e28d851beea9b1856826eef4cae817e5ed3fce",
+      "evals/build_cases.py": "dad217f5bf858e83ff89d6d324b78c1e3101babe71092f226e22106c58ad64ad",
+      "evals/grader.py": "d15ad070c1cf6b1ff18dea66eee97e1ce63f19e790e7a01a166a7fa28439d84f",
+      "evals/runner.py": "0ee9192915f6020cb4816a18c26f92ea756b244240370b7d98c82e56e840ab54",
+      "evals/simulators.py": "c2ac97cc6c4a8a61036b1e099bba631a0f7254d2c27031640f2f2d5f62f59157"
+    },
+    "request_model": "deepseek-flash",
+    "thinking": false,
+    "sampling": "provider default; no deterministic guarantee",
+    "max_model_calls_per_event": 10,
+    "max_tools_per_event": 12,
+    "max_event_seconds": 120,
+    "ledger_path": "D:\\药明-test\\runtime\\usage.sqlite"
+  },
+  "rows": [
+    {
+      "id": "Q01",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-unlock"
+      ],
+      "returned": [
+        "kb.account-unlock",
+        "kb.account-security",
+        "kb.account-mfa",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.002158199997211341
+    },
+    {
+      "id": "Q02",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-security"
+      ],
+      "returned": [
+        "kb.account-security",
+        "kb.account-unlock",
+        "kb.account-mfa",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0002823000031639822
+    },
+    {
+      "id": "Q03",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-mfa"
+      ],
+      "returned": [
+        "kb.account-mfa",
+        "kb.account-security"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00026449999859323725
+    },
+    {
+      "id": "Q04",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-browser"
+      ],
+      "returned": [
+        "kb.account-browser",
+        "kb.account-unlock"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00023079999664332718
+    },
+    {
+      "id": "Q05",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-unlock"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.3376652999941143
+    },
+    {
+      "id": "Q06",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-security"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0003854000024148263
+    },
+    {
+      "id": "Q07",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-mfa"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00025070000265259296
+    },
+    {
+      "id": "Q08",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.account-browser"
+      ],
+      "returned": [
+        "kb.account-browser",
+        "kb.account-unlock",
+        "kb.account-mfa",
+        "kb.account-security"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0002199000009568408
+    },
+    {
+      "id": "Q09",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.salesforce-slow"
+      ],
+      "returned": [
+        "kb.salesforce-slow",
+        "kb.salesforce-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00017600000137463212
+    },
+    {
+      "id": "Q10",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.salesforce-browser"
+      ],
+      "returned": [
+        "kb.salesforce-browser",
+        "kb.salesforce-slow"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00016519999917363748
+    },
+    {
+      "id": "Q11",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.salesforce-browser"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00017269999807467684
+    },
+    {
+      "id": "Q12",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.salesforce-slow"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.000185800003237091
+    },
+    {
+      "id": "Q13",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.vpn-session"
+      ],
+      "returned": [
+        "kb.vpn-session",
+        "kb.vpn-local-network"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0001813000053516589
+    },
+    {
+      "id": "Q14",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.vpn-local-network"
+      ],
+      "returned": [
+        "kb.vpn-local-network",
+        "kb.vpn-session"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0001604999997653067
+    },
+    {
+      "id": "Q15",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.vpn-session"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00018279999494552612
+    },
+    {
+      "id": "Q16",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.vpn-local-network"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00016080000204965472
+    },
+    {
+      "id": "Q17",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.grafana-sales"
+      ],
+      "returned": [
+        "kb.grafana-sales",
+        "kb.grafana-data",
+        "kb.grafana-platform"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00018740000086836517
+    },
+    {
+      "id": "Q18",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.grafana-data"
+      ],
+      "returned": [
+        "kb.grafana-data",
+        "kb.grafana-sales",
+        "kb.grafana-platform"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0001816000003600493
+    },
+    {
+      "id": "Q19",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.grafana-platform"
+      ],
+      "returned": [
+        "kb.grafana-platform",
+        "kb.grafana-data",
+        "kb.grafana-sales"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00016870000399649143
+    },
+    {
+      "id": "Q20",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.grafana-data"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00019079999765381217
+    },
+    {
+      "id": "Q21",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.snowflake-read"
+      ],
+      "returned": [
+        "kb.snowflake-read",
+        "kb.snowflake-verify",
+        "kb.snowflake-no-write"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00020519999816315249
+    },
+    {
+      "id": "Q22",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.snowflake-no-write"
+      ],
+      "returned": [
+        "kb.snowflake-no-write",
+        "kb.snowflake-read"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00020199999562464654
+    },
+    {
+      "id": "Q23",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.snowflake-verify"
+      ],
+      "returned": [
+        "kb.snowflake-verify",
+        "kb.snowflake-read"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0001936999979079701
+    },
+    {
+      "id": "Q24",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.snowflake-read"
+      ],
+      "returned": [],
+      "recall_at_5": 0.0,
+      "rr": 0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00021159999596420676
+    },
+    {
+      "id": "Q25",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.jenkins-token"
+      ],
+      "returned": [
+        "kb.jenkins-token",
+        "kb.jenkins-escalate"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00016340000001946464
+    },
+    {
+      "id": "Q26",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.jenkins-escalate"
+      ],
+      "returned": [
+        "kb.jenkins-escalate",
+        "kb.jenkins-token"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.000163800003065262
+    },
+    {
+      "id": "Q27",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.tableau-extract"
+      ],
+      "returned": [
+        "kb.tableau-escalate",
+        "kb.tableau-extract"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 0.5,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.000167199999850709
+    },
+    {
+      "id": "Q28",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.tableau-escalate"
+      ],
+      "returned": [
+        "kb.tableau-escalate",
+        "kb.tableau-extract"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00015189999976428226
+    },
+    {
+      "id": "Q29",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.token-rotation"
+      ],
+      "returned": [
+        "kb.token-rotation"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00016070000128820539
+    },
+    {
+      "id": "Q30",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "kb.cross-system"
+      ],
+      "returned": [
+        "kb.cross-system"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.000152900000102818
+    },
+    {
+      "id": "Q31",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 0.00013690000196220353
+    },
+    {
+      "id": "Q32",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 0.0006498999937321059
+    },
+    {
+      "id": "Q33",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 0.0006233999956748448
+    },
+    {
+      "id": "Q34",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 9.399998816661537e-06
+    },
+    {
+      "id": "Q35",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 6.89999433234334e-06
+    },
+    {
+      "id": "Q36",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "history.05"
+      ],
+      "returned": [
+        "history.05",
+        "history.06",
+        "history.12"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0002390000008745119
+    },
+    {
+      "id": "Q37",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "history.10"
+      ],
+      "returned": [
+        "history.10",
+        "history.09"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00018859999545384198
+    },
+    {
+      "id": "Q38",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "history.11"
+      ],
+      "returned": [
+        "history.11"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00014070000179344788
+    },
+    {
+      "id": "Q39",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "history.04"
+      ],
+      "returned": [
+        "history.04"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.00014290000399341807
+    },
+    {
+      "id": "Q40",
+      "mode_requested": "lexical",
+      "actual_mode": "lexical",
+      "degraded": true,
+      "expected": [
+        "history.03"
+      ],
+      "returned": [
+        "history.03"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.0001329000006080605
+    },
+    {
+      "id": "Q01",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-unlock"
+      ],
+      "returned": [
+        "kb.account-unlock",
+        "kb.account-security",
+        "kb.account-mfa",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.2679874999957974
+    },
+    {
+      "id": "Q02",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-security"
+      ],
+      "returned": [
+        "kb.account-security",
+        "kb.account-mfa",
+        "kb.account-unlock",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.6522939999995288
+    },
+    {
+      "id": "Q03",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-mfa"
+      ],
+      "returned": [
+        "kb.account-mfa",
+        "kb.account-security"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5489386999979615
+    },
+    {
+      "id": "Q04",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-browser"
+      ],
+      "returned": [
+        "kb.account-browser",
+        "kb.account-unlock"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.6076697000025888
+    },
+    {
+      "id": "Q05",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-unlock"
+      ],
+      "returned": [
+        "kb.account-unlock",
+        "kb.account-security",
+        "kb.account-mfa",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.7713548999963677
+    },
+    {
+      "id": "Q06",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-security"
+      ],
+      "returned": [
+        "kb.account-security",
+        "kb.account-unlock",
+        "kb.account-mfa",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5376421999972081
+    },
+    {
+      "id": "Q07",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-mfa"
+      ],
+      "returned": [
+        "kb.account-security",
+        "kb.account-mfa",
+        "kb.account-unlock",
+        "kb.account-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 0.5,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5299191000012797
+    },
+    {
+      "id": "Q08",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.account-browser"
+      ],
+      "returned": [
+        "kb.account-browser",
+        "kb.account-unlock",
+        "kb.account-mfa",
+        "kb.account-security"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5828442999991239
+    },
+    {
+      "id": "Q09",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.salesforce-slow"
+      ],
+      "returned": [
+        "kb.salesforce-slow",
+        "kb.salesforce-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.0921291000049678
+    },
+    {
+      "id": "Q10",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.salesforce-browser"
+      ],
+      "returned": [
+        "kb.salesforce-browser",
+        "kb.salesforce-slow"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5643028000049526
+    },
+    {
+      "id": "Q11",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.salesforce-browser"
+      ],
+      "returned": [
+        "kb.salesforce-browser",
+        "kb.salesforce-slow"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5546153999966918
+    },
+    {
+      "id": "Q12",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.salesforce-slow"
+      ],
+      "returned": [
+        "kb.salesforce-slow",
+        "kb.salesforce-browser"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5333196999999927
+    },
+    {
+      "id": "Q13",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.vpn-session"
+      ],
+      "returned": [
+        "kb.vpn-session",
+        "kb.vpn-local-network"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.131678900004772
+    },
+    {
+      "id": "Q14",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.vpn-local-network"
+      ],
+      "returned": [
+        "kb.vpn-local-network",
+        "kb.vpn-session"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.550041999995301
+    },
+    {
+      "id": "Q15",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.vpn-session"
+      ],
+      "returned": [
+        "kb.vpn-session",
+        "kb.vpn-local-network"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5786163999946439
+    },
+    {
+      "id": "Q16",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.vpn-local-network"
+      ],
+      "returned": [
+        "kb.vpn-local-network",
+        "kb.vpn-session"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5890526000002865
+    },
+    {
+      "id": "Q17",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.grafana-sales"
+      ],
+      "returned": [
+        "kb.grafana-sales",
+        "kb.grafana-data",
+        "kb.grafana-platform"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.2489574999999604
+    },
+    {
+      "id": "Q18",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.grafana-data"
+      ],
+      "returned": [
+        "kb.grafana-data",
+        "kb.grafana-platform",
+        "kb.grafana-sales"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.6697056999983033
+    },
+    {
+      "id": "Q19",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.grafana-platform"
+      ],
+      "returned": [
+        "kb.grafana-platform",
+        "kb.grafana-data",
+        "kb.grafana-sales"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5398039000065182
+    },
+    {
+      "id": "Q20",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.grafana-data"
+      ],
+      "returned": [
+        "kb.grafana-data",
+        "kb.grafana-sales"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5341464999946766
+    },
+    {
+      "id": "Q21",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.snowflake-read"
+      ],
+      "returned": [
+        "kb.snowflake-read",
+        "kb.snowflake-no-write",
+        "kb.snowflake-verify"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.0922556000004988
+    },
+    {
+      "id": "Q22",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.snowflake-no-write"
+      ],
+      "returned": [
+        "kb.snowflake-no-write",
+        "kb.snowflake-read"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.6200916999951005
+    },
+    {
+      "id": "Q23",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.snowflake-verify"
+      ],
+      "returned": [
+        "kb.snowflake-verify",
+        "kb.snowflake-read"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5453545000054874
+    },
+    {
+      "id": "Q24",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.snowflake-read"
+      ],
+      "returned": [
+        "kb.snowflake-read",
+        "kb.snowflake-verify",
+        "kb.snowflake-no-write"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5681522999948356
+    },
+    {
+      "id": "Q25",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.jenkins-token"
+      ],
+      "returned": [
+        "kb.jenkins-token",
+        "kb.jenkins-escalate"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.103119899999001
+    },
+    {
+      "id": "Q26",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.jenkins-escalate"
+      ],
+      "returned": [
+        "kb.jenkins-escalate",
+        "kb.jenkins-token"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5748568999988493
+    },
+    {
+      "id": "Q27",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.tableau-extract"
+      ],
+      "returned": [
+        "kb.tableau-escalate",
+        "kb.tableau-extract"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 0.5,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.277609199998551
+    },
+    {
+      "id": "Q28",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.tableau-escalate"
+      ],
+      "returned": [
+        "kb.tableau-escalate",
+        "kb.tableau-extract"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.5748851000025752
+    },
+    {
+      "id": "Q29",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.token-rotation"
+      ],
+      "returned": [
+        "kb.token-rotation"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.2253184000001056
+    },
+    {
+      "id": "Q30",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "kb.cross-system"
+      ],
+      "returned": [
+        "kb.cross-system"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 0.6187510000017937
+    },
+    {
+      "id": "Q31",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 0.6511140000002342
+    },
+    {
+      "id": "Q32",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 0.6324824999974226
+    },
+    {
+      "id": "Q33",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 0.6537406999996165
+    },
+    {
+      "id": "Q34",
+      "mode_requested": "hybrid",
+      "actual_mode": "lexical",
+      "degraded": false,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 2.0799998310394585e-05
+    },
+    {
+      "id": "Q35",
+      "mode_requested": "hybrid",
+      "actual_mode": "lexical",
+      "degraded": false,
+      "expected": [],
+      "returned": [],
+      "recall_at_5": null,
+      "rr": null,
+      "no_answer_correct": true,
+      "applicability_errors": [],
+      "latency_seconds": 9.700001101009548e-06
+    },
+    {
+      "id": "Q36",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "history.05"
+      ],
+      "returned": [
+        "history.05",
+        "history.06",
+        "history.12"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.3018137000035495
+    },
+    {
+      "id": "Q37",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "history.10"
+      ],
+      "returned": [
+        "history.10",
+        "history.09"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.1828872999976738
+    },
+    {
+      "id": "Q38",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "history.11"
+      ],
+      "returned": [
+        "history.11"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.197804699993867
+    },
+    {
+      "id": "Q39",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "history.04"
+      ],
+      "returned": [
+        "history.04"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.1776861000034842
+    },
+    {
+      "id": "Q40",
+      "mode_requested": "hybrid",
+      "actual_mode": "hybrid",
+      "degraded": false,
+      "expected": [
+        "history.03"
+      ],
+      "returned": [
+        "history.03"
+      ],
+      "recall_at_5": 1.0,
+      "rr": 1.0,
+      "no_answer_correct": null,
+      "applicability_errors": [],
+      "latency_seconds": 1.162365600001067
+    }
+  ]
+}

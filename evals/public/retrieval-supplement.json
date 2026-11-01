@@ -1,0 +1,156 @@
+[
+  {
+    "id": "Q41",
+    "query": "VPN periodic disconnect session",
+    "filters": {
+      "service_id": "vpn"
+    },
+    "expected": [
+      "kb.vpn-session"
+    ],
+    "source_type": "kb",
+    "condition": "version unknown",
+    "requested_mode": "lexical",
+    "actual_mode": "lexical",
+    "degraded": true,
+    "returned": [
+      "kb.vpn-session",
+      "kb.vpn-local-network"
+    ],
+    "passed": true,
+    "latency_seconds": 0.0023241000017151237
+  },
+  {
+    "id": "Q42",
+    "query": "Salesforce slow pages regional incident",
+    "filters": {
+      "service_id": "salesforce",
+      "region": "apac"
+    },
+    "expected": [],
+    "source_type": "history",
+    "condition": "wrong region excludes history",
+    "requested_mode": "lexical",
+    "actual_mode": "lexical",
+    "degraded": true,
+    "returned": [],
+    "passed": true,
+    "latency_seconds": 1.1199997970834374e-05
+  },
+  {
+    "id": "Q43",
+    "query": "Snowflake read owner approval",
+    "filters": {
+      "service_id": "snowflake"
+    },
+    "expected": [
+      "kb.snowflake-read"
+    ],
+    "source_type": "kb",
+    "condition": "version unknown",
+    "requested_mode": "lexical",
+    "actual_mode": "lexical",
+    "degraded": true,
+    "returned": [
+      "kb.snowflake-read",
+      "kb.snowflake-verify",
+      "kb.snowflake-no-write"
+    ],
+    "passed": true,
+    "latency_seconds": 0.0002888000017264858
+  },
+  {
+    "id": "Q44",
+    "query": "Salesforce old plugin workaround",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2025.1"
+    },
+    "expected": [],
+    "source_type": "kb",
+    "condition": "retired wrong-version document excluded",
+    "requested_mode": "lexical",
+    "actual_mode": "lexical",
+    "degraded": true,
+    "returned": [],
+    "passed": true,
+    "latency_seconds": 1.049999991664663e-05
+  },
+  {
+    "id": "Q41",
+    "query": "VPN periodic disconnect session",
+    "filters": {
+      "service_id": "vpn"
+    },
+    "expected": [
+      "kb.vpn-session"
+    ],
+    "source_type": "kb",
+    "condition": "version unknown",
+    "requested_mode": "hybrid",
+    "actual_mode": "hybrid",
+    "degraded": false,
+    "returned": [
+      "kb.vpn-session",
+      "kb.vpn-local-network"
+    ],
+    "passed": true,
+    "latency_seconds": 0.6757404000018141
+  },
+  {
+    "id": "Q42",
+    "query": "Salesforce slow pages regional incident",
+    "filters": {
+      "service_id": "salesforce",
+      "region": "apac"
+    },
+    "expected": [],
+    "source_type": "history",
+    "condition": "wrong region excludes history",
+    "requested_mode": "hybrid",
+    "actual_mode": "lexical",
+    "degraded": false,
+    "returned": [],
+    "passed": true,
+    "latency_seconds": 1.2700002116616815e-05
+  },
+  {
+    "id": "Q43",
+    "query": "Snowflake read owner approval",
+    "filters": {
+      "service_id": "snowflake"
+    },
+    "expected": [
+      "kb.snowflake-read"
+    ],
+    "source_type": "kb",
+    "condition": "version unknown",
+    "requested_mode": "hybrid",
+    "actual_mode": "hybrid",
+    "degraded": false,
+    "returned": [
+      "kb.snowflake-read",
+      "kb.snowflake-verify",
+      "kb.snowflake-no-write"
+    ],
+    "passed": true,
+    "latency_seconds": 0.5644506999960868
+  },
+  {
+    "id": "Q44",
+    "query": "Salesforce old plugin workaround",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2025.1"
+    },
+    "expected": [],
+    "source_type": "kb",
+    "condition": "retired wrong-version document excluded",
+    "requested_mode": "hybrid",
+    "actual_mode": "lexical",
+    "degraded": false,
+    "returned": [],
+    "passed": true,
+    "latency_seconds": 3.1799994758330286e-05
+  }
+]

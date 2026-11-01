@@ -1,0 +1,13 @@
+{
+  "freeze_file": "freeze-v3.json",
+  "freeze_sha256": "670ea803721bba312292fd7a8b4ff8f8ea80f9e40e25168c7745276ca07863a5",
+  "case_id": "H01b",
+  "case_sha256": "fc9f2e8e56dc4085fc14d4097eb0638a7107ba606be06009f535479054d9e571",
+  "authored_utc": "20261101T204744989863Z",
+  "material_changes": [
+    "actor and region",
+    "selected target now Okta, not Salesforce",
+    "independent ordinary lock instead of regional incident",
+    "expected clarification followed by actual unlock/recovery while other account goal stays pending"
+  ]
+}
