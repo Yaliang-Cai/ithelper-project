@@ -79,7 +79,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>本次有 2 个 completed <code>live_agent</code> 运行、7 次模型请求（4+3）、4 次非终结工具（3+1）、1 次解锁收据、0 个事件错误和 0 个浏览器脚本错误。两个运行保存的 <code>prompt_version</code> 均为 <code>helpdesk-2026-11-02-v7-matched-followup</code>，不只是检查磁盘上的提示词。运行代码与冻结 <code>baca519</code> 的哈希一致；录制时 Git HEAD 为 <code>abcaf05</code>（后续仅文档/证据差异）。<a href="evidence/demo-v7-recording/employee-v7.png">最终截图</a>保留原始回复，仍有账号重复与重复结束邀请，不能称为自然表达已完全解决。</p>
 <h2 id="section-3">面试现场输入</h2>
 <p>按<a href="../README.md">根 README</a>启动后，新建聊天，请演示者自行输入问题并按当前追问补充事实。观察单独目标、来源、未解决状态和实际收据；自由文本不是效果凭证。不要为配合演示声称真实系统已经恢复。</p>
-<p>可选的讲解方向：<code>bo.remote</code> 的 VPN 旧会话会先询问环境，再应创建影响确认卡；必须点击卡片才允许重置。生产库只读申请须明确资源，并在独立浏览器由 <code>pat.approver</code> 实际批准，待批期间不能声称已授予。安全禁用或超范围请求应保存有上下文和责任人的本地交接记录，它不会联系真人。这些路径可能失败；当前实测范围与原文见<a href="delivery-iteration-result.html">迭代结果</a>，不要宣称录屏覆盖它们。</p>
+<p>可选的讲解方向：<code>bo.remote</code> 的 VPN 旧会话会先询问环境，再应创建影响确认卡；必须点击卡片才允许重置。生产库只读申请须明确资源，并在独立浏览器由 <code>pat.approver</code> 实际批准，待批期间不能声称已授予。安全禁用或超范围请求应保存包含上下文和接收团队队列的本地交接记录；它不会联系真人或表示真人已接单。这些路径可能失败；当前实测范围与原文见<a href="delivery-iteration-result.html">迭代结果</a>，不要宣称录屏覆盖它们。</p>
 <p>当前实模演示后的累计账本为 <strong>USD2.892116173 / 835 请求 / 0 未结预留</strong>，原 USD3 内剩 <strong>USD0.107883827</strong>。这只是录制结束快照，新的现场交互继续消耗余额；每次完整预留可能大于实际结算，因而也可能提前停止。不要重置或换目录恢复额度。费用是未按缓存折扣降低的保守 token 估算，非供应商账单；embedding 另计。</p>
 <h2 id="section-4">复现与离线检查</h2>
 <p>录屏驱动使用新的隔离业务库，保留默认业务库和全部历史证据；调用仍计入固定 <code>runtime/usage.sqlite</code>。它在每次完整请求预留前检查累计已结与未结费用不超过 USD2.95，原账本 USD3 硬上限不变。默认应用没有增加新预算策略。</p>

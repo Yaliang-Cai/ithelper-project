@@ -10,7 +10,7 @@
 
 | 检查 | 模式与结果 | 证据/复现 |
 |---|---|---|
-| 安装 | Python3.12.10，`pip install -e '.[dev]'`成功，pip check无冲突 | 最小运行安装`pip install -e .`；可选浏览器/文档依赖见根README |
+| 安装 | Python3.12.10，`pip install -e '.[dev]'`成功，pip check无冲突 | 最小运行安装`pip install -e .`；可选浏览器/录屏工具见[演示指南](demo.md)，文档渲染工具见[文档入口](README.md) |
 | 程序回归 | 203 passed in23.33s，无warning；实际临时SQLite/认证/政策/Agent，外部模型fixture | `.venv/Scripts/python.exe -m pytest -q`；不等于语义成功率 |
 | API不确定性 | 先KeyError失败，补显式safe DTO后通过 | `tests/test_api.py -k uncertainty`；仅source_message_id/candidate_issue_ids |
 | 显示回归 | 实际JS+fixture HTTP+受控时钟，先复现过期按钮保留，修复后3项通过 | `python scripts/verify_ui_states.py`：闲置到期删除确认控件；模糊反馈显示最后验证状态及待澄清；明确后移除提示 |

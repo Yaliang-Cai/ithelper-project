@@ -112,7 +112,7 @@ python scripts/verify_ui_states.py
 python docs/_tools/render_docs.py
 ```
 
-付费命令如 `python -m evals.runner live --cases D01 --mode llm_user --output fresh-name` 必须另选明确案例，不放入默认回归。安装和浏览器/文档依赖见[README](../../../README.md)，完整口径见[评估设计](../../02-evaluation.md)。
+付费命令如 `python -m evals.runner live --cases D01 --mode llm_user --output fresh-name` 必须另选明确案例，不放入默认回归。运行安装见[根 README](../../../README.md)，可选浏览器/录屏工具见[演示指南](../../demo.md)，文档渲染工具见[文档入口](../../README.md)；完整口径见[评估设计](../../02-evaluation.md)。
 
 ## 7 自然使用的验收重点
 

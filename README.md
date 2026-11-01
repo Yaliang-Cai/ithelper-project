@@ -4,7 +4,7 @@
 
 **先看当前结果：** [员工交互迭代](docs/delivery-iteration-result.md)保留 v6 七案和 v7 两案的全部成功与失败；当前 v7 仅复测 D05/D09，两案程序目标满足。它仍有追问对应不齐、回复冗长和会话键外露的问题。[演示指南与真实模型录屏](docs/demo.md)展示当前版本的一条正常路径。[历史评测](docs/evaluation-report.md)另存 66 次混合版本测量，不代表最终版本 30 案例通过。
 
-企业数据和反馈是合成的；登录、审批、确认、工具写入、收据与重启恢复由实际程序执行。交接保存上下文和责任人记录，不会联系真人。所有 LLM 角色固定官方 `deepseek-flash`，embedding 固定 SiliconFlow `BAAI/bge-m3`。源码可在 [GitHub](https://github.com/Yaliang-Cai/ithelper-project) 阅读，应用仅运行于本机 loopback。
+企业数据和反馈是合成的；登录、审批、确认、工具写入、收据与重启恢复由实际程序执行。交接保存上下文和接收团队队列，不会联系真人或表示真人已接单。所有 LLM 角色固定官方 `deepseek-flash`，embedding 固定 SiliconFlow `BAAI/bge-m3`。源码可在 [GitHub](https://github.com/Yaliang-Cai/ithelper-project) 阅读，应用仅运行于本机 loopback。
 
 ## 运行
 
