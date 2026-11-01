@@ -66,14 +66,16 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 }
 </style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html" aria-current="page">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">当前实现</a><a href="#section-3">验证与费用</a><a href="#section-4">正式评测与版本</a><a href="#section-5">保留限制</a></details></aside>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="demo.html">演示与录屏</a><a href="delivery-iteration-result.html">员工交互迭代</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html" aria-current="page">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">当前实现</a><a href="#section-3">原边界修复的验证与费用快照</a><a href="#section-4">正式评测与版本</a><a href="#section-5">保留限制</a></details></aside>
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">实现状态与运行证据</h1>
-<p>2026-11-02 本地集成交付。四份设计文件保留目标与理由，实际行为和证据见本文件、<a href="delivery-evidence.html">交付记录</a>、<a href="evaluation-report.html">实测报告</a>。整体审查发现的两个程序边界问题和两个报告问题已修复，定向复核确认四项均解决；这不代替尚未完成的模型语义测量。</p>
+<p>2026-11-02 更新。当前运行提示词为 v7 <code>baca519</code>，仅复测 D05/D09；两案程序目标满足，但追问对应与表达质量仍有限制。<a href="delivery-iteration-result.html">员工交互迭代</a>区分 v6 七案、v7 两案、无效模拟、拒绝评分与费用分配停止。</p>
+<p>当前完整离线套件 209 passed（24.26 秒）、31 个案例变体结构通过；脚本模型驱动真实 Agent/HTTP/浏览器 14 项、受控时钟 UI 3 项通过。<a href="demo.html">真实模型 UI 录屏</a>另展示当前 v7 的账号正常路径：2 个完成运行、7 次请求、一次解锁、恢复反馈后结案，不计入评测案例。累计原账本 USD2.892116173 / 835 请求 / 0 未结预留，剩 USD0.107883827；费用为保守估算，embedding 另计。默认服务已重新启动并保留原聊天，<a href="evidence/task2-restart.json">本次重启核对</a>与旧重启记录分开。</p>
+<p>源码与脱敏证据随 GitHub 仓库分享；应用仅运行于本机。下面保留原边界修复、历史评测和费用快照，不能作为新版本的复测结论。</p>
 <h2 id="section-2">当前实现</h2>
 <p>Settings/供应商适配/费用账本、SQLite模拟业务、认证/CSRF、严格Schema、单Agent两阶段循环、上下文/混合检索、持久事件worker、员工/审批/调试页面均已实现。6演示账号、8服务、5资源、12政策、22KB、12通用历史；16业务工具，加内部refine_issue与submit_turn。启动、账号、重置/重启见<a href="../README.md">根README</a>。</p>
 <p>所有LLM角色固定官方deepseek-flash；embedding固定SiliconFlow BAAI/bge-m3。本机两家凭据已配置，Settings.load读取gitignored .env/环境，不进入模型或浏览器。embedding缺失/错误明确lexical降级，不伪造向量；其费用不归入DeepSeek账本，也不声称永久免费。</p>
 <p>每事件10模型请求、12非终结工具、120秒；整理/决策目标10,000/12,000保守UTF-8字节，不是精确token。必需上下文超容量明确停止，没有长聊天语义摘要。实际身份/范围/版本/租约/生命周期/审批/确认/验收由后端守卫；审批事件仅恢复原问题。已知多目标歧义暂停相关新自动写入；未分配反馈保留最后验证状态但all_resolved=false，页面待澄清。当前聊天持久化，不主动检索个人其他聊天。</p>
-<h2 id="section-3">验证与费用</h2>
+<h2 id="section-3">原边界修复的验证与费用快照</h2>
 <ul>
 <li>最终边界修复程序套件209 passed in23.66s，无warning；此前65743f3为203 passed in23.33s。API不确定性、闲置到期显示、重置费用边界均先复现失败。</li>
 <li>scripted external model + real Agent/HTTP/browser14checks通过，零付费；受控时钟真实UI另3checks通过。</li>
@@ -86,9 +88,9 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>Task5自身656请求/USD2.295008760与历史结束快照分开保留。生成器按已归属角色调用计费，current_project_ledger另列。公开摘要在evals/public；完整原件在本机忽略的evals/results，包包含公开投影和可见失败，不含本机数据库或密钥。</p>
 <p>检索40查询：有答案35条，lexical命中26/35、hybrid35/35；无答案5/5正确空。实际hybrid38/40，另两条预过滤空不调embedding。D01/D05同候选两模式各2/2目标通过，小样本不证明普遍优势。无两阶段准确性消融、外部独立或真人专家盲测。</p>
 <h2 id="section-5">保留限制</h2>
-<p>开发文档已按当前代码审校：修正旧的 6k token 口径、裸事件 ID 接口、概念终结 JSON、按角色动态裁剪工具与一键重置等不准确描述；将维护流程集中到<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>。这轮是文档一致性修订，应用源码、历史结果与评测分母沿用原记录，不新增模型效果结论。员工回复仍有冗长内部细节、字面换行与英文标题等体验缺口，优先作为后续针对性语义改进，而不是增加新功能。</p>
+<p>开发文档已按当前代码审校：修正旧的 6k token 口径、裸事件 ID 接口、概念终结 JSON、按角色动态裁剪工具与一键重置等不准确描述；将维护流程集中到<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>。这轮是文档一致性修订，应用源码、历史结果与评测分母沿用原记录，不新增模型效果结论。旧样本中的冗长内部细节、字面换行与英文标题已促成上述提示词迭代；当前两案仍有追问不齐、长回复与会话键外露，不能据此声称呈现问题已普遍解决。</p>
 <p>模型仍有协议、调用上限、上下文容量和语言误解；Schema/执行守卫不能消除错误措辞。原审批矛盾、容量失败、H01澄清顺序、历史重复交接、模拟器/grader误判保留。本次修复统一所有真实调用入口的canonical ledger及connectivity显式项目.env路径，并在路由前限制HTTP Host为127.0.0.1/localhost；匹配的任意Host+Origin不能绕过。Task5费用截止快照固定，后来评测另列。专门歧义守卫依赖模型识别，小样本语义阈值不是证明。实际页面出现字面反斜杠n和英文目标标题，原文安全保留。企业数据/反馈合成，无真实专家联络、个人跨聊天记忆、完整传播仿真、专家接续、真实企业API。</p>
-<p>七项工程裁定与错误代价见<a href="engineering-decisions.html">决策记录</a>。原题逐项映射、模式与截图见<a href="delivery-evidence.html">交付记录</a>。本次服务URL/PID/日志见<a href="evidence/restart.json">evidence/restart.json</a>，PID随启动变化。源码archive为runtime/helpdesk-submission.zip，来自tracked HEAD，最终审查有改动后需要重新生成。</p>
+<p>七项工程裁定与错误代价见<a href="engineering-decisions.html">决策记录</a>。原题逐项映射、模式与截图见<a href="delivery-evidence.html">交付记录</a>。原次服务 URL/PID/日志见<a href="evidence/restart.json">evidence/restart.json</a>，当前进程另见<a href="evidence/task2-restart.json">重启核对</a>，PID 随启动变化。源码包应从最终 tracked HEAD 生成，不包含本机运行数据。</p>
 
 <footer>本页来自 <a href="implementation-status.md">implementation-status.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
 </article></main></body></html>

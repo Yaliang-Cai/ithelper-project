@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>演示指南</title><style>
+:root { color-scheme: light; --ink:#172638; --muted:#5b6877; --line:#dce3eb; --accent:#225cc5; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:24px; }
+body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
+a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
+a:hover { text-decoration:underline; }
+img { max-width:100%; height:auto; }
+.sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
+.brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
+.meta { color:var(--muted); font-size:12px; }
+.pages { display:grid; gap:4px; margin:22px 0; }
+.pages a { display:block; padding:7px 10px; border-radius:6px; }
+.pages a[aria-current=page] { background:#dce8fc; color:#19438c; font-weight:700; }
+.toc { border-top:1px solid var(--line); padding-top:14px; font-size:13px; }
+.toc summary { cursor:pointer; font-weight:700; margin-bottom:10px; }
+.toc a { display:block; color:#48566b; padding:5px 2px; line-height:1.6; }
+main { margin-left:268px; padding:38px 42px 72px; }
+article { max-width:1100px; margin:auto; background:white; border:1px solid var(--line); border-radius:12px; padding:40px 46px; min-width:0; }
+.status { display:inline-block; background:#eaf2ff; color:#24549c; padding:3px 10px; border-radius:5px; font-size:12px; letter-spacing:.04em; margin-bottom:12px; }
+h1 { font-size:32px; line-height:1.4; letter-spacing:-.025em; margin:12px 0 25px; }
+h2 { font-size:24px; line-height:1.5; margin:44px 0 18px; border-top:1px solid var(--line); padding-top:25px; }
+h3 { font-size:19px; line-height:1.6; margin:29px 0 12px; }
+p { margin:14px 0; overflow-wrap:anywhere; }
+li { margin:7px 0; }
+ul,ol { padding-left:1.65em; }
+.table-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:7px; }
+table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.75; }
+th,td { vertical-align:top; text-align:left; padding:11px 13px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; min-width:105px; }
+th { background:#edf3fc; color:#244466; font-weight:700; }
+tr:last-child td { border-bottom:0; }
+tbody tr:nth-child(even) { background:#fafbfd; }
+pre { border:1px solid #dce3ee; border-radius:8px; padding:19px; background:#f4f7fb; line-height:1.65; font-size:13px; overflow:auto; }
+code { font-family:Consolas,'Microsoft YaHei',monospace; }
+p code,li code { background:#f1f4f9; padding:2px 4px; border-radius:3px; }
+blockquote { border-left:3px solid #9ab9ec; margin-left:0; padding-left:18px; color:#435269; }
+footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--muted); font-size:12px; }
+@media(max-width:1050px) {
+  .sidebar { position:static; width:auto; padding:20px 22px; border-right:0; border-bottom:1px solid var(--line); }
+  .pages { display:flex; flex-wrap:wrap; gap:5px; margin:12px 0; font-size:14px; }
+  .toc { display:none; }
+  main { margin-left:0; padding:20px; }
+  article { padding:28px; }
+}
+@media(max-width:600px) {
+  body { font-size:15px; }
+  main { padding:10px; }
+  article { padding:23px 18px; border-radius:8px; }
+  h1 { font-size:26px; }
+  h2 { font-size:21px; }
+  table { min-width:620px; }
+  pre { font-size:12px; padding:13px; }
+}
+@media print {
+  .sidebar,.status { display:none; }
+  body { background:white; font-size:10pt; }
+  main { margin:0; padding:0; }
+  article { max-width:none; border:0; padding:0; }
+  h2,h3 { break-after:avoid; }
+  tr { break-inside:avoid; }
+  .table-wrap { overflow:visible; }
+  pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+  a { color:inherit; }
+}
+</style></head><body>
+<aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="demo.html" aria-current="page">演示与录屏</a><a href="delivery-iteration-result.html">员工交互迭代</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">讲解顺序</a><a href="#section-3">面试现场输入</a><a href="#section-4">复现与离线检查</a></details></aside>
+<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">演示指南</h1>
+<p>当前版本的一条真实模型 UI 路径：<a href="evidence/demo-v7-recording/index.html">播放 33.32 秒录屏</a> · <a href="evidence/demo-v7-recording/real-model-v7.webm">原始 WebM</a> · <a href="evidence/demo-v7-recording/demo-v7.json">消息、回执、版本与费用</a>。无声、原速连续录制，无剪辑或答案回放。画面中的“模拟业务系统”始终可见；真实调用官方 <code>deepseek-flash</code>，企业状态与员工恢复反馈均为合成数据，没有连接真实 Okta。</p>
+<h2 id="section-2">讲解顺序</h2>
+<ol>
+<li><strong>0–5 秒：身份与输入。</strong> Alice 登录、新建聊天，用全新表述描述自己在公司电脑上的 Okta 锁定。新输入直接进入模型，不携带案例编号。</li>
+<li><strong>5–17 秒：查证与操作。</strong> Agent 查询账号和政策，执行一次普通本人账号解锁，保存实际模拟收据；页面仍等待员工重试，未凭解锁就结案。</li>
+<li><strong>17–29 秒：恢复反馈。</strong> 开发者输入合成反馈“现在能进去了”，Agent 再次查询后更新为已确认解决。两个阶段保留在同一聊天。</li>
+<li><strong>29–33 秒：持久状态。</strong> 页面重载，从历史重新打开该聊天，消息和收据仍在。审批、影响确认与交接可结合已有证据讲解；本录屏只展示账号正常路径。</li>
+</ol>
+<p>本次有 2 个 completed <code>live_agent</code> 运行、7 次模型请求（4+3）、4 次非终结工具（3+1）、1 次解锁收据、0 个事件错误和 0 个浏览器脚本错误。两个运行保存的 <code>prompt_version</code> 均为 <code>helpdesk-2026-11-02-v7-matched-followup</code>，不只是检查磁盘上的提示词。运行代码与冻结 <code>baca519</code> 的哈希一致；录制时 Git HEAD 为 <code>abcaf05</code>（后续仅文档/证据差异）。<a href="evidence/demo-v7-recording/employee-v7.png">最终截图</a>保留原始回复，仍有账号重复与重复结束邀请，不能称为自然表达已完全解决。</p>
+<h2 id="section-3">面试现场输入</h2>
+<p>按<a href="../README.md">根 README</a>启动后，新建聊天，请演示者自行输入问题并按当前追问补充事实。观察单独目标、来源、未解决状态和实际收据；自由文本不是效果凭证。不要为配合演示声称真实系统已经恢复。</p>
+<p>可选的讲解方向：<code>bo.remote</code> 的 VPN 旧会话会先询问环境，再应创建影响确认卡；必须点击卡片才允许重置。生产库只读申请须明确资源，并在独立浏览器由 <code>pat.approver</code> 实际批准，待批期间不能声称已授予。安全禁用或超范围请求应保存有上下文和责任人的本地交接记录，它不会联系真人。这些路径可能失败；当前实测范围与原文见<a href="delivery-iteration-result.html">迭代结果</a>，不要宣称录屏覆盖它们。</p>
+<p>当前实模演示后的累计账本为 <strong>USD2.892116173 / 835 请求 / 0 未结预留</strong>，原 USD3 内剩 <strong>USD0.107883827</strong>。这只是录制结束快照，新的现场交互继续消耗余额；每次完整预留可能大于实际结算，因而也可能提前停止。不要重置或换目录恢复额度。费用是未按缓存折扣降低的保守 token 估算，非供应商账单；embedding 另计。</p>
+<h2 id="section-4">复现与离线检查</h2>
+<p>录屏驱动使用新的隔离业务库，保留默认业务库和全部历史证据；调用仍计入固定 <code>runtime/usage.sqlite</code>。它在每次完整请求预留前检查累计已结与未结费用不超过 USD2.95，原账本 USD3 硬上限不变。默认应用没有增加新预算策略。</p>
+<pre><code class="language-powershell"># 可选浏览器工具，独立于最小运行依赖
+python -m pip install playwright
+python -m playwright install chromium ffmpeg
+# 以下命令会付费；输出目录必须尚不存在，不会覆盖旧录制
+python -m scripts.record_demo --output runtime/my-new-demo
+</code></pre>
+<p>本次隔离世界保存在本机忽略目录 <code>runtime/recordings/20261101T224412Z</code>，录制完成后其服务器已停止。默认服务已用新进程重新启动，原聊天未重置；其历史两次运行仍如实保留旧版本，不据此声称重新实测。录屏只含 UI 像素，无浏览器会话文件或网络 trace。新驱动准备阶段曾因账本列名、缺少 ffmpeg 和 CSP 不允许字符串求值而停止，均在提交消息前；修正驱动/安装工具后仅进行上述一次实模路径。</p>
+<p>以下检查不调用真实模型：</p>
+<pre><code class="language-powershell">.venv/Scripts/python.exe -m pip install -e '.[dev]'
+.venv/Scripts/python.exe -m pip check
+.venv/Scripts/python.exe -m pytest -q
+.venv/Scripts/python.exe -m evals.runner validate
+python scripts/verify_browser.py
+python scripts/verify_ui_states.py
+</code></pre>
+<p>当前完整程序回归 209 passed（24.26 秒），案例结构验证 31 个变体；脚本模型 + 真实 Agent/HTTP/浏览器 14 项、受控时钟真实 UI 3 项通过。后两者是明确的离线测试，不是模型自主决策证据，也没有另存“实模”录屏。GitHub Actions 只执行安装、pytest 和案例结构检查，不配置凭据或付费请求。</p>
+<p>WebM 已在 Chromium 实际播放，并用离线解码检查 12/30 秒画面文字；1440×1000、33.32 秒、3,371,345 字节，无音轨。<a href="evidence/demo-v7-recording/playback.json">播放检查</a>保留媒体哈希。原 <a href="evidence/delivery-smoke.json">smoke</a>、截图与 <a href="evidence/restart.json">restart</a> 全部保持原字节；本次费用增量 USD0.021356400 / 7 请求与 Task1 的 69 请求另列，不混入历史评测。</p>
+
+<footer>本页来自 <a href="demo.md">demo.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
+</article></main></body></html>

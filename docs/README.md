@@ -1,6 +1,8 @@
 # IT Helpdesk Agent 文档入口
 
-[根README：安装、账号、运行与边界](../README.md)。以下材料本地阅读，不发布。
+[根README：安装、账号、运行与边界](../README.md)。源码与脱敏证据随仓库分享；应用仅在本机运行。
+
+当前入口：[演示指南与真实模型录屏](demo.md)、[员工交互迭代结果](delivery-iteration-result.md)。当前 v7 仅复测 D05/D09；以下历史报告保留各自版本与费用快照。
 
 继续开发先读[开发与测试流程](superpowers/plans/2026-11-02-helpdesk-implementation.md)：当前代码职责、校验归属、数据覆盖、按变更选测试、自然交互验收和提升依据。它替代旧的未勾选任务清单，原计划可从 Git 历史查阅。
 

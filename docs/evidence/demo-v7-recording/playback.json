@@ -1,0 +1,21 @@
+{
+  "width": 1440,
+  "height": 1000,
+  "duration": 33.32,
+  "mode": "offline Chromium full original-speed playback to ended; FFmpeg decoded frames inspected",
+  "sha256": "9c658bc59241d643f5b2add26372b37ff39282db1b46d4aa2cd53f86f957ddbd",
+  "bytes": 3371345,
+  "audio": false,
+  "decoded_samples_seconds": [
+    12,
+    30
+  ],
+  "full_playback": {
+    "duration": 33.32,
+    "currentTime": 33.32,
+    "ended": true,
+    "error": null,
+    "width": 1440,
+    "height": 1000
+  }
+}

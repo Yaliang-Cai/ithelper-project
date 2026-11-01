@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>员工交互迭代实测（2026-11-02）</title><style>
+:root { color-scheme: light; --ink:#172638; --muted:#5b6877; --line:#dce3eb; --accent:#225cc5; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:24px; }
+body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
+a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
+a:hover { text-decoration:underline; }
+img { max-width:100%; height:auto; }
+.sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
+.brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
+.meta { color:var(--muted); font-size:12px; }
+.pages { display:grid; gap:4px; margin:22px 0; }
+.pages a { display:block; padding:7px 10px; border-radius:6px; }
+.pages a[aria-current=page] { background:#dce8fc; color:#19438c; font-weight:700; }
+.toc { border-top:1px solid var(--line); padding-top:14px; font-size:13px; }
+.toc summary { cursor:pointer; font-weight:700; margin-bottom:10px; }
+.toc a { display:block; color:#48566b; padding:5px 2px; line-height:1.6; }
+main { margin-left:268px; padding:38px 42px 72px; }
+article { max-width:1100px; margin:auto; background:white; border:1px solid var(--line); border-radius:12px; padding:40px 46px; min-width:0; }
+.status { display:inline-block; background:#eaf2ff; color:#24549c; padding:3px 10px; border-radius:5px; font-size:12px; letter-spacing:.04em; margin-bottom:12px; }
+h1 { font-size:32px; line-height:1.4; letter-spacing:-.025em; margin:12px 0 25px; }
+h2 { font-size:24px; line-height:1.5; margin:44px 0 18px; border-top:1px solid var(--line); padding-top:25px; }
+h3 { font-size:19px; line-height:1.6; margin:29px 0 12px; }
+p { margin:14px 0; overflow-wrap:anywhere; }
+li { margin:7px 0; }
+ul,ol { padding-left:1.65em; }
+.table-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:7px; }
+table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.75; }
+th,td { vertical-align:top; text-align:left; padding:11px 13px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; min-width:105px; }
+th { background:#edf3fc; color:#244466; font-weight:700; }
+tr:last-child td { border-bottom:0; }
+tbody tr:nth-child(even) { background:#fafbfd; }
+pre { border:1px solid #dce3ee; border-radius:8px; padding:19px; background:#f4f7fb; line-height:1.65; font-size:13px; overflow:auto; }
+code { font-family:Consolas,'Microsoft YaHei',monospace; }
+p code,li code { background:#f1f4f9; padding:2px 4px; border-radius:3px; }
+blockquote { border-left:3px solid #9ab9ec; margin-left:0; padding-left:18px; color:#435269; }
+footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--muted); font-size:12px; }
+@media(max-width:1050px) {
+  .sidebar { position:static; width:auto; padding:20px 22px; border-right:0; border-bottom:1px solid var(--line); }
+  .pages { display:flex; flex-wrap:wrap; gap:5px; margin:12px 0; font-size:14px; }
+  .toc { display:none; }
+  main { margin-left:0; padding:20px; }
+  article { padding:28px; }
+}
+@media(max-width:600px) {
+  body { font-size:15px; }
+  main { padding:10px; }
+  article { padding:23px 18px; border-radius:8px; }
+  h1 { font-size:26px; }
+  h2 { font-size:21px; }
+  table { min-width:620px; }
+  pre { font-size:12px; padding:13px; }
+}
+@media print {
+  .sidebar,.status { display:none; }
+  body { background:white; font-size:10pt; }
+  main { margin:0; padding:0; }
+  article { max-width:none; border:0; padding:0; }
+  h2,h3 { break-after:avoid; }
+  tr { break-inside:avoid; }
+  .table-wrap { overflow:visible; }
+  pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+  a { color:inherit; }
+}
+</style></head><body>
+<aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="demo.html">演示与录屏</a><a href="delivery-iteration-result.html" aria-current="page">员工交互迭代</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">v7：一次修订后的两案配对检查</a></details></aside>
+<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">员工交互迭代实测（2026-11-02）</h1>
+<p>本次只改 <code>app/prompts.py</code>。先冻结 v6 的七案例定向测量，再根据 D05/D09 保存的失败修订追问和确认说明，以 v7 做同案配对检查；每批内部没有边测边改，未做第三候选或择优重跑。最终 v7 仅实测两个案例，不能把 v6 五类覆盖算给 v7。业务校验、原始消息、历史案例、oracle 和历史评测汇总均未改变。后续独立的<a href="demo.html">真实模型 UI 录屏</a>只展示账号正常路径，不计入本页评测。</p>
+<p>v6 要求新目标标题跟随员工语言、回复聚焦当前结果/不确定性/一个问题、避免内部编号和字面反斜杠换行。冻结提交 <code>505572297668f2b73fc438bab424102185701e85</code>，提示词版本 <code>helpdesk-2026-11-02-v6-employee-prose</code>。</p>
+<p>程序验证：209 项测试通过（23.47 秒），31 个案例结构检查通过。新增<a href="evidence/delivery-iteration-v6.json">完整安全证据</a>单独保存模型/运行代码 SHA256、案例哈希、原始可见对话、工具轨迹、真实模拟效果、批准/确认/交接记录、事件错误、AI 评分及账本请求 ID。它不是最终 30 案例复跑。</p>
+<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>案例</th>
+<th>程序模拟有效</th>
+<th>目标断言</th>
+<th>实际付费请求</th>
+<th>费用 USD</th>
+<th>结果及限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D01 账号</td>
+<td>是</td>
+<td>满足</td>
+<td>9</td>
+<td>0.027455401</td>
+<td>一次真实模拟解锁，重试反馈后 resolved；仍显示账号键</td>
+</tr>
+<tr>
+<td>D05 应用</td>
+<td>是</td>
+<td>未满足</td>
+<td>5</td>
+<td>0.014217000</td>
+<td>verifying；给了指导但没有可供模拟器回答的结构化问题，未进入 waiting_external</td>
+</tr>
+<tr>
+<td>D09 连接</td>
+<td>否</td>
+<td>未满足</td>
+<td>8</td>
+<td>0.024687000</td>
+<td>环境和同意问题混在一起，随后先问聊天同意而非下发卡片；规则模拟器问题/意图不匹配，无重置</td>
+</tr>
+<tr>
+<td>D13 权限</td>
+<td>是</td>
+<td>满足</td>
+<td>15</td>
+<td>0.062613900</td>
+<td>Grafana 只读已授予、verifying；analytics 精确只读申请 waiting_approval，未授生产权限</td>
+</tr>
+<tr>
+<td>D17 跨系统</td>
+<td>是</td>
+<td>满足</td>
+<td>7</td>
+<td>0.034574402</td>
+<td>两个持久模拟交接已保存；另一次请求被评测预留边界阻止，最终回复只有预算停止提示</td>
+</tr>
+<tr>
+<td>H01b 短歧义</td>
+<td>否</td>
+<td>未满足</td>
+<td>3</td>
+<td>0.006027000</td>
+<td>正确先问目标、无解锁；规则问题/意图匹配失败，AI grade 被契约拒绝</td>
+</tr>
+<tr>
+<td>S01 非 IT</td>
+<td>是</td>
+<td>满足</td>
+<td>3</td>
+<td>0.004138500</td>
+<td>没有虚构 IT 目标或业务效果</td>
+</tr>
+</tbody>
+</table></div>
+<p>全部使用真实 Agent/Domain/工具与隔离合成业务库，模型固定官方 <code>deepseek-flash</code>，hybrid 检索的 embedding 固定 <code>BAAI/bge-m3</code>。员工后续消息来自 <code>rule_user</code>；有效仅表示程序检查通过，不能证明模拟语义完全自然。评分也是同一 Flash 的独立上下文，并非人工或独立模型评审。H01b 已在历史开发中暴露，本次标为开发复测，不是新 holdout。v6 每案只测一次，失败全部保留；v7 只复测下面两案，没有未运行的计划案例。</p>
+<p>五个程序有效案例中四个满足目标，但 D17 同时发生事件错误，因此不能把四个都称为完整成功。六份被接受的 AI 评分没有 hard failure；H01b 的评分因把“要求解锁”误判成“必须交接”而被拒绝，未计作有效评分，其原始评分仍在证据中。D05 评分还把只存在于用户卡的芝加哥/时间描述称作已提供信息；这些 AI 解释不能替代实际对话。</p>
+<p>10 条可见助手消息的长度依次为 D01 94/94、D05 273、D09 172/209、D13 209/240、D17 24、H01b 84、S01 82 个字符。字面 <code>\n</code> 为 0、记录型内部 ID 为 0、原始状态字段为 0；仍出现 <code>okta.alice.sales</code> 与 <code>pat.approver</code> 两个目录键。新增目标标题均为中文，但 D05 后端仍逐字附上英文已审阅 KB；没有擅自翻译或改写公司步骤。这些是呈现诊断，不是自动自然度评分；D17 很短只是停止提示，不代表好体验。</p>
+<p>实际原文仍能说明局限：D09 首轮同时问“其他应用/网站是否也同时断网”和“是否同意……执行重置”；D13 回答仍有 240 字和重复状态。H01b 则能简短问“能告诉我是哪一个还在卡吗？”。旧 smoke 的两条回复为 285/124 字，含 6 个字面换行转义及内部字段；新旧输入不同，不能据此推断受控提升幅度。旧原文保留在<a href="evidence/delivery-smoke.json">原 smoke</a>和<a href="../evals/public/failure-examples.md">历史失败例</a>。</p>
+<p>费用沿用原 <code>D:/药明-test/runtime/usage.sqlite</code>：开始 USD2.634129369 / 759 请求 / 0 预留，结束 USD2.807842572 / 809 请求 / 0 预留；新增 USD0.173713203、50 次付费请求，剩余 USD0.192157428。另有 D17 一次未付费请求尝试被本次评测的 USD2.85 预留上限阻止：真实 trace 保留 <code>PROJECT_BUDGET_EXHAUSTED</code>，这里明确归因于<strong>评测演示余量停止</strong>，原 USD3 项目额度没有耗尽。没有提高额度、迁移账本或换模型；停止新增付费验证，保留演示费用。</p>
+<h2 id="section-2">v7：一次修订后的两案配对检查</h2>
+<p>针对上述两项失败，只做一次集成修订：可见追问与结构化 <code>questions</code> 的文本/意图/归属对应；指导后问具体尝试结果；先单独询问缺失网络条件，再直接创建 VPN 确认卡，不再先收聊天同意。实际工具没有独立的“申请确认”接口：调用 <code>reset_vpn_session</code> 不带 <code>confirmation_id</code> 会返回 <code>CONFIRMATION_REQUIRED</code> 并保存卡片，<strong>不会重置</strong>；这一已存在的契约说明整合进原 VPN 提示词句子，后端与工具 Schema 未修改。</p>
+<p>v7 先提交 <code>baca519e2fc316dad6de51ff89d8da1530004408</code>，版本 <code>helpdesk-2026-11-02-v7-matched-followup</code>，再固定运行同样的 D05/D09 案例、oracle、<code>rule_user</code>、hybrid 检索和同模型 grader。60 项 Agent/歧义相关回归通过（7.24 秒）。<a href="evidence/delivery-iteration-v7.json">v7 独立证据</a>保留精确哈希和完整安全摘录，v6 记录不删除。</p>
+<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>案例</th>
+<th>程序模拟有效</th>
+<th>目标断言</th>
+<th>实际付费请求</th>
+<th>费用 USD</th>
+<th>本次实际结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D05</td>
+<td>是</td>
+<td>满足</td>
+<td>5</td>
+<td>0.014067001</td>
+<td>依据当前地区慢页面事故进入 waiting_external，无业务动作</td>
+</tr>
+<tr>
+<td>D09</td>
+<td>是</td>
+<td>满足</td>
+<td>14</td>
+<td>0.048850200</td>
+<td>环境答复 → 持久卡片 → 确认 API → 一次真实模拟重置 → 十五分钟观察反馈 → resolved</td>
+</tr>
+</tbody>
+</table></div>
+<p>两案无事件错误、无评测余量停止；两份被接受的 AI grade 没有 hard failure。D09 的 <code>CONFIRMATION_REQUIRED</code> 是首次发卡的正常未执行结果，不是越权效果或重置失败。</p>
+<p>这仍不是完整自然度通过：D05 可见问题只问页面范围，结构化问题还问起始时间，且 runner 在 waiting_external 后立即停止，没有验证后续回答；grader 又提及不在对话里的“later-reported”用户卡事实。D09 可见助手长度 177/340/96/100 字，确认卡说明仍冗长，出现一次 <code>vpn.bo.remote</code> 会话键和“重置次数为 1”，结尾仍重复邀请。D05 为 144 字。两案字面 <code>\n</code> 与记录型 ID 均为 0；不是自动质量分数。新的有效闭环说明这两个单次测量走通，不能推断普遍稳定改善。</p>
+<p>v7 的评测预留上限调整为 USD2.90，为演示保留约 USD0.10；原项目硬上限仍是 USD3。v7 新增 USD0.062917201 / 19 付费请求。两批合计新增 USD0.236630404 / 69 付费请求，另有 v6 D17 一次未付费阻止；本次配对评测结束时原账本 <strong>USD2.870759773 / 828 请求 / 0 预留，余额 USD0.129240227</strong>。随后独立 UI 演示的费用见<a href="demo.html">演示指南</a>，不修改本次快照。不再新增评测调用；同一最终候选尚未实测其余五个优先案例。</p>
+
+<footer>本页来自 <a href="delivery-iteration-result.md">delivery-iteration-result.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
+</article></main></body></html>

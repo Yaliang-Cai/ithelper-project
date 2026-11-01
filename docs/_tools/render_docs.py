@@ -11,6 +11,8 @@ from markdown_it import MarkdownIt
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
     ("README.md", "index.html", "阅读入口"),
+    ("demo.md", "demo.html", "演示与录屏"),
+    ("delivery-iteration-result.md", "delivery-iteration-result.html", "员工交互迭代"),
     ("01-system-design.md", "01-system-design.html", "01 系统设计"),
     ("02-evaluation.md", "02-evaluation.html", "02 评估设计"),
     ("03-defense-and-extensions.md", "03-defense-and-extensions.html", "03 答辩与扩展"),
