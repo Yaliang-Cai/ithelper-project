@@ -10,3 +10,5 @@ runtime/
 evals/results/
 .superpowers/
 docs/_review/
+
+*.egg-info/

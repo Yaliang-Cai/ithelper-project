@@ -6,6 +6,23 @@ from app.budget import BudgetLedger, BudgetExceeded
 from app.providers import DeepSeekClient, EmbeddingClient, ProviderError
 
 
+def probe_json(llm):
+    outcomes = []
+    for attempt in range(2):
+        try:
+            completion = llm.complete([{'role':'user','content':'Return JSON only: {"ok":true}'}],purpose='connectivity_json' if attempt == 0 else 'connectivity_json_retry',response_format={'type':'json_object'},max_tokens=128)
+            valid = json.loads(completion['choices'][0]['message']['content']).get('ok') is True
+            outcomes.append('ok' if valid else 'failed')
+        except (ProviderError,ValueError,KeyError,TypeError,AttributeError):
+            outcomes.append('failed')
+        except BudgetExceeded:
+            outcomes.append('budget_exhausted')
+            break
+        if outcomes[-1] == 'ok':
+            break
+    return outcomes
+
+
 def main():
     settings = Settings.load()
     settings.runtime_dir.mkdir(parents=True,exist_ok=True)
@@ -18,11 +35,8 @@ def main():
         result['model_available'] = settings.deepseek_model in models
     except ProviderError:
         result['authentication'] = 'failed'
-    try:
-        completion = llm.complete([{'role':'user','content':'Return JSON only: {"ok":true}'}],purpose='connectivity_json',response_format={'type':'json_object'},max_tokens=128)
-        result['json_completion'] = 'ok' if json.loads(completion['choices'][0]['message']['content']).get('ok') is True else 'invalid'
-    except (ProviderError,BudgetExceeded,ValueError,KeyError,TypeError,AttributeError):
-        result['json_completion'] = 'failed'
+    result['json_completion_attempts'] = probe_json(llm)
+    result['json_completion'] = result['json_completion_attempts'][-1]
     try:
         tools = [{'type':'function','function':{'name':'ping','description':'Connectivity probe returning pong','parameters':{'type':'object','properties':{},'required':[]}}}]
         messages = [{'role':'user','content':'Call ping exactly once. After its result reply pong.'}]

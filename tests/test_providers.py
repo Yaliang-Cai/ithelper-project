@@ -106,7 +106,7 @@ def test_load_env_and_secret_repr(tmp_path,monkeypatch):
 
 def test_default_authorized_budget():
     from app.config import Settings
-    assert Settings().llm_budget_usd == 2.0
+    assert Settings().llm_budget_usd == 3.0
 
 def test_http_failure_never_retries(tmp_path):
     from app.providers import ProviderError
@@ -137,3 +137,16 @@ def test_settle_is_idempotent_and_keeps_actual_cost(tmp_path):
     with pytest.raises(ValueError):
         ledger.settle(r,.004)
     assert ledger.report()['spent_usd'] == .005
+
+
+def test_connectivity_json_bounded_retry(monkeypatch):
+    from scripts.check_connections import probe_json
+    class Probe:
+        def __init__(self):
+            self.calls=0
+        def complete(self,*args,**kwargs):
+            self.calls+=1
+            return {'choices':[{'message':{'content':'broken' if self.calls==1 else '{"ok":true}'}}]}
+    probe=Probe()
+    assert probe_json(probe) == ['failed','ok']
+    assert probe.calls == 2

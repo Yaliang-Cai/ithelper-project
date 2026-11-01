@@ -13,7 +13,7 @@ class Settings:
     deepseek_base_url: str = 'https://api.deepseek.com'
     embedding_model: str = 'BAAI/bge-m3'
     embedding_base_url: str = 'https://api.siliconflow.cn/v1'
-    llm_budget_usd: float = 2.0
+    llm_budget_usd: float = 3.0
     runtime_dir: Path = Path('runtime')
 
     def __post_init__(self):

@@ -8,7 +8,7 @@ class BudgetExceeded(RuntimeError):
     pass
 
 class BudgetLedger:
-    def __init__(self, path, limit_usd=2.0):
+    def __init__(self, path, limit_usd=3.0):
         if not math.isfinite(limit_usd) or limit_usd <= 0:
             raise ValueError('Invalid budget limit')
         self.path = Path(path)
