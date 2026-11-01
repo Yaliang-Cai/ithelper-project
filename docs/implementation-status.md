@@ -1,0 +1,24 @@
+# 实现进度与接入记录
+
+这份文件记录实际进度；四份设计文档描述目标与理由，不等于已实现能力。
+
+## 已确定的运行配置
+
+- 项目所有 LLM 角色统一使用 DeepSeek 官方 `deepseek-flash`，包括 Agent、测试用户和评分器。官方说明旧名 `deepseek-v4-flash` 目前映射到新版 Flash。[模型说明](https://api-docs.deepseek.com/quick_start/pricing/)
+- 用户最新明确选择的 DeepSeek 累计预算为 US$3，覆盖先前的 US$2。达到上限后停止新增付费请求并报告；不自动提高预算。
+- embedding 固定使用 SiliconFlow `BAAI/bge-m3`，不自动切换 `Pro/BAAI/bge-m3`。目前官方标为免费，仍受账号与限流约束。[价格](https://siliconflow.cn/pricing) [免费模型条件](https://docs.siliconflow.cn/docs/userguide/faqs/rate-limit-and-upgradation)
+- 两家密钥已保存在本地 .env；该文件被 Git 忽略。文档与代码不保存密钥值。
+
+## 实际接入证据
+
+2026-11-02 的接入检查已经确认 DeepSeek 模型列表认证成功（HTTP 200），可用 Flash 模型；SiliconFlow embedding 返回 HTTP 200、1024 维向量。提供方适配器进一步验证了原生工具调用往返。
+
+首次 JSON 模式小测试返回不合法 JSON；加入一次有界修正后的最终检查记录为首轮失败、第二轮成功。失败记录保留，后续不得把 JSON 模式当作语义或格式必然正确的保证。完整接入结果由本地 runtime/connectivity.json 保存，包含安全元数据，不包含密钥。
+
+## 当前阶段
+
+模型适配、持久费用账本及连接检查已有实现，28 个相关测试通过，独立审查发现的四项问题已修复并通过复核。接入阶段累计保守计费约 US$0.0004041，余额和未决预留随实际调用更新。
+
+模拟业务与权限层已提交实现：6 个演示账号、8 个服务、5 个资源、12 条政策、22 篇知识文章、12 条历史记录，16 个业务工具。新增 39 项相关程序测试，当前全套 67 项通过；独立审查发现的审批重复申请与反馈纠正两项问题已修复并通过复核。接下来实现 Agent、界面、评测和交付。当前没有可供报告的业务成功率；正式案例尚未运行。
+
+详细执行记录保存在本地忽略目录 .superpowers/sdd/2026-11-02-helpdesk-implementation；可复用实现计划见 docs/superpowers/plans/2026-11-02-helpdesk-implementation.md。

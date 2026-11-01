@@ -132,7 +132,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tr>
 <tr>
 <td>模型供应商</td>
-<td>DeepSeek 优先；具体模型、模式由接入验证及评测确定</td>
+<td>用户后续锁定 DeepSeek Flash；Agent、模拟用户和评分统一使用 deepseek-flash，模式记录在运行配置中</td>
 </tr>
 <tr>
 <td>记忆范围</td>
@@ -858,7 +858,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>文档按自然小节切分，保留标题、父文档、适用版本和前置条件。初始片段约 300 至 600 tokens，长操作步骤保持完整或提供父段读取，避免只检索到动作而丢失限制。</p>
 <p>查询同时进入关键词和向量两路，初始各取 10 个结果；按排名融合后保留约 5 个，按父文档去重。RRF 初始使用 1/(60+rank) 累加，仅作为可调整参数，不把排名分数当正确性概率。中文分词需保留英文产品名、错误码和版本号；不能直接采用只适合英语空格切分的处理方式。</p>
 <p>过滤只使用已知条件；员工未说明版本时不能猜版本再强过滤。返回 NO_MATCH 是合法结果，不为凑足 Top K 返回无关文档。相似度阈值需要开发集校准，不能未经测试写成通用可信度。</p>
-<p>建议 BM25S 本地执行；向量可使用硅基流动 BAAI/bge-m3，缓存文档向量，本地计算相似度。其公开价格在前期核验时标为免费，开发接入时需再次确认账户可用性和当前价格；本次文档整理时价格页请求超时，不能据此保证持续免费。<a href="https://www.siliconflow.cn/pricing">价格页</a> <a href="https://huggingface.co/BAAI/bge-m3">模型说明</a> <a href="https://github.com/xhluca/bm25s">BM25S</a></p>
+<p>建议 BM25S 本地执行；向量使用硅基流动 BAAI/bge-m3，缓存文档向量，本地计算相似度。2026 年 11 月 2 日重新核对的官方价格页标为免费，用户提供独立密钥后的实际调用已返回 1024 维向量。不自动切换到收费的 Pro/BAAI/bge-m3；服务价格与可用性仍以供应商当时规则为准。<a href="https://siliconflow.cn/pricing">价格页</a> <a href="https://huggingface.co/BAAI/bge-m3">模型说明</a> <a href="https://github.com/xhluca/bm25s">BM25S</a></p>
 <p>索引保存 embedding 模型标识、维度、文档哈希、切分版本和索引版本。查询与文档必须使用同一向量空间；更换模型要重建索引，不能混用缓存。</p>
 <p>embedding 服务不可用时明确降级到 BM25，记录 degraded=true。不能把降级运行归入正常混合检索结果；缓存未命中的查询失败仍可使用关键词路径。Reranker 不是首版必需项。</p>
 <h2 id="section-30">14 五类场景的端到端示例</h2>

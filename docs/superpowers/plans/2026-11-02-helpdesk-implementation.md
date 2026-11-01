@@ -14,7 +14,8 @@
 
 - All project LLM calls, including user simulation and grading, use the official DeepSeek Flash model ID `deepseek-flash`. No paid model fallback.
 - Embeddings use `BAAI/bge-m3` at `https://api.siliconflow.cn/v1`; never silently select `Pro/BAAI/bge-m3`. Missing key means explicitly degraded lexical retrieval, not simulated vectors.
-- Default cumulative project LLM budget is USD 1 until the user sets another amount. Persist spending across processes/restarts, reserve before calls, and retain conservative charges for uncertain requests.
+- User-authorized cumulative project DeepSeek budget is USD 3. Persist spending across processes/restarts, reserve before calls, and retain conservative charges for uncertain requests.
+- Resetting the demo or creating an evaluation world must never reset or relocate the shared project spending ledger. Scenario databases are separate from the one cumulative budget database.
 - Keys are loaded from the gitignored .env or environment, never committed, printed, placed in model context or returned to the browser.
 - Single business Agent; no fixed per-scenario response branches. Test oracles never enter the application runtime.
 - Multiple issues retain independent outcomes. Claims of approval, successful execution, or handoff do not create those facts.
