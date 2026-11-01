@@ -428,3 +428,101 @@ def test_regional_incident_only_waits_when_actual_scope_matches(env):
     result=env[2].call('get_service_context',{'service_id':'salesforce'},'bo.remote',chat)
     with pytest.raises(DomainError,match='PRECONDITION_FAILED'):
         domain.apply_issue_updates('bo.remote',chat,[{'issue_id':issue['id'],'expected_version':issue['version'],'requested_status':'waiting_external','criterion_id':issue['acceptance_criteria_id'],'evidence_refs':[result['evidence'][0]['id']]}])
+
+
+@pytest.mark.parametrize('decision,approve_first', [('rejected',False),('cancelled',False),('cancelled',True)])
+def test_terminal_approval_request_replay_preserves_decision(env,decision,approve_first):
+    domain=env[1]
+    issue=domain.create_issue('alice.sales',env[3],'Production read',['snowflake'],criterion_id='precise_access',resource_id='snowflake.prod.analytics')['id']
+    args={'issue_id':issue,'resource_id':'snowflake.prod.analytics','permission':'read','reason':'Business report','evidence_refs':[]}
+    original=call(env,'request_approval',**args)['data']['approval']
+    if approve_first:domain.decide_approval('pat.approver',original['id'],'approved')
+    actor='pat.approver' if decision=='rejected' else 'alice.sales'
+    decided=domain.decide_approval(actor,original['id'],decision)
+    for elapsed in (0,90000):
+        env[5][0]+=elapsed
+        repeated=call(env,'request_approval',**args)
+        assert repeated['ok']
+        assert repeated['data']['approval']['id']==original['id']
+        assert repeated['data']['approval']['status']==decision
+        assert repeated['data']['approval']['revision']==decided['revision']
+    snapshot=domain.snapshot('alice.sales',env[3])
+    assert len(snapshot['approvals'])==1
+    assert len(snapshot['events'])==1+int(approve_first)
+    assert call(env,'inspect_access',resource_id='snowflake.prod.analytics')['data']['permissions']==[]
+    # A deliberately distinct issue/request may request the same resource again.
+    fresh=domain.create_issue('alice.sales',env[3],'New production request',['snowflake'],criterion_id='precise_access',resource_id='snowflake.prod.analytics')['id']
+    renewed=call(env,'request_approval',**{**args,'issue_id':fresh})['data']['approval']
+    assert renewed['id']!=original['id'] and renewed['status']=='pending'
+
+
+def correction_batch(observation_id,claim,quote):
+    return {'message_intents':['correction'],'new_issue_candidates':[],'observations':[],
+            'corrections':[{'candidate_key':'retract','observation_id':observation_id,'expected_version':1,'claim':claim,'quote':quote}],
+            'relation_candidates':[],'unresolved_references':[]}
+
+
+def test_recovery_retraction_reopens_only_corrected_resolved_issue(env):
+    domain=env[1]
+    assert call(env,'grant_catalog_access',issue_id=env[4],resource_id='grafana.sales',permission='read')['ok']
+    access=call(env,'inspect_access',resource_id='grafana.sales')['evidence'][0]['id']
+    recovered=feedback(env,env[4],'Grafana is working','resolved-feedback')
+    domain.apply_issue_updates('alice.sales',env[3],[proposal(env,env[4],[access,recovered])])
+    other=domain.create_issue('alice.sales',env[3],'Unlock account',['okta'],criterion_id='account_unlock')['id']
+    assert call(env,'unlock_account',issue_id=other,service_id='okta')['ok']
+    account=call(env,'inspect_account',service_id='okta')['evidence'][0]['id']
+    domain.apply_issue_updates('alice.sales',env[3],[proposal(env,other,[account])])
+    before=domain.snapshot('alice.sales',env[3])
+    assert before['all_resolved'] is True
+    original={i['id']:i for i in before['issues']}
+    message=domain.append_message('alice.sales',env[3],'user','Correction: Grafana is still broken','retraction')
+    batch=correction_batch(recovered,'The recovery report was incorrect','Grafana is still broken')
+    result=domain.apply_candidates('alice.sales',env[3],message['id'],batch,domain.snapshot('alice.sales',env[3])['conversation']['version'])
+    after=domain.snapshot('alice.sales',env[3]);issues={i['id']:i for i in after['issues']}
+    assert issues[env[4]]['status']=='investigating'
+    assert issues[env[4]]['lifecycle']==original[env[4]]['lifecycle']+1
+    assert issues[env[4]]['version']>original[env[4]]['version']
+    assert issues[other]==original[other]
+    assert after['all_resolved'] is False
+    observations={o['id']:o for o in after['observations']}
+    assert observations[recovered]['status']=='superseded'
+    assert result['corrections'][0]['source_kind']=='user_report'
+    assert result['corrections'][0]['message_id']==message['id']
+    assert domain.apply_candidates('alice.sales',env[3],message['id'],batch,before['conversation']['version'])==result
+    assert domain.snapshot('alice.sales',env[3])['issues']==after['issues']
+
+
+def test_recovery_retraction_preserves_saved_handoff_terminal_state(env):
+    domain=env[1]
+    reported=feedback(env,env[4],'Grafana recovered','handoff-feedback')
+    handoff=call(env,'create_handoff',issue_refs=[env[4]],summary='Employee requested expert review',facts=[],hypotheses=[],attempt_refs=[],evidence_refs=[],open_questions=['Verify recurrence'],reason='Employee requested handoff',team_hint='general_it')
+    assert handoff['ok']
+    before=domain.snapshot('alice.sales',env[3])['issues'][0]
+    message=domain.append_message('alice.sales',env[3],'user','Actually Grafana is still broken','handoff-retraction')
+    batch=correction_batch(reported,'Recovery report retracted','Grafana is still broken')
+    domain.apply_candidates('alice.sales',env[3],message['id'],batch,domain.snapshot('alice.sales',env[3])['conversation']['version'])
+    after=domain.snapshot('alice.sales',env[3])['issues'][0]
+    assert after['status']=='handed_off' and after['lifecycle']==before['lifecycle']
+
+
+def test_reopened_lifecycle_requires_its_own_precise_approval(env):
+    domain=env[1]
+    issue=domain.create_issue('alice.sales',env[3],'Access production catalog',['snowflake'],criterion_id='access_and_user_verification',resource_id='snowflake.prod.analytics')['id']
+    args={'issue_id':issue,'resource_id':'snowflake.prod.analytics','permission':'read','reason':'Catalog access','evidence_refs':[]}
+    prior=call(env,'request_approval',**args)['data']['approval']
+    domain.decide_approval('pat.approver',prior['id'],'approved')
+    grant={k:v for k,v in args.items() if k not in ('reason','evidence_refs')}
+    assert call(env,'grant_catalog_access',**grant,approval_id=prior['id'])['ok']
+    access=call(env,'inspect_access',resource_id=args['resource_id'])['evidence'][0]['id']
+    recovered=feedback(env,issue,'Production access works','prod-recovery')
+    domain.apply_issue_updates('alice.sales',env[3],[proposal(env,issue,[access,recovered])])
+    message=domain.append_message('alice.sales',env[3],'user','Actually production access is still broken','prod-correction')
+    batch=correction_batch(recovered,'Recovery report retracted','production access is still broken')
+    domain.apply_candidates('alice.sales',env[3],message['id'],batch,domain.snapshot('alice.sales',env[3])['conversation']['version'])
+    fresh=call(env,'request_approval',**args)['data']['approval']
+    assert fresh['id']!=prior['id'] and fresh['status']=='pending' and fresh['lifecycle']==2
+    stale=call(env,'grant_catalog_access',**grant,approval_id=prior['id'])
+    assert stale['ok'] is False
+    assert stale['error']['code']=='APPROVAL_REQUIRED'
+    domain.decide_approval('pat.approver',fresh['id'],'approved')
+    assert call(env,'grant_catalog_access',**grant,approval_id=fresh['id'])['ok']

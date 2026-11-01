@@ -162,11 +162,16 @@ class ToolExecutor:
         issue=self._scope(c,actor,chat,a['issue_id'],resource['service_id'],resource['id'])
         require(resource['approval_required'],'INVALID_ARGUMENT','This catalog resource does not require approval')
         self.domain._validate_refs(c,actor,chat,a['evidence_refs'],issue['id'])
-        old=c.execute("SELECT * FROM approvals WHERE actor_id=? AND issue_id=? AND resource_id=? AND permission=? AND status IN ('pending','approved') AND expires_at>? ORDER BY created_at DESC LIMIT 1",(actor,issue['id'],resource['id'],a['permission'],self.store.clock())).fetchone()
-        if old:item=unpack(old)
+        # A tool retry cannot erase a refusal, even after the old expiry time.
+        # Expiry permits renewal only for an otherwise live logical request.
+        old=c.execute("""SELECT * FROM approvals WHERE actor_id=? AND issue_id=? AND resource_id=? AND permission=?
+            AND COALESCE(json_extract(payload,'$.lifecycle'),1)=? ORDER BY created_at DESC,rowid DESC LIMIT 1""",
+            (actor,issue['id'],resource['id'],a['permission'],issue['lifecycle'])).fetchone()
+        if old and (old['status'] in ('rejected','cancelled') or (old['status'] in ('pending','approved') and old['expires_at']>self.store.clock())):
+            item=unpack(old)
         else:
             aid=new_id('APPROVAL');payload={'reason':a['reason'],'evidence_refs':a['evidence_refs'],'policy_version':POLICY_VERSION,'resource_revision':resource['revision'],'approver_role':'resource_owner',
-                'scope':{'requester':actor,'issue_id':issue['id'],'resource_id':resource['id'],'permission':a['permission']},'simulated':True}
+                'scope':{'requester':actor,'issue_id':issue['id'],'resource_id':resource['id'],'permission':a['permission']},'lifecycle':issue['lifecycle'],'simulated':True}
             c.execute('INSERT INTO approvals VALUES(?,?,?,?,?,?,?,?,?,?,?)',(aid,chat,actor,issue['id'],resource['id'],a['permission'],'pending',1,self.store.clock(),self.store.clock()+86400,dumps(payload)))
             item=unpack(c.execute('SELECT * FROM approvals WHERE id=?',(aid,)).fetchone())
             self._bind_resource(c,issue,resource)
@@ -181,6 +186,7 @@ class ToolExecutor:
     def _approval(self,c,approval_id,actor,issue,resource,permission):
         item=unpack(c.execute('SELECT * FROM approvals WHERE id=?',(approval_id,)).fetchone()) if approval_id else None
         require(item is not None and item['actor_id']==actor and item['conversation_id']==issue['conversation_id'] and item['issue_id']==issue['id'] and item['resource_id']==resource['id'] and item['permission']==permission and item['status']=='approved' and item['expires_at']>self.store.clock(), 'APPROVAL_REQUIRED','Current exact-scope resource-owner approval is required')
+        require(item.get('lifecycle',1)==issue['lifecycle'],'APPROVAL_REQUIRED','Approval belongs to an earlier issue lifecycle')
         approver=self.domain._actor(c,item.get('decided_by'))
         require(item.get('policy_version')==POLICY_VERSION and item.get('resource_revision')==resource['revision'] and approver['id'] in resource['owner_ids'] and 'approver' in approver['roles'] and approver['id']!=actor,'APPROVAL_REQUIRED','Approval policy or ownership changed')
         return item

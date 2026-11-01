@@ -256,14 +256,8 @@ class Domain:
                 c.execute('INSERT INTO observations VALUES(?,?,?,?,?,?,?)',(oid,conversation_id,message_id,actor_id,1,self.store.clock(),dumps(payload)))
                 observation=unpack(c.execute('SELECT * FROM observations WHERE id=?',(oid,)).fetchone())
                 refs[item['candidate_key']]=oid;result['observations'].append(observation)
-                # Explicit recurrence reopens only referenced resolved issues. Handoffs remain terminal.
                 if item['category'] in ('reported_failure','symptom','correction'):
-                    for iid in targets:
-                        issue=self._issue(c,actor_id,conversation_id,iid)
-                        if issue['status']=='resolved':
-                            payload_i={k:v for k,v in issue.items() if k not in ('id','conversation_id','actor_id','status','version','created_at')}
-                            payload_i['lifecycle']+=1
-                            c.execute("UPDATE issues SET status='investigating',payload=? WHERE id=?",(dumps(payload_i),iid))
+                    self._reopen_resolved(c,actor_id,conversation_id,targets)
             for item in candidates['corrections']:
                 candidate(item,{'candidate_key','observation_id','expected_version','claim','quote'}, {'candidate_key','observation_id','expected_version','claim','quote'})
                 text_value(item['claim']);text_value(item['observation_id'],200);require(type(item['expected_version']) is int)
@@ -276,6 +270,7 @@ class Domain:
                 oid=new_id('OBS');payload={**item,'category':'correction','issue_refs':old_obs['issue_refs'],'source_kind':'user_report','source_id':message_id,'status':'active','mapping_status':'tentative'}
                 c.execute('INSERT INTO observations VALUES(?,?,?,?,?,?,?)',(oid,conversation_id,message_id,actor_id,1,self.store.clock(),dumps(payload)))
                 result['corrections'].append(unpack(c.execute('SELECT * FROM observations WHERE id=?',(oid,)).fetchone()));refs[item['candidate_key']]=oid
+                self._reopen_resolved(c,actor_id,conversation_id,old_obs['issue_refs'])
             for item in candidates['relation_candidates']:
                 candidate(item,{'candidate_key','from_ref','to_ref','type','support_refs'}, {'candidate_key','from_ref','to_ref','type','support_refs'})
                 require(isinstance(item['type'],str) and item['type'] in RELATIONS)
@@ -296,6 +291,15 @@ class Domain:
             c.execute('INSERT INTO candidate_batches VALUES(?,?,?)',(message_id,digest(candidates),dumps(result)))
             c.execute('UPDATE conversations SET version=version+1 WHERE id=?',(conversation_id,))
             return result
+
+    def _reopen_resolved(self,c,actor_id,conversation_id,issue_ids):
+        """A recurrence or correction starts only the affected resolved lifecycles."""
+        for iid in issue_ids:
+            issue=self._issue(c,actor_id,conversation_id,iid)
+            if issue['status']=='resolved':
+                payload=json.loads(c.execute('SELECT payload FROM issues WHERE id=?',(iid,)).fetchone()[0])
+                payload['lifecycle']+=1
+                c.execute("UPDATE issues SET status='investigating',payload=? WHERE id=?",(dumps(payload),iid))
 
     def _validate_refs(self,c,actor_id,conversation_id,refs,issue_id=None):
         require(isinstance(refs,list) and len(refs)<=100)
