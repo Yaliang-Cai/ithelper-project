@@ -1,0 +1,278 @@
+[
+  {
+    "id": "history.01",
+    "service_id": "okta",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "ordinary lock"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "Ordinary lock verified",
+    "remedy_ids": [
+      "unlock_account"
+    ],
+    "steps": [
+      "unlock_account"
+    ],
+    "outcome": "Login confirmed",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.02",
+    "service_id": "okta",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "login blocked"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "Security disable",
+    "remedy_ids": [
+      "handoff_security"
+    ],
+    "steps": [
+      "handoff_security"
+    ],
+    "outcome": "Simulated Security handoff",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.03",
+    "service_id": "salesforce",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "slow pages"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "us-central regional incident",
+    "remedy_ids": [
+      "check_incident_scope"
+    ],
+    "steps": [
+      "check_incident_scope"
+    ],
+    "outcome": "Recovered after incident",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.04",
+    "service_id": "salesforce",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "slow pages"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "eu-west"
+    },
+    "verified_cause": "Local stale cookie, region eu-west unaffected",
+    "remedy_ids": [
+      "browser_private_window"
+    ],
+    "steps": [
+      "browser_private_window"
+    ],
+    "outcome": "Private window healthy",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.05",
+    "service_id": "vpn",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "periodic drop"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "Stale session 5.2",
+    "remedy_ids": [
+      "reset_vpn_session"
+    ],
+    "steps": [
+      "reset_vpn_session"
+    ],
+    "outcome": "Stable for 900 seconds",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.06",
+    "service_id": "vpn",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "periodic drop"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "Home Wi-Fi link loss",
+    "remedy_ids": [
+      "compare_local_link"
+    ],
+    "steps": [
+      "compare_local_link"
+    ],
+    "outcome": "VPN reset did not help",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.07",
+    "service_id": "grafana",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "access denied"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "Missing eligible read grant",
+    "remedy_ids": [
+      "grant_grafana_read"
+    ],
+    "steps": [
+      "grant_grafana_read"
+    ],
+    "outcome": "Exact dashboard permission verified",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.08",
+    "service_id": "snowflake",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "access denied"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "us-central"
+    },
+    "verified_cause": "No production catalog read grant",
+    "remedy_ids": [
+      "grant_production_read"
+    ],
+    "steps": [
+      "grant_production_read"
+    ],
+    "outcome": "Owner approval then precise grant",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.09",
+    "service_id": "jenkins",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "timeout"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "eu-west"
+    },
+    "verified_cause": "Expired token during earlier rotation",
+    "remedy_ids": [
+      "handoff_platform"
+    ],
+    "steps": [
+      "handoff_platform"
+    ],
+    "outcome": "Platform corrected token",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.10",
+    "service_id": "jenkins",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "timeout"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "eu-west"
+    },
+    "verified_cause": "Independent pipeline runner saturation",
+    "remedy_ids": [
+      "handoff_platform"
+    ],
+    "steps": [
+      "handoff_platform"
+    ],
+    "outcome": "Token probe healthy, runner fix",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.11",
+    "service_id": "tableau",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "stale data"
+    ],
+    "environment": {
+      "version": "2026.10",
+      "region": "eu-west"
+    },
+    "verified_cause": "Independent extract queue backlog",
+    "remedy_ids": [
+      "handoff_data"
+    ],
+    "steps": [
+      "handoff_data"
+    ],
+    "outcome": "Queue recovered, token healthy",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  },
+  {
+    "id": "history.12",
+    "service_id": "vpn",
+    "revision": 1,
+    "simulated": true,
+    "curated": true,
+    "symptoms": [
+      "timeout"
+    ],
+    "environment": {
+      "version": "4.9",
+      "region": "us-central"
+    },
+    "verified_cause": "Legacy client 4.9",
+    "remedy_ids": [
+      "legacy_timeout"
+    ],
+    "steps": [
+      "legacy_timeout"
+    ],
+    "outcome": "Old workaround not applicable to 5.2",
+    "resolved_at": "2026-10-20T15:00:00+08:00"
+  }
+]

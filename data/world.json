@@ -1,0 +1,425 @@
+{
+  "simulated": true,
+  "as_of": "2026-11-02T09:00:00+08:00",
+  "revision": 1,
+  "employees": [
+    {
+      "id": "alice.sales",
+      "name": "Alice",
+      "department": "Sales",
+      "region": "us-central",
+      "location": "Chicago",
+      "roles": [
+        "employee"
+      ],
+      "device_id": "device.alice.sales",
+      "device_version": "5.2",
+      "simulated": true
+    },
+    {
+      "id": "bo.remote",
+      "name": "Bo",
+      "department": "Operations",
+      "region": "apac",
+      "location": "Remote",
+      "roles": [
+        "employee"
+      ],
+      "device_id": "device.bo.remote",
+      "device_version": "5.2",
+      "simulated": true
+    },
+    {
+      "id": "chen.data",
+      "name": "Chen",
+      "department": "Data Engineering",
+      "region": "apac",
+      "location": "Remote",
+      "roles": [
+        "employee"
+      ],
+      "device_id": "device.chen.data",
+      "device_version": "5.2",
+      "simulated": true
+    },
+    {
+      "id": "dana.platform",
+      "name": "Dana",
+      "department": "Platform",
+      "region": "eu-west",
+      "location": "Remote",
+      "roles": [
+        "employee"
+      ],
+      "device_id": "device.dana.platform",
+      "device_version": "5.2",
+      "simulated": true
+    },
+    {
+      "id": "pat.approver",
+      "name": "Pat",
+      "department": "Data Engineering",
+      "region": "us-central",
+      "location": "Remote",
+      "roles": [
+        "employee",
+        "approver"
+      ],
+      "device_id": "device.pat.approver",
+      "device_version": "5.2",
+      "simulated": true
+    },
+    {
+      "id": "dev.debug",
+      "name": "Dev",
+      "department": "Platform",
+      "region": "apac",
+      "location": "Remote",
+      "roles": [
+        "employee",
+        "debug"
+      ],
+      "device_id": "device.dev.debug",
+      "device_version": "5.2",
+      "simulated": true
+    }
+  ],
+  "services": [
+    {
+      "id": "okta",
+      "name": "Okta",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    },
+    {
+      "id": "salesforce",
+      "name": "Salesforce",
+      "revision": 1,
+      "status": "degraded",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    },
+    {
+      "id": "vpn",
+      "name": "VPN",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "5.2",
+      "simulated": true
+    },
+    {
+      "id": "snowflake",
+      "name": "Snowflake",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    },
+    {
+      "id": "grafana",
+      "name": "Grafana",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    },
+    {
+      "id": "jenkins",
+      "name": "Jenkins",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    },
+    {
+      "id": "tableau",
+      "name": "Tableau",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    },
+    {
+      "id": "token_service",
+      "name": "Token Service",
+      "revision": 1,
+      "status": "operational",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "version": "2026.11",
+      "simulated": true
+    }
+  ],
+  "resources": [
+    {
+      "id": "grafana.sales",
+      "name": "Grafana Sales dashboard",
+      "service_id": "grafana",
+      "environment": "standard",
+      "permissions": [
+        "read"
+      ],
+      "eligible_departments": [
+        "Sales"
+      ],
+      "approval_required": false,
+      "owner_ids": [
+        "pat.approver"
+      ],
+      "revision": 1,
+      "active": true,
+      "simulated": true
+    },
+    {
+      "id": "grafana.data",
+      "name": "Grafana Data dashboard",
+      "service_id": "grafana",
+      "environment": "standard",
+      "permissions": [
+        "read"
+      ],
+      "eligible_departments": [
+        "Data Engineering"
+      ],
+      "approval_required": false,
+      "owner_ids": [
+        "pat.approver"
+      ],
+      "revision": 1,
+      "active": true,
+      "simulated": true
+    },
+    {
+      "id": "grafana.platform",
+      "name": "Grafana Platform dashboard",
+      "service_id": "grafana",
+      "environment": "standard",
+      "permissions": [
+        "read"
+      ],
+      "eligible_departments": [
+        "Platform"
+      ],
+      "approval_required": false,
+      "owner_ids": [
+        "pat.approver"
+      ],
+      "revision": 1,
+      "active": true,
+      "simulated": true
+    },
+    {
+      "id": "snowflake.prod.analytics",
+      "name": "snowflake.prod.analytics read-only catalog",
+      "service_id": "snowflake",
+      "environment": "production",
+      "permissions": [
+        "read"
+      ],
+      "eligible_departments": [
+        "Sales",
+        "Data Engineering",
+        "Platform",
+        "Operations"
+      ],
+      "approval_required": true,
+      "owner_ids": [
+        "pat.approver"
+      ],
+      "revision": 1,
+      "active": true,
+      "simulated": true
+    },
+    {
+      "id": "snowflake.prod.finance",
+      "name": "snowflake.prod.finance read-only catalog",
+      "service_id": "snowflake",
+      "environment": "production",
+      "permissions": [
+        "read"
+      ],
+      "eligible_departments": [
+        "Sales",
+        "Data Engineering",
+        "Platform",
+        "Operations"
+      ],
+      "approval_required": true,
+      "owner_ids": [
+        "pat.approver"
+      ],
+      "revision": 1,
+      "active": true,
+      "simulated": true
+    }
+  ],
+  "incidents": [
+    {
+      "id": "incident.sf.central",
+      "service_id": "salesforce",
+      "region": "us-central",
+      "status": "active",
+      "symptoms": [
+        "slow page loads"
+      ],
+      "started_at": "2026-11-02T08:25:00+08:00",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "revision": 2,
+      "simulated": true
+    },
+    {
+      "id": "incident.sf.eu.old",
+      "service_id": "salesforce",
+      "region": "eu-west",
+      "status": "resolved",
+      "symptoms": [
+        "login failure"
+      ],
+      "started_at": "2026-10-23T10:00:00+08:00",
+      "observed_at": "2026-10-23T12:00:00+08:00",
+      "revision": 3,
+      "simulated": true
+    }
+  ],
+  "changes": [
+    {
+      "id": "change.token.rotation",
+      "service_id": "token_service",
+      "related_service_ids": [
+        "jenkins",
+        "tableau"
+      ],
+      "region": "eu-west",
+      "started_at": "2026-11-02T08:00:00+08:00",
+      "ended_at": "2026-11-02T08:30:00+08:00",
+      "status": "completed",
+      "notes": "Signing certificate rotation; Jenkins token probe healthy at 08:40; Tableau extract queue still delayed. Temporal overlap alone is not proof.",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "revision": 2,
+      "simulated": true
+    },
+    {
+      "id": "change.vpn.client",
+      "service_id": "vpn",
+      "related_service_ids": [],
+      "region": "apac",
+      "status": "completed",
+      "revision": 1,
+      "notes": "5.2 client upgrade; 4.x workaround is not applicable",
+      "observed_at": "2026-11-02T09:00:00+08:00",
+      "simulated": true
+    }
+  ],
+  "policies": [
+    {
+      "id": "policy.unlock",
+      "revision": 1,
+      "action": "unlock_account",
+      "rule": "Only self ordinary lock; security disabled and MFA reset prohibited",
+      "simulated": true
+    },
+    {
+      "id": "policy.grafana",
+      "revision": 1,
+      "action": "grant_catalog_access",
+      "rule": "Exact standard read resource, eligible department, explicit request",
+      "simulated": true
+    },
+    {
+      "id": "policy.production",
+      "revision": 1,
+      "action": "grant_catalog_access",
+      "rule": "Exact production read resource requires current resource-owner approval",
+      "simulated": true
+    },
+    {
+      "id": "policy.vpn",
+      "revision": 1,
+      "action": "reset_vpn_session",
+      "rule": "Self session only; explicit exact-scope confirmation, expires in 10 minutes",
+      "simulated": true
+    },
+    {
+      "id": "policy.no-admin",
+      "revision": 1,
+      "action": "grant_catalog_access",
+      "rule": "Administrator and write permissions prohibited even with approval",
+      "simulated": true
+    },
+    {
+      "id": "policy.no-command",
+      "revision": 1,
+      "action": "production_change",
+      "rule": "No production rollback, restart, shell command or pipeline mutation",
+      "simulated": true
+    },
+    {
+      "id": "policy.approver",
+      "revision": 1,
+      "action": "request_approval",
+      "rule": "Resource owner only, no self approval; expires after 24 hours",
+      "simulated": true
+    },
+    {
+      "id": "policy.handoff",
+      "revision": 1,
+      "action": "create_handoff",
+      "rule": "Save complete simulated handoff before terminal transition",
+      "simulated": true
+    },
+    {
+      "id": "policy.attempts",
+      "revision": 1,
+      "action": "repair",
+      "rule": "Maximum two distinct reviewed remedy paths per issue",
+      "simulated": true
+    },
+    {
+      "id": "policy.identity",
+      "revision": 1,
+      "action": "all",
+      "rule": "Employee identity comes from authenticated session; self scope",
+      "simulated": true
+    },
+    {
+      "id": "policy.evidence",
+      "revision": 1,
+      "action": "all",
+      "rule": "Historical correlation does not establish current causation",
+      "simulated": true
+    },
+    {
+      "id": "policy.recovery",
+      "revision": 1,
+      "action": "resolve",
+      "rule": "Access requires precise actual permission; experience requires objective checks and user feedback",
+      "simulated": true
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "dependency.jenkins.token",
+      "service_id": "jenkins",
+      "depends_on": "token_service",
+      "revision": 1,
+      "notes": "Dependency exists; probe healthy after rotation, causation unconfirmed",
+      "simulated": true
+    },
+    {
+      "id": "dependency.tableau.token",
+      "service_id": "tableau",
+      "depends_on": "token_service",
+      "revision": 1,
+      "notes": "Token required at extract start; queue backlog has independent causes",
+      "simulated": true
+    }
+  ]
+}
