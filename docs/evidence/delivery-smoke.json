@@ -1,0 +1,547 @@
+{
+  "mode": "live_agent_real_http_browser_developer_authored_fresh_inputs",
+  "simulator": "none",
+  "grader": "none",
+  "formal_benchmark": false,
+  "timestamp": "2026-11-01T21:29:59.882068+00:00",
+  "model": "deepseek-flash",
+  "embedding_model": "BAAI/bge-m3",
+  "actor": "alice.sales",
+  "recovered_browser_driver": true,
+  "business_layer": "real_program_logic_on_synthetic_enterprise_state",
+  "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+  "state": {
+    "conversation": {
+      "title": "IT 服务咨询",
+      "id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+      "actor_id": "alice.sales",
+      "version": 9,
+      "created_at": 1793568567.8872309
+    },
+    "messages": [
+      {
+        "id": "MSG-4108e6811a464798af6a66543bcdb0d4",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "role": "user",
+        "content": "今天在公司电脑登录 Okta 时提示账号锁定。请帮我检查并解锁我自己的账号，再核对后台是否已经解除锁定。",
+        "created_at": 1793568567.9535713,
+        "idempotency_key": "caabaab0-32d5-4938-9550-9711d31e6aad"
+      },
+      {
+        "id": "MSG-01b8d64629f049c0a649c9958ed34227",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "role": "assistant",
+        "content": "你好 Alice，已处理完成：\\n\\n1. 检查结果：你的 Okta 账号（okta.alice.sales）此前确实处于锁定状态（普通账号，非安全禁用）。\\n2. 已执行解锁操作，回执显示操作成功（ACTION-9aac4095b6d943888b540e366189dd25，提交时间 2026-11-01T21:29:33Z）。\\n3. 后台复核：重新读取账号信息，locked=false，解锁次数 1，修订号 2，即后台锁定已解除。\\n\\n下一步：请在公司电脑上正常重试一次 Okta 登录，并告诉我是否成功。等你确认能登录后，我才会把这个问题标记为完全解决。",
+        "created_at": 1793568577.47825,
+        "idempotency_key": "agent:EVENT-6d8e10b15f5748f3bae2be7d9110424b"
+      },
+      {
+        "id": "MSG-e358b03bccd54a069bf57421d321bb41",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "role": "user",
+        "content": "我刚才重新试了，现在已经能够登录 Okta。",
+        "created_at": 1793568593.3832655,
+        "idempotency_key": "2d1b60a2-77f7-49fe-87b0-e7d40b5304a4"
+      },
+      {
+        "id": "MSG-4f8bf7ba5b2d4ff3a3cb09737359a11b",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "role": "assistant",
+        "content": "太好了，感谢你的确认。后台复核仍然显示你的 Okta 账号（okta.alice.sales）处于未锁定状态（locked=false，解锁次数 1，修订号 2）。结合你已能正常登录，这个账号锁定问题已解决并关闭。如后续再遇到登录问题，随时告诉我。",
+        "created_at": 1793568598.9593518,
+        "idempotency_key": "agent:EVENT-5df14fc8105145eabacc281f10479543"
+      }
+    ],
+    "issues": [
+      {
+        "acceptance_criteria_id": "account_unlock",
+        "goal": "Check and unlock Alice's own Okta account, then verify the backend lock has been cleared.",
+        "lifecycle": 1,
+        "resource_id": null,
+        "service_refs": [
+          "okta"
+        ],
+        "id": "ISSUE-9b1bf1ddf4784abcaca2996d566c3041",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "status": "resolved",
+        "version": 6,
+        "created_at": 1793568570.0253034
+      }
+    ],
+    "evidence": [
+      {
+        "content": {
+          "account_type": "ordinary",
+          "actor_id": "alice.sales",
+          "disabled_reason": null,
+          "id": "okta.alice.sales",
+          "locked": true,
+          "revision": 1,
+          "service_id": "okta",
+          "simulated": true,
+          "unlock_count": 0
+        },
+        "id": "EVID-0c4bb03ca0b6491bbc74abee936c2a04",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "source": "directory",
+        "record_id": "okta.alice.sales",
+        "revision": "1",
+        "content_hash": "66651449b27cb0f2beed6cda64ce19976440cfac5c9be3015d7a0ef1f283043d",
+        "fetched_at": "2026-11-01T21:29:31.103285+00:00",
+        "scope": {
+          "actor_id": "alice.sales",
+          "service_id": "okta"
+        }
+      },
+      {
+        "content": {
+          "acceptance_criteria": [
+            "access_and_user_verification",
+            "account_unlock",
+            "application_recovery",
+            "login_recovery",
+            "precise_access",
+            "vpn_recovery"
+          ],
+          "actions": {
+            "grant_catalog_access": {
+              "permission": "read",
+              "remedy_id": "grant_grafana_read or grant_production_read"
+            },
+            "reset_vpn_session": {
+              "confirmation": true,
+              "impact": "Disconnects this VPN session and reconnects; active VPN traffic is interrupted.",
+              "remedy_id": "reset_vpn_session"
+            },
+            "unlock_account": {
+              "confirmation": false,
+              "remedy_id": "unlock_account"
+            }
+          },
+          "max_distinct_remedies": 2,
+          "policies": [
+            {
+              "action": "repair",
+              "id": "policy.attempts",
+              "kind": "policies",
+              "revision": 1,
+              "rule": "Maximum two distinct reviewed remedy paths per issue",
+              "simulated": true
+            },
+            {
+              "action": "all",
+              "id": "policy.evidence",
+              "kind": "policies",
+              "revision": 1,
+              "rule": "Historical correlation does not establish current causation",
+              "simulated": true
+            },
+            {
+              "action": "all",
+              "id": "policy.identity",
+              "kind": "policies",
+              "revision": 1,
+              "rule": "Employee identity comes from authenticated session; self scope",
+              "simulated": true
+            },
+            {
+              "action": "resolve",
+              "id": "policy.recovery",
+              "kind": "policies",
+              "revision": 1,
+              "rule": "Access requires precise actual permission; experience requires objective checks and user feedback",
+              "simulated": true
+            },
+            {
+              "action": "unlock_account",
+              "id": "policy.unlock",
+              "kind": "policies",
+              "revision": 1,
+              "rule": "Only self ordinary lock; security disabled and MFA reset prohibited",
+              "simulated": true
+            }
+          ],
+          "policy_version": "2026.11.1",
+          "resources": [
+            {
+              "active": true,
+              "approval_required": false,
+              "eligible_departments": [
+                "Data Engineering"
+              ],
+              "environment": "standard",
+              "id": "grafana.data",
+              "name": "Grafana Data dashboard",
+              "owner_ids": [
+                "pat.approver"
+              ],
+              "permissions": [
+                "read"
+              ],
+              "revision": 1,
+              "service_id": "grafana",
+              "simulated": true
+            },
+            {
+              "active": true,
+              "approval_required": false,
+              "eligible_departments": [
+                "Platform"
+              ],
+              "environment": "standard",
+              "id": "grafana.platform",
+              "name": "Grafana Platform dashboard",
+              "owner_ids": [
+                "pat.approver"
+              ],
+              "permissions": [
+                "read"
+              ],
+              "revision": 1,
+              "service_id": "grafana",
+              "simulated": true
+            },
+            {
+              "active": true,
+              "approval_required": false,
+              "eligible_departments": [
+                "Sales"
+              ],
+              "environment": "standard",
+              "id": "grafana.sales",
+              "name": "Grafana Sales dashboard",
+              "owner_ids": [
+                "pat.approver"
+              ],
+              "permissions": [
+                "read"
+              ],
+              "revision": 1,
+              "service_id": "grafana",
+              "simulated": true
+            },
+            {
+              "active": true,
+              "approval_required": true,
+              "eligible_departments": [
+                "Sales",
+                "Data Engineering",
+                "Platform",
+                "Operations"
+              ],
+              "environment": "production",
+              "id": "snowflake.prod.analytics",
+              "name": "snowflake.prod.analytics read-only catalog",
+              "owner_ids": [
+                "pat.approver"
+              ],
+              "permissions": [
+                "read"
+              ],
+              "revision": 1,
+              "service_id": "snowflake",
+              "simulated": true
+            },
+            {
+              "active": true,
+              "approval_required": true,
+              "eligible_departments": [
+                "Sales",
+                "Data Engineering",
+                "Platform",
+                "Operations"
+              ],
+              "environment": "production",
+              "id": "snowflake.prod.finance",
+              "name": "snowflake.prod.finance read-only catalog",
+              "owner_ids": [
+                "pat.approver"
+              ],
+              "permissions": [
+                "read"
+              ],
+              "revision": 1,
+              "service_id": "snowflake",
+              "simulated": true
+            }
+          ],
+          "teams": {
+            "data_platform": "Data Platform",
+            "general_it": "General IT",
+            "network": "Network",
+            "platform": "Platform",
+            "security": "Security"
+          }
+        },
+        "id": "EVID-e50e366c41b346deba46c0d07ab8ff3a",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "source": "policy",
+        "record_id": "policy.catalog",
+        "revision": "2026.11.1",
+        "content_hash": "df9433d9a258c064ab831eb1a9c8f9dee78f481bf45922d7ec4c62c7631298d3",
+        "fetched_at": "2026-11-01T21:29:31.110247+00:00",
+        "scope": {
+          "action": "unlock_account",
+          "actor_id": "alice.sales"
+        }
+      },
+      {
+        "content": {
+          "actor_id": "alice.sales",
+          "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+          "created_at": 1793568573.1886587,
+          "fingerprint": "10fdf57b0bd9d845e52410e2fd0909ac69fd4997e88e536c287b09dbc6826db9",
+          "id": "ACTION-9aac4095b6d943888b540e366189dd25",
+          "issue_id": "ISSUE-9b1bf1ddf4784abcaca2996d566c3041",
+          "parameters": {
+            "account_id": "okta.alice.sales",
+            "service_id": "okta"
+          },
+          "receipt": {
+            "action": "unlock_account",
+            "action_id": "ACTION-9aac4095b6d943888b540e366189dd25",
+            "actor_id": "alice.sales",
+            "after_message_sequence": 1,
+            "approval_id": null,
+            "committed_at": "2026-11-01T21:29:33.187462+00:00",
+            "confirmation_id": null,
+            "effect": {
+              "account_id": "okta.alice.sales",
+              "locked": false
+            },
+            "issue_id": "ISSUE-9b1bf1ddf4784abcaca2996d566c3041",
+            "parameters": {
+              "account_id": "okta.alice.sales",
+              "service_id": "okta"
+            },
+            "policy_version": "2026.11.1",
+            "simulated": true
+          },
+          "status": "succeeded"
+        },
+        "id": "EVID-bf71d07a8e234cf880b04eb96742aa33",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "source": "tool_receipt",
+        "record_id": "ACTION-9aac4095b6d943888b540e366189dd25",
+        "revision": "1",
+        "content_hash": "887d0f57028d2e7dcb4b377e34981f6ab368967d7d686684468662c74d0984ca",
+        "fetched_at": "2026-11-01T21:29:33.188659+00:00",
+        "scope": {
+          "actor_id": "alice.sales",
+          "issue_id": "ISSUE-9b1bf1ddf4784abcaca2996d566c3041"
+        }
+      },
+      {
+        "content": {
+          "account_type": "ordinary",
+          "actor_id": "alice.sales",
+          "disabled_reason": null,
+          "id": "okta.alice.sales",
+          "locked": false,
+          "revision": 2,
+          "service_id": "okta",
+          "simulated": true,
+          "unlock_count": 1
+        },
+        "id": "EVID-bf442cf28f514d379c4af6b9cc6b50a1",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "source": "directory",
+        "record_id": "okta.alice.sales",
+        "revision": "2",
+        "content_hash": "18f93d65069e30c4564e416c1b6586f8b7f4bf60bf48189c40bb942fd0a344bd",
+        "fetched_at": "2026-11-01T21:29:34.277432+00:00",
+        "scope": {
+          "actor_id": "alice.sales",
+          "service_id": "okta"
+        }
+      },
+      {
+        "content": {
+          "account_type": "ordinary",
+          "actor_id": "alice.sales",
+          "disabled_reason": null,
+          "id": "okta.alice.sales",
+          "locked": false,
+          "revision": 2,
+          "service_id": "okta",
+          "simulated": true,
+          "unlock_count": 1
+        },
+        "id": "EVID-faecd0edf04b4341b60ae0a58cf3c68c",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "source": "directory",
+        "record_id": "okta.alice.sales",
+        "revision": "2",
+        "content_hash": "18f93d65069e30c4564e416c1b6586f8b7f4bf60bf48189c40bb942fd0a344bd",
+        "fetched_at": "2026-11-01T21:29:56.043694+00:00",
+        "scope": {
+          "actor_id": "alice.sales",
+          "service_id": "okta"
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "ACTION-9aac4095b6d943888b540e366189dd25",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "issue_id": "ISSUE-9b1bf1ddf4784abcaca2996d566c3041",
+        "fingerprint": "10fdf57b0bd9d845e52410e2fd0909ac69fd4997e88e536c287b09dbc6826db9",
+        "status": "succeeded",
+        "created_at": 1793568573.1886587,
+        "parameters": {
+          "account_id": "okta.alice.sales",
+          "service_id": "okta"
+        },
+        "receipt": {
+          "action": "unlock_account",
+          "action_id": "ACTION-9aac4095b6d943888b540e366189dd25",
+          "actor_id": "alice.sales",
+          "after_message_sequence": 1,
+          "approval_id": null,
+          "committed_at": "2026-11-01T21:29:33.187462+00:00",
+          "confirmation_id": null,
+          "effect": {
+            "account_id": "okta.alice.sales",
+            "locked": false
+          },
+          "issue_id": "ISSUE-9b1bf1ddf4784abcaca2996d566c3041",
+          "parameters": {
+            "account_id": "okta.alice.sales",
+            "service_id": "okta"
+          },
+          "policy_version": "2026.11.1",
+          "simulated": true
+        }
+      }
+    ],
+    "confirmations": [],
+    "approvals": [],
+    "handoffs": [],
+    "questions": [
+      {
+        "answer_message_id": "MSG-e358b03bccd54a069bf57421d321bb41",
+        "created_after_message_sequence": 1,
+        "history": [
+          {
+            "answer_message_id": null,
+            "status": "pending"
+          }
+        ],
+        "issue_refs": [
+          "ISSUE-9b1bf1ddf4784abcaca2996d566c3041"
+        ],
+        "question_intent": "attempt_result",
+        "text": "请在公司电脑上重新尝试一次 Okta 登录，并告知是否成功（如仍失败，请提供具体报错文字）。",
+        "id": "QUESTION-2350ef95ef84492ebe2b75cab38daa4a",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "actor_id": "alice.sales",
+        "status": "answered"
+      }
+    ],
+    "all_resolved": true,
+    "unassigned_feedback": [],
+    "events": [
+      {
+        "id": "EVENT-6d8e10b15f5748f3bae2be7d9110424b",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "issue_id": null,
+        "kind": "user_message",
+        "status": "completed",
+        "created_at": 1793568567.9535713,
+        "lease_until": null
+      },
+      {
+        "id": "EVENT-5df14fc8105145eabacc281f10479543",
+        "conversation_id": "CHAT-c06937bd8b3240b3af9e72183c755ec1",
+        "issue_id": null,
+        "kind": "user_message",
+        "status": "completed",
+        "created_at": 1793568593.3832655,
+        "lease_until": null
+      }
+    ],
+    "runs": [
+      {
+        "id": "RUN-e40a2a182419434fb7c5a2964af3377c",
+        "event_id": "EVENT-6d8e10b15f5748f3bae2be7d9110424b",
+        "status": "completed",
+        "error_code": null,
+        "created_at": 1793568567.9715638,
+        "elapsed_seconds": 9.531,
+        "model_calls": 5,
+        "tool_calls": 4,
+        "mode": "live_agent"
+      },
+      {
+        "id": "RUN-a89ae90dd85b4fef940723402d97eb53",
+        "event_id": "EVENT-5df14fc8105145eabacc281f10479543",
+        "status": "completed",
+        "error_code": null,
+        "created_at": 1793568593.5936573,
+        "elapsed_seconds": 5.375,
+        "model_calls": 3,
+        "tool_calls": 1,
+        "mode": "live_agent"
+      }
+    ],
+    "processing": {
+      "recovery_pending": false
+    }
+  },
+  "browser_errors": [],
+  "checks": [
+    "real login",
+    "fresh free-text input",
+    "persisted event/worker/Agent",
+    "actual state/receipt cards",
+    "390px no overflow",
+    "reload own history"
+  ],
+  "budget_before": {
+    "spent_usd": 2.608177868,
+    "reserved_usd": 0.0,
+    "requests": 751,
+    "limit_usd": 3
+  },
+  "budget_after": {
+    "spent_usd": 2.634129369,
+    "reserved_usd": 0.0,
+    "requests": 759,
+    "limit_usd": 3
+  },
+  "request_delta": 8,
+  "settled_estimate_delta_usd": 0.025951501,
+  "runtime_hashes": {
+    "app/agent.py": "6af0b047f77dd1b8e882bb3b20a4101b039c4cfc3c2acccc6e383f336f46bc9f",
+    "app/auth.py": "d2f41beba199937fa5e4f0be2f710152441f7e3d007fa070630ab4ecb108d078",
+    "app/budget.py": "5b30409d8fcbfcab6b8e67d9676cca044902b8fa2b282d226978b07160cafd6d",
+    "app/catalog.py": "ff0684194e53cc942e671996ee3c5f45b15d7bf08cd4a828ae52d1486561ab56",
+    "app/config.py": "d82dc3f909bd641cc3148c90b645d8b78599cd0ecfd9184dbc233782373c5cb9",
+    "app/context.py": "b7c55fe002a356b98191328263b82ca769d0a807097a23d097e2155586967a4e",
+    "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
+    "app/domain.py": "6186b7c906d9cb4951ee0c7f5612f5ed754d850905d1456d663ab02be39f08fe",
+    "app/main.py": "ecbaf443ea81870b90c8735fe7180f771594da6d7ad077c42d8d21c9c5c107d0",
+    "app/prompts.py": "3563f37964d0b30d54b97da0d74dbb0f50f45053f0a7387a5d58a8f7c27b9054",
+    "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
+    "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
+    "app/seed.py": "274a5159406e47e0d6139e365f177dfae502b217eeb2f6c22ee255ea3df8f60b",
+    "app/storage.py": "888e781b3d29fd12d2af6c99ca462a6137371a47f94c75f3bc759783f37611cc",
+    "app/tools.py": "a32c2f030b8ce13366240939e3e605c00936b8d748a9f54620d00d750767514f",
+    "app/worker.py": "3008ea2be94eae5dd6e74475c73d1271469ab069a886847b33a4ab9818f664b3",
+    "app/__init__.py": "41d1c9cdcfa1d5717a4209c6e75b5946594bedc04c14ade06dd92fabaf693b9e",
+    "app/ui/app.js": "a2eee2a66a50b2e49ec227253a2adbdf16b874444016b45b5640c1c3a044ac99",
+    "app/ui/index.html": "442a8e9d45e199da9a7042aa652b46b9f24beb6d219b928abd268355c139a2bb",
+    "app/ui/styles.css": "896847c2dd1ba64c9542e869411910d2d4ec9f67cab5bda4284445c1ce9d8903"
+  }
+}

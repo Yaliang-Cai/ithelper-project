@@ -1,28 +1,33 @@
-# 实现进度与接入记录
+# 实现状态与运行证据
 
-这份文件记录实际进度；四份设计文档描述目标与理由，不等于已实现能力。
+2026-11-02 本地集成交付。四份设计文件保留目标与理由，实际行为、偏差与证据以本文件、[交付记录](delivery-evidence.md)、[实测报告](evaluation-report.md)为准。当前交付尚待整体分支复核，不声称最终审查完成。
 
-## 已确定的运行配置
+## 当前实现
 
-- 项目所有 LLM 角色统一使用 DeepSeek 官方 `deepseek-flash`，包括 Agent、测试用户和评分器。官方说明旧名 `deepseek-v4-flash` 目前映射到新版 Flash。[模型说明](https://api-docs.deepseek.com/quick_start/pricing/)
-- 用户最新明确选择的 DeepSeek 累计预算为 US$3，覆盖先前的 US$2。达到上限后停止新增付费请求并报告；不自动提高预算。
-- embedding 固定使用 SiliconFlow `BAAI/bge-m3`，不自动切换 `Pro/BAAI/bge-m3`。目前官方标为免费，仍受账号与限流约束。[价格](https://siliconflow.cn/pricing) [免费模型条件](https://docs.siliconflow.cn/docs/userguide/faqs/rate-limit-and-upgradation)
-- 两家密钥已保存在本地 .env；该文件被 Git 忽略。文档与代码不保存密钥值。
+Settings/供应商适配/费用账本、SQLite模拟业务、认证/CSRF、严格Schema、单Agent两阶段循环、上下文/混合检索、持久事件worker、员工/审批/调试页面均已实现。6演示账号、8服务、5资源、12政策、22KB、12通用历史；16业务工具，加内部refine_issue与submit_turn。启动、账号、重置/重启见[根README](../README.md)。
 
-## 实际接入证据
+所有LLM角色固定官方deepseek-flash；embedding固定SiliconFlow BAAI/bge-m3。本机两家凭据已配置，Settings.load读取gitignored .env/环境，不进入模型或浏览器。embedding缺失/错误明确lexical降级，不伪造向量；其费用不归入DeepSeek账本，也不声称永久免费。
 
-2026-11-02 的接入检查已经确认 DeepSeek 模型列表认证成功（HTTP 200），可用 Flash 模型；SiliconFlow embedding 返回 HTTP 200、1024 维向量。提供方适配器进一步验证了原生工具调用往返。
+每事件10模型请求、12非终结工具、120秒；整理/决策目标10,000/12,000保守UTF-8字节，不是精确token。必需上下文超容量明确停止，没有长聊天语义摘要。实际身份/范围/版本/租约/生命周期/审批/确认/验收由后端守卫；审批事件仅恢复原问题。已知多目标歧义暂停相关新自动写入；未分配反馈保留最后验证状态但all_resolved=false，页面待澄清。当前聊天持久化，不主动检索个人其他聊天。
 
-首次 JSON 模式小测试返回不合法 JSON；加入一次有界修正后的最终检查记录为首轮失败、第二轮成功。失败记录保留，后续不得把 JSON 模式当作语义或格式必然正确的保证。完整接入结果由本地 runtime/connectivity.json 保存，包含安全元数据，不包含密钥。
+## 验证与费用
 
-## 当前阶段
+- 最终程序套件203 passed in23.33s，无warning；API不确定性、闲置到期显示、重置费用边界均先复现失败。
+- scripted external model + real Agent/HTTP/browser14checks通过，零付费；受控时钟真实UI另3checks通过。
+- 真实DeepSeek HTTP/browser新输入smoke：2用户轮、2完成运行、8模型请求、5工具、1实际模拟解锁、0事件错误、最终resolved；页面重载和真实进程重启状态不变。首个驱动时序错误在既有聊天恢复，未重发/重复执行。[完整证据](delivery-evidence.md)。
+- 安装和pip check通过。dev可选httpx2 2.16.0解决Starlette1.10弃用warning；运行时httpx、FastAPI/Starlette未因此升级。浏览器/文档依赖与最小运行分开。
+- 原累计USD3账本固定runtime/usage.sqlite。Task5结束USD2.608177868/751请求/0预留；smoke增量USD0.025951501/8请求；之后USD2.634129369/759请求/0预留，余USD0.365870631。重置/评测独立世界/重启不清空迁移费用；估算非供应商账单。
 
-模型适配、持久费用账本及连接检查已有实现，28 个相关测试通过，独立审查发现的四项问题已修复并通过复核。接入阶段累计保守计费约 US$0.0004041，余额和未决预留随实际调用更新。
+## 正式评测与版本
 
-模拟业务与权限层已提交实现：6 个演示账号、8 个服务、5 个资源、12 条政策、22 篇知识文章、12 条历史记录，16 个业务工具。新增 39 项相关程序测试，当前全套 67 项通过；独立审查发现的审批重复申请与反馈纠正两项问题已修复并通过复核。Agent、混合检索和上下文构建已有实现，当前全套 117 项程序测试通过，正在独立审查。实际使用 DeepSeek Flash 跑过解锁、多个问题和澄清审批等开发轨迹；累计估算调用费约 US$0.313169108，未决预留为 0。程序测试通过不代表语义表现已经达标。
+历史66live measurements覆盖30设计槽位，混合多个实现版本；最新已测630e586共17次/10案例，16程序有效、12目标满足、4Agent事件错误，1次运行有2个必需交接缺失标记，8份旧判断过期/有争议。只有H01b有3次同候选。当前交付的后端不确定性/交接幂等/统计修复有程序回归和正常路径smoke，不能包装成最终30案例通过。grader v4仅程序验证，5/6实测校准属于v3。
 
-开发试跑暴露过错误的审批措辞、提前给出第二个修复方案、格式修正与业务前置条件混淆等问题，原始失败记录保留。修复后的审批引用契约已通过程序回归，但最后一次真实试跑中的文字矛盾尚未重新实测，不标为已解决。默认每次事件限额调整为 10 次模型请求、12 次非终结工具调用、120 秒；项目累计 US$3 不变。
+Task5自身656请求/USD2.295008760与历史结束快照分开保留。生成器按已归属角色调用计费，current_project_ledger另列。公开摘要在evals/public；完整原件在本机忽略的evals/results，包包含公开投影和可见失败，不含本机数据库或密钥。
 
-聊天界面、审批后台常驻处理、正式评测与交付仍在推进。当前没有可供报告的业务成功率；正式案例尚未运行。
+检索40查询：有答案35条，lexical命中26/35、hybrid35/35；无答案5/5正确空。实际hybrid38/40，另两条预过滤空不调embedding。D01/D05同候选两模式各2/2目标通过，小样本不证明普遍优势。无两阶段准确性消融、外部独立或真人专家盲测。
 
-详细执行记录保存在本地忽略目录 .superpowers/sdd/2026-11-02-helpdesk-implementation；可复用实现计划见 docs/superpowers/plans/2026-11-02-helpdesk-implementation.md。
+## 保留限制
+
+模型仍有协议、调用上限、上下文容量和语言误解；Schema/执行守卫不能消除错误措辞。原审批矛盾、容量失败、H01澄清顺序、历史重复交接、模拟器/grader误判保留。专门歧义守卫依赖模型识别，小样本语义阈值不是证明。实际页面出现字面反斜杠n和英文目标标题，原文安全保留。企业数据/反馈合成，无真实专家联络、个人跨聊天记忆、完整传播仿真、专家接续、真实企业API。
+
+七项工程裁定与错误代价见[决策记录](engineering-decisions.md)。原题逐项映射、模式与截图见[交付记录](delivery-evidence.md)。本次服务URL/PID/日志见[evidence/restart.json](evidence/restart.json)，PID随启动变化。源码archive为runtime/helpdesk-submission.zip，来自tracked HEAD，最终审查有改动后需要重新生成。

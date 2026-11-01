@@ -188,6 +188,10 @@ def create_app(settings=None, *, domain=None, provider=None, provider_mode='live
     def snapshot(cid: str, user=Depends(actor)):
         state = domain.snapshot(user['id'], cid)
         result = {k: state[k] for k in ('conversation', 'messages', 'issues', 'evidence', 'actions', 'confirmations', 'approvals', 'handoffs', 'questions', 'all_resolved')}
+        result['unassigned_feedback'] = [
+            {k: item[k] for k in ('source_message_id', 'candidate_issue_ids')}
+            for item in state['unassigned_feedback']
+        ]
         result['events'] = [public_event(e) for e in state['events']]
         result['runs'] = [public_run(r) for r in state['runs']]
         result['processing'] = {'recovery_pending': any(e['id'] in worker.recovery_events and e['status'] == 'running' for e in state['events'])}

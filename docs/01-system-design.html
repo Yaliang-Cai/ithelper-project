@@ -7,6 +7,7 @@ html { scroll-behavior:smooth; scroll-padding-top:24px; }
 body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
 a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
 a:hover { text-decoration:underline; }
+img { max-width:100%; height:auto; }
 .sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
 .brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
 .meta { color:var(--muted); font-size:12px; }
@@ -65,8 +66,11 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 }
 </style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html" aria-current="page">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 已确认的选择</a><a href="#section-3">2 题目要求与交付证据</a><a href="#section-6">3 为什么需要这种架构</a><a href="#section-7">4 组件与技术默认值</a><a href="#section-8">5 两阶段调用的完整过程</a><a href="#section-13">6 上下文组织</a><a href="#section-14">7 记录模型与状态</a><a href="#section-18">8 工具与政策</a><a href="#section-23">9 身份与授权</a><a href="#section-24">10 审批与人工交接</a><a href="#section-27">11 诊断与结果判断</a><a href="#section-28">12 五类数据的组织</a><a href="#section-29">13 混合检索</a><a href="#section-30">14 五类场景的端到端示例</a><a href="#section-36">15 界面与 API 默认设计</a><a href="#section-37">16 故障与可观测性</a><a href="#section-38">17 验证顺序与实现边界</a></details></aside>
-<main><article><div class="status">设计材料 · 尚未实现或实测</div><h1 id="section-1">IT Helpdesk Agent 系统设计</h1>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html" aria-current="page">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 已确认的选择</a><a href="#section-3">2 题目要求与交付证据</a><a href="#section-6">3 为什么需要这种架构</a><a href="#section-7">4 组件与技术默认值</a><a href="#section-8">5 两阶段调用的完整过程</a><a href="#section-13">6 上下文组织</a><a href="#section-14">7 记录模型与状态</a><a href="#section-18">8 工具与政策</a><a href="#section-23">9 身份与授权</a><a href="#section-24">10 审批与人工交接</a><a href="#section-27">11 诊断与结果判断</a><a href="#section-28">12 五类数据的组织</a><a href="#section-29">13 混合检索</a><a href="#section-30">14 五类场景的端到端示例</a><a href="#section-36">15 界面与 API 默认设计</a><a href="#section-37">16 故障与可观测性</a><a href="#section-38">17 验证顺序与实现边界</a></details></aside>
+<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">IT Helpdesk Agent 系统设计</h1>
+<blockquote>
+<p>本地实现对照（2026-11-02）：单业务Agent、五场景/五来源、实际模拟效果、独立问题与审批恢复已实现；真实数据/来源/执行逻辑以app/main.py、domain.py、tools.py为准。当前默认10模型请求/12非终结工具/120秒；整理/决策上下文10,000/12,000保守UTF-8字节，不是精确token。额外guarded refine_issue在决策中细化缺失范围；不从证据机械创建目标。必需上下文超容量明确停止；小语义匹配阈值为开发样本拟合，不能证明普遍语义正确。已知模糊反馈保留上次验证状态、整体不判全解决，页面提示待澄清。本文概念结构与下方目标保留，实际差别及原失败见<a href="delivery-evidence.html">交付对照</a>、<a href="engineering-decisions.html">七裁定</a>。</p>
+</blockquote>
 <p>本系统面向遇到 IT 问题的员工，通过多轮交流、后台查询和受约束的操作推进解决过程。它使用一个业务 Agent，由自定义控制循环驱动；语义理解、状态存储、权限校验和工具执行分工明确。</p>
 <p>设计目标是用一个规模有限但可检查的模拟企业环境，展示可靠的决策与执行边界。模型判断仍可能出错：结构合法不等于语义正确，审批有效不等于操作成功，操作成功也不总等于员工目标已实现。评估必须分别检查这些环节。</p>
 <h2 id="section-2">1 已确认的选择</h2>
@@ -777,7 +781,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>每次调查应服务于一个未决点。优先查询系统已有信息，再询问员工独有的信息。一般一次问一个重点问题，两个紧密相关的问题可以合并。员工短输入、拼写错误和非专业表述都是正常情况。</p>
 <p>通用 IT 知识用于解释和提出假设；改变配置、命令执行等具体操作建议必须来自适用的已审阅指南。引用本身不保证适用，模型需要核对服务、版本和前置条件。政策不允许的行为不能通过让员工手工执行来绕过。</p>
 <p>第一次修复失败后，只有新证据或另一条明确适用路径才允许追加。初始上限为每问题两条不同修复路径；查询和等待反馈不占修复次数。remedy_id、参数与预期作用用于识别重复，语义上是否实质不同仍是评测重点。</p>
-<p>工程初始预算为每次用户事件最多 8 次模型请求和 12 次工具执行，含格式修正；只读工具最多额外重试一次，写操作不盲重试。单次模型请求初始超时 45 秒，单次运行总上限 120 秒，均以实测调整。这些是停止无限运行的硬上限，不是期望延迟目标。</p>
+<p>工程默认预算为每次事件最多 10 次模型请求和 12 次工具执行，格式修正也计入。接入初测原先设置 8 次，但实际澄清案例在正确创建审批后没有剩余调用完成回复，因此调整为 10 次，同时要求复用当前事实、合并独立查询；保留原始失败记录。只读工具最多额外重试一次，写操作不盲重试。单次模型请求初始超时 45 秒，单次运行总上限 120 秒，均以实测调整。这些是停止无限运行的硬上限，不是期望延迟目标。</p>
 <p>触发转人工的原因应可解释：员工明确要求、必须操作不开放、无法安全继续、缺少关键证据且可行替代已用尽，或合理尝试后无进展。达到单轮预算只说明本轮停止，不自动证明能力不足。</p>
 <p>已知事故且影响范围匹配时可以进入 waiting_external，提供经过证实的事故信息和适用临时办法；不要求每个事故都另建个人交接。影响范围不匹配时不能直接归因。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>

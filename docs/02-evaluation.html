@@ -7,6 +7,7 @@ html { scroll-behavior:smooth; scroll-padding-top:24px; }
 body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
 a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
 a:hover { text-decoration:underline; }
+img { max-width:100%; height:auto; }
 .sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
 .brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
 .meta { color:var(--muted); font-size:12px; }
@@ -65,8 +66,11 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 }
 </style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html" aria-current="page">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 评估对象与测试分层</a><a href="#section-3">2 场景事实与评分依据</a><a href="#section-4">3 数据划分与防止调优泄漏</a><a href="#section-5">4 三类用户驱动器</a><a href="#section-9">5 二十个开发案例</a><a href="#section-10">6 十个内部保留案例</a><a href="#section-11">7 程序测试与特殊回归</a><a href="#section-12">8 检索评估</a><a href="#section-13">9 结果断言与指标口径</a><a href="#section-16">10 分维度评分</a><a href="#section-17">11 AI 辅助评审</a><a href="#section-18">12 运行控制与重复实验</a><a href="#section-19">13 对照实验</a><a href="#section-20">14 失败归因</a><a href="#section-21">15 报告模板与交付门槛</a></details></aside>
-<main><article><div class="status">设计材料 · 尚未实现或实测</div><h1 id="section-1">IT Helpdesk Agent 评估设计与案例</h1>
+<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html" aria-current="page">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">1 评估对象与测试分层</a><a href="#section-3">2 场景事实与评分依据</a><a href="#section-4">3 数据划分与防止调优泄漏</a><a href="#section-5">4 三类用户驱动器</a><a href="#section-9">5 二十个开发案例</a><a href="#section-10">6 十个内部保留案例</a><a href="#section-11">7 程序测试与特殊回归</a><a href="#section-12">8 检索评估</a><a href="#section-13">9 结果断言与指标口径</a><a href="#section-16">10 分维度评分</a><a href="#section-17">11 AI 辅助评审</a><a href="#section-18">12 运行控制与重复实验</a><a href="#section-19">13 对照实验</a><a href="#section-20">14 失败归因</a><a href="#section-21">15 报告模板与交付门槛</a></details></aside>
+<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">IT Helpdesk Agent 评估设计与案例</h1>
+<blockquote>
+<p>实现/实测对照（2026-11-02）：本文是评估设计；实际执行66个跨版本live measurements，不是最终30案例全通过。最新已测630e586共17次/10案例、16程序有效、12目标满足、4事件错误，1次有2个必需交接缺失标记；8份旧判断过期/有争议。只H01b有3次同候选测量。原H01因已用于调优移开发，冻结后另封H01b，原oracle和失败保留。规则/LLM用户与同模型grader模式分开；grader v4仅程序验证，5/6实测校准属于v3。当前交付修复有程序回归和单独真实HTTP/browser smoke；没有重新全套测量。Task5成本与后续集成分开，未完成重复列明。<a href="evaluation-report.html">实际报告</a>、<a href="delivery-evidence.html">交付证据</a>。</p>
+</blockquote>
 <p>评估回答三个问题：系统是否遵守可验证的执行约束，模型是否正确理解并推进员工目标，以及这些行为需要多少交互、时间和费用。下面定义测试设计，不包含任何尚未运行的成绩。</p>
 <p>本项目采用程序断言、规则用户、LLM 用户模拟和 AI 辅助评审。开发助手可以审阅对话与 trace，但这种审阅仍属于模型评审，不能报告为真人专家评价。真人面试和后续人工抽查属于另外的证据。</p>
 <h2 id="section-2">1 评估对象与测试分层</h2>

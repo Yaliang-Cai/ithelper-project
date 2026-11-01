@@ -1,16 +1,16 @@
-# IT Helpdesk Agent 设计与答辩材料
+# IT Helpdesk Agent 文档入口
 
-这组材料记录已经讨论确定的方案，并补充可供实现、评估和答辩使用的具体设计。它不是已完成实现或已通过评测的证明。
+[根README：安装、账号、运行与边界](../README.md)。以下材料本地阅读，不发布。
 
-设计日期：2026 年 11 月 2 日。[原始题目](../agentic_ai_take_home_candidate_instructions_v20260421_01.html)。
+1. [实现状态](implementation-status.md)：当前行为、默认值、费用和限制。
+2. [真实评测报告](evaluation-report.md)：历史版本、实际模式、分子/分母、失败与未测。
+3. [集成交付证据](delivery-evidence.md)：新输入真实HTTP/browser smoke、重启、原题逐项映射。
+4. [七项工程裁定](engineering-decisions.md)：理由及判断错误代价，与用户确认产品选择分开。
+5. [系统设计](01-system-design.md)：需求、架构、状态、来源、政策与执行。
+6. [评估设计](02-evaluation.md)：30设计槽位、驱动器、断言、评分和实验口径。
+7. [答辩与扩展](03-defense-and-extensions.md)：选择依据与未实现扩展。
+8. [提示词与契约](04-prompts-and-contracts.md)：概念设计与实际Schema差别。
 
-1. [系统设计](01-system-design.md)：需求映射、架构、模型调用、上下文、状态、工具、权限、审批、模拟数据、故障与界面。
-2. [评估设计与案例](02-evaluation.md)：测试分层、30 个场景、自然用户模拟、断言、评分、对照与结果报告。
-3. [答辩与扩展设计](03-defense-and-extensions.md)：选择依据、已知局限、演示流程、常见追问及未实现扩展。
-4. [提示词与数据契约](04-prompts-and-contracts.md)：两阶段提示词、有限分类、输入输出、程序检查、工具错误及完整示例。
+![实际架构](architecture.svg)
 
-建议先阅读系统设计，再用提示词与数据契约核对执行过程，最后查看评估与答辩材料。浏览器阅读入口为同目录 index.html；HTML 由这些 Markdown 文件生成。
-
-用户已确认的架构选择与本文补充的工程默认值会分别标注。调用上限、数据数量、具体字段和技术栈是可在实现中调整的默认值；改变核心产品行为、权限范围或评估口径时，应同步修订设计。
-
-这组材料最初在开发前完成。用户随后已授权开始实现，并提供两家模型服务凭据；实际进度、接入验证与预算以[实现进度记录](implementation-status.md)为准。日常编码、自动化测试、模拟审批和 AI 辅助评审由开发助手推进；没有真人参与的评分不称为人工专家评测。
+四设计文件保留开发前的理由和概念示例，开头加当前实现对照；它们不是已通过成绩。HTML来自Markdown，入口index.html。可选文档工具：pip install markdown-it-py beautifulsoup4，然后从仓库根执行python docs/_tools/render_docs.py。原题见[候选题目](../agentic_ai_take_home_candidate_instructions_v20260421_01.html)。

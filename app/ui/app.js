@@ -76,14 +76,18 @@ function renderState(state) {
     }
   }
   const issues = $('issues');
-  const signature = JSON.stringify([state.issues,state.confirmations,state.approvals,state.handoffs,state.actions,state.evidence]);
+  const uncertainty = state.unassigned_feedback || [];
+  const uncertainIds = new Set(uncertainty.flatMap(item => item.candidate_issue_ids));
+  const signature = JSON.stringify([state.issues,state.confirmations,state.approvals,state.handoffs,state.actions,state.evidence,uncertainty,state.confirmations.map(c => effective(c, 'decision')),state.approvals.map(a => effective(a, 'status'))]);
   if (issues.dataset.signature !== signature) {
     issues.dataset.signature = signature;
     issues.replaceChildren(node('h2', '问题进度'));
+    if (uncertainty.length) issues.append(node('p', '反馈范围待澄清：尚不能确认所有问题已解决。请说明反馈针对哪个问题；相关状态保留上次验证结果。', 'warning'));
     if (!state.issues.length) issues.append(node('p','描述问题后，这里会显示独立的处理进度。','muted'));
     for (const issue of state.issues) {
       const card = node('section', undefined, 'card');
-      card.append(node('h3', issue.goal), node('p', statusNames[issue.status] || '状态待核对', 'status'));
+      const label = statusNames[issue.status] || '状态待核对';
+      card.append(node('h3', issue.goal), node('p', uncertainIds.has(issue.id) ? '上次验证：' + label + '（反馈范围待澄清）' : label, 'status'));
       reference(card, '问题编号', issue.id);
       field(card, '资源', issue.resource_id);
       for (const a of state.actions.filter(a => a.issue_id === issue.id)) {

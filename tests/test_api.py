@@ -51,6 +51,22 @@ def chat(c, headers):
     return result.json()['id']
 
 
+def test_owned_snapshot_exposes_only_safe_uncertainty_references(env):
+    c, d, app, provider = env
+    h = login(c); cid = chat(c, h)
+    a = d.create_issue('alice.sales', cid, 'VPN', ['vpn'])
+    b = d.create_issue('alice.sales', cid, 'Login', ['okta'])
+    m = d.append_message('alice.sales', cid, 'user', 'That still fails.', 'unclear')
+    proposal = {k: [] for k in ('message_intents', 'new_issue_candidates', 'observations', 'corrections', 'relation_candidates', 'unresolved_references')}
+    proposal['message_intents'] = ['progress_report']
+    proposal['unresolved_references'] = [{'candidate_key': 'u', 'quote': 'That still fails.', 'candidate_issue_ids': [a['id'], b['id']], 'clarification_question': 'Which issue?'}]
+    d.apply_candidates('alice.sales', cid, m['id'], proposal, d.snapshot('alice.sales', cid)['conversation']['version'])
+    result = c.get('/conversations/' + cid).json()
+    assert result['unassigned_feedback'] == [{'source_message_id': m['id'], 'candidate_issue_ids': sorted([a['id'], b['id']])}]
+    assert not result['all_resolved']
+    assert 'observations' not in result and 'candidate_batches' not in result
+
+
 def test_session_rotation_csrf_logout_and_secret_static_scope(env):
     c, d, app, provider = env
     assert c.get('/me').status_code == 401

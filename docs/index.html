@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IT Helpdesk Agent 设计与答辩材料</title><style>
+<title>IT Helpdesk Agent 文档入口</title><style>
 :root { color-scheme: light; --ink:#172638; --muted:#5b6877; --line:#dce3eb; --accent:#225cc5; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; scroll-padding-top:24px; }
 body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
 a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
 a:hover { text-decoration:underline; }
+img { max-width:100%; height:auto; }
 .sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
 .brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
 .meta { color:var(--muted); font-size:12px; }
@@ -65,19 +66,21 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 }
 </style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html" aria-current="page">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a></nav><details class="toc" open><summary>本页目录</summary></details></aside>
-<main><article><div class="status">设计材料 · 尚未实现或实测</div><h1 id="section-1">IT Helpdesk Agent 设计与答辩材料</h1>
-<p>这组材料记录已经讨论确定的方案，并补充可供实现、评估和答辩使用的具体设计。它不是已完成实现或已通过评测的证明。</p>
-<p>设计日期：2026 年 11 月 2 日。<a href="../agentic_ai_take_home_candidate_instructions_v20260421_01.html">原始题目</a>。</p>
+<nav class="pages" aria-label="文档导航"><a href="index.html" aria-current="page">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary></details></aside>
+<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">IT Helpdesk Agent 文档入口</h1>
+<p><a href="../README.md">根README：安装、账号、运行与边界</a>。以下材料本地阅读，不发布。</p>
 <ol>
-<li><a href="01-system-design.html">系统设计</a>：需求映射、架构、模型调用、上下文、状态、工具、权限、审批、模拟数据、故障与界面。</li>
-<li><a href="02-evaluation.html">评估设计与案例</a>：测试分层、30 个场景、自然用户模拟、断言、评分、对照与结果报告。</li>
-<li><a href="03-defense-and-extensions.html">答辩与扩展设计</a>：选择依据、已知局限、演示流程、常见追问及未实现扩展。</li>
-<li><a href="04-prompts-and-contracts.html">提示词与数据契约</a>：两阶段提示词、有限分类、输入输出、程序检查、工具错误及完整示例。</li>
+<li><a href="implementation-status.html">实现状态</a>：当前行为、默认值、费用和限制。</li>
+<li><a href="evaluation-report.html">真实评测报告</a>：历史版本、实际模式、分子/分母、失败与未测。</li>
+<li><a href="delivery-evidence.html">集成交付证据</a>：新输入真实HTTP/browser smoke、重启、原题逐项映射。</li>
+<li><a href="engineering-decisions.html">七项工程裁定</a>：理由及判断错误代价，与用户确认产品选择分开。</li>
+<li><a href="01-system-design.html">系统设计</a>：需求、架构、状态、来源、政策与执行。</li>
+<li><a href="02-evaluation.html">评估设计</a>：30设计槽位、驱动器、断言、评分和实验口径。</li>
+<li><a href="03-defense-and-extensions.html">答辩与扩展</a>：选择依据与未实现扩展。</li>
+<li><a href="04-prompts-and-contracts.html">提示词与契约</a>：概念设计与实际Schema差别。</li>
 </ol>
-<p>建议先阅读系统设计，再用提示词与数据契约核对执行过程，最后查看评估与答辩材料。浏览器阅读入口为同目录 index.html；HTML 由这些 Markdown 文件生成。</p>
-<p>用户已确认的架构选择与本文补充的工程默认值会分别标注。调用上限、数据数量、具体字段和技术栈是可在实现中调整的默认值；改变核心产品行为、权限范围或评估口径时，应同步修订设计。</p>
-<p>这组材料最初在开发前完成。用户随后已授权开始实现，并提供两家模型服务凭据；实际进度、接入验证与预算以<a href="implementation-status.md">实现进度记录</a>为准。日常编码、自动化测试、模拟审批和 AI 辅助评审由开发助手推进；没有真人参与的评分不称为人工专家评测。</p>
+<p><img alt="实际架构" src="architecture.svg"/></p>
+<p>四设计文件保留开发前的理由和概念示例，开头加当前实现对照；它们不是已通过成绩。HTML来自Markdown，入口index.html。可选文档工具：pip install markdown-it-py beautifulsoup4，然后从仓库根执行python docs/_tools/render_docs.py。原题见<a href="../agentic_ai_take_home_candidate_instructions_v20260421_01.html">候选题目</a>。</p>
 
 <footer>本页来自 <a href="README.md">README.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
 </article></main></body></html>

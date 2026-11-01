@@ -246,7 +246,7 @@
       "app/context.py": "b7c55fe002a356b98191328263b82ca769d0a807097a23d097e2155586967a4e",
       "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
       "app/domain.py": "6186b7c906d9cb4951ee0c7f5612f5ed754d850905d1456d663ab02be39f08fe",
-      "app/main.py": "bfd9729f38af41076689d337a0e83481b6e09661b510fc455e1cd56b1a5ab0b5",
+      "app/main.py": "ecbaf443ea81870b90c8735fe7180f771594da6d7ad077c42d8d21c9c5c107d0",
       "app/prompts.py": "3563f37964d0b30d54b97da0d74dbb0f50f45053f0a7387a5d58a8f7c27b9054",
       "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
       "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
@@ -258,11 +258,28 @@
     },
     "runtime_files_changed_since_measurement": [
       "app/domain.py",
+      "app/main.py",
       "app/tools.py"
     ],
     "current_delivery_live_measurements": 0,
-    "validation": "Program regressions only after review; Task6 owns next live smoke."
+    "validation": "Formal benchmark measurements remain historical; current program regressions and fresh HTTP/browser smoke are separate evidence.",
+    "integration_smoke": {
+      "path": "docs/evidence/delivery-smoke.json",
+      "formal_benchmark": false,
+      "mode": "live_agent_real_http_browser_developer_authored_fresh_inputs",
+      "model_requests": 8,
+      "settled_estimate_usd": 0.025951501,
+      "matches_current_runtime": true
+    }
   },
+  "current_project_ledger": {
+    "accounting_overrun": false,
+    "spent_usd": 2.634129369,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 759
+  },
+  "cost_scope": "ledger is historical Task5 evaluation-end snapshot; current_project_ledger includes later integration; roles and Task5 deltas only include saved evaluation calls",
   "harness_error_measurements": 0,
   "stale_judgments": [
     {

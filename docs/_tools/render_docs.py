@@ -15,6 +15,10 @@ PAGES = [
     ("02-evaluation.md", "02-evaluation.html", "02 评估设计"),
     ("03-defense-and-extensions.md", "03-defense-and-extensions.html", "03 答辩与扩展"),
     ("04-prompts-and-contracts.md", "04-prompts-and-contracts.html", "04 提示词与契约"),
+    ("implementation-status.md", "implementation-status.html", "实际实现状态"),
+    ("evaluation-report.md", "evaluation-report.html", "真实评测报告"),
+    ("delivery-evidence.md", "delivery-evidence.html", "集成交付证据"),
+    ("engineering-decisions.md", "engineering-decisions.html", "七项工程裁定"),
 ]
 LINK_MAP = {source: target for source, target, _ in PAGES}
 CSS = """
@@ -24,6 +28,7 @@ html { scroll-behavior:smooth; scroll-padding-top:24px; }
 body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
 a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
 a:hover { text-decoration:underline; }
+img { max-width:100%; height:auto; }
 .sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
 .brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
 .meta { color:var(--muted); font-size:12px; }
@@ -107,7 +112,7 @@ def render():
 <title>{escape(title)}</title><style>{CSS}</style></head><body>
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
 <nav class="pages" aria-label="文档导航">{navigation}</nav><details class="toc" open><summary>本页目录</summary>{toc}</details></aside>
-<main><article><div class="status">设计材料 · 尚未实现或实测</div>{soup}
+<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div>{soup}
 <footer>本页来自 <a href="{source}">{source}</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
 </article></main></body></html>'''
         (ROOT / target).write_text(result, encoding="utf-8")

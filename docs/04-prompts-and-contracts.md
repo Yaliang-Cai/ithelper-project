@@ -1,5 +1,7 @@
 # 模型调用、提示词与数据契约
 
+> 可执行契约说明（2026-11-02）：本文的提示词初稿和JSON示例是概念设计，不保证可原样发给当前API/工具。实际严格Schema见[app/contracts.py](../app/contracts.py)，工具参数见[app/tools.py](../app/tools.py)，HTTP请求见[app/main.py](../app/main.py)，实际提示词见[app/prompts.py](../app/prompts.py)。整理使用message_intents/new_issue_candidates/observations/corrections/relation_candidates/unresolved_references；观察用target_refs/claim而非概念target_issue_ids/content。终结使用issue_updates、字符串reply、question_updates/hypotheses/guidance/refinements及可选relation_updates，不接受概念issue_update_proposals/对象reply/stop_reason。默认10模型/12非终结工具/120秒；决策增加guarded refine_issue，强制第10请求仅submit_turn。整理10k/决策12k为保守UTF-8字节；必需记录放不下显式停止。语义匹配只在小开发样本调节，合法结构仍可能错误解释。详见[实现状态](implementation-status.md)与[交付对照](delivery-evidence.md)。
+
 本文把“每步怎么组织上下文、怎么限制输出、程序怎么记录”落实为可检查的接口设计。提示词是待实现和验证的初始版本，不是已经证明有效的生产提示词。字段名称、数量限制和错误码是工程默认值。
 
 ## 1 一次消息如何经过系统

@@ -11,6 +11,12 @@ START_SPEND=0.313169108
 START_REQUESTS=95
 CRITICAL=['D04','D13','D14','D19','H01b','H06','H07','H10']
 
+def measurement_costs(roles):
+    """Attribute only saved evaluation calls, never a global-ledger delta."""
+    return {'calls':sum(v['calls'] for v in roles.values()),
+            'settled_estimate_usd':round(sum(v['estimated_spend_usd'] for v in roles.values()),9),
+            'unsettled_reservations_usd':round(sum(v['uncertain_reserved_usd'] for v in roles.values()),9)}
+
 def harness_failure_record(folder,entry,summary,config,frozen,profiles):
     cid=entry['case'];path=folder/(cid+'-checkpoint.json')
     checkpoint=json.loads(path.read_text(encoding='utf-8')) if path.exists() else None
@@ -108,14 +114,25 @@ def main():
     rows,roles,calibration,frozen=collect();formal=[r for r in rows if not r['case_id'].startswith('S')];latest={};first={}
     for r in formal:latest[r['case_id']]=r;first.setdefault(r['case_id'],r)
     final=[r for r in formal if r['frozen_profile']];baseline=[r for r in first.values() if r['case_id'].startswith('D')]
-    ledger=BudgetLedger(LEDGER_PATH).report();repeat={c:{'all_versions':sum(r['case_id']==c for r in formal),'frozen_profile':sum(r['case_id']==c for r in final)} for c in CRITICAL}
+    current_ledger=BudgetLedger(LEDGER_PATH).report()
+    measured_cost=measurement_costs(roles)
+    # Historical evaluation snapshot is reconstructed from its attributed calls.
+    # Later HTTP/browser integration requests belong only to current_ledger.
+    ledger={'accounting_overrun':False,'spent_usd':round(START_SPEND+measured_cost['settled_estimate_usd'],9),'reserved_usd':measured_cost['unsettled_reservations_usd'],'limit_usd':3.0,'requests':START_REQUESTS+measured_cost['calls']}
+    repeat={c:{'all_versions':sum(r['case_id']==c for r in formal),'frozen_profile':sum(r['case_id']==c for r in final)} for c in CRITICAL}
     delivered_hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in ROOT.glob('app/*.py')}
-    delivery={'latest_measured_freeze':'freeze-v3.json','latest_measured_git_head':frozen['git_head'],'delivered_runtime_hashes':delivered_hashes,'runtime_files_changed_since_measurement':[p for p,h in delivered_hashes.items() if frozen['hashes'].get(p)!=h],'current_delivery_live_measurements':0,'validation':'Program regressions only after review; Task6 owns next live smoke.'}
+    delivery={'latest_measured_freeze':'freeze-v3.json','latest_measured_git_head':frozen['git_head'],'delivered_runtime_hashes':delivered_hashes,'runtime_files_changed_since_measurement':[p for p,h in delivered_hashes.items() if frozen['hashes'].get(p)!=h],'current_delivery_live_measurements':0,'validation':'Formal benchmark measurements remain historical; current program regressions and fresh HTTP/browser smoke are separate evidence.'}
+    smoke_path=ROOT/'docs/evidence/delivery-smoke.json'
+    if smoke_path.exists():
+        smoke=json.loads(smoke_path.read_text(encoding='utf-8'))
+        delivery['integration_smoke']={'path':'docs/evidence/delivery-smoke.json','formal_benchmark':False,'mode':smoke['mode'],'model_requests':smoke['request_delta'],'settled_estimate_usd':smoke['settled_estimate_delta_usd'],'matches_current_runtime':all((ROOT/p).exists() and hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in smoke['runtime_hashes'].items())}
     manifest_by_batch={m['batch']:m['process_start_manifest'] for m in json.loads((ROOT/'evals/public/manifests.json').read_text(encoding='utf-8'))['runs']}
     delivery['current_delivery_live_measurements']=sum(all(manifest_by_batch.get(r['batch'],{}).get('hashes',{}).get(p)==h for p,h in delivered_hashes.items()) for r in rows)
     summary={'ledger':ledger,'task5_settled_estimate_usd':ledger['spent_usd']-START_SPEND,'task5_request_delta':ledger['requests']-START_REQUESTS,'roles':roles,'coverage':sorted(first),'design_slots_covered':len({c[:3] for c in first}),'original_H01_moved_to_development':True,'replacement_measured':'H01b' in first,'initial_development_mixed_versions':metrics(baseline),'frozen_profile_all_measurements':metrics(final),'all_formal_versions_descriptive_only':metrics(formal),'critical_repeats':repeat,'calibration':[{'batch':c['batch'],'matched':c['matched'],'total':c['total']} for c in calibration],
              'frozen_missing_cases':sorted(set(first)-{r['case_id'] for r in final}),'business_program_proxies_latest_candidate':business_metrics(final),'grade_scores_provisional':True,'no_single_final_30_case_success_rate':True}
     summary['delivery_vs_measurement']=delivery
+    summary['current_project_ledger']=current_ledger
+    summary['cost_scope']='ledger is historical Task5 evaluation-end snapshot; current_project_ledger includes later integration; roles and Task5 deltas only include saved evaluation calls'
     summary['harness_error_measurements']=sum(r.get('measurement_status')=='harness_error' for r in rows)
     summary['stale_judgments']=[{'batch':r['batch'],'case_id':r['case_id']} for r in rows if r['grader_stale']]
     save(ROOT/'evals/public/metrics.json',summary);save(ROOT/'evals/public/runs.json',rows);save(ROOT/'evals/public/calibration.json',calibration)
@@ -169,8 +186,9 @@ def main():
             f"全部正式测量的程序模拟有效：{sum(r['program_valid'] is True for r in formal)}/{len(formal)}；未过期AI另判模拟无效：{sum(r['ai_simulator_valid'] is False for r in formal)}。规则驱动器不支持的问题显式simulator_invalid；LLM只看事实卡、可见对话和可观察反馈，不看oracle/工具trace。动作后的恢复反馈由真实模拟状态决定。",'',
             '## 重复风险测量','', '| 案例 | 全版本次数 | 冻结配置次数 |','|---|---:|---:|']
     for c,v in repeat.items():lines.append(f"| {c} | {v['all_versions']} | {v['frozen_profile']} |")
-    lines+=['','重复测量不是新增业务案例；跨版本测量不能估计同版本稳定性。最新版本未达到三次的项目属于未完成计划，不视为通过。','', '## 费用与时间','',f"项目累计保守估算已结算 USD {ledger['spent_usd']:.9f}；未结预留 USD {ledger['reserved_usd']:.9f}；累计请求 {ledger['requests']}；总上限始终USD3。Task5前为USD {START_SPEND:.9f}/{START_REQUESTS}请求；Task5增量估算USD {ledger['spent_usd']-START_SPEND:.9f}。按供应商返回token数、峰值cache-miss输入USD0.30/M和输出USD1.20/M估算，非供应商实际账单；没有清零或迁移账本。",'',
-            f"预算没有耗尽。剩余 USD {ledger['limit_usd']-ledger['spent_usd']-ledger['reserved_usd']:.9f} 留给最终集成和交互演示；同版本重复覆盖不足属于有界评估与迭代取舍，不能说成没有余额。",'',
+    lines+=['','重复测量不是新增业务案例；跨版本测量不能估计同版本稳定性。最新版本未达到三次的项目属于未完成计划，不视为通过。','', '## 费用与时间','',f"Task5结束时历史快照：累计保守估算已结算 USD {ledger['spent_usd']:.9f}；未结预留 USD {ledger['reserved_usd']:.9f}；累计请求 {ledger['requests']}；总上限始终USD3。Task5前为USD {START_SPEND:.9f}/{START_REQUESTS}请求；仅归属已保存评测调用的Task5增量估算USD {measured_cost['settled_estimate_usd']:.9f}/{measured_cost['calls']}请求。按供应商返回token数、峰值cache-miss输入USD0.30/M和输出USD1.20/M估算，非供应商实际账单；没有清零或迁移账本。",'',
+            f"生成报告时当前项目账本另为USD {current_ledger['spent_usd']:.9f}/{current_ledger['requests']}请求，未结USD {current_ledger['reserved_usd']:.9f}；包括后续集成调用，不归入上述Task5测量。当前交付smoke另见[集成交付记录](delivery-evidence.md)。",'',
+            f"预算没有耗尽。Task5结束时余额 USD {ledger['limit_usd']-ledger['spent_usd']-ledger['reserved_usd']:.9f} 留给后续集成/演示；生成时当前余额另为USD {current_ledger['limit_usd']-current_ledger['spent_usd']-current_ledger['reserved_usd']:.9f}。同版本重复覆盖不足属于有界评估与迭代取舍，不能说成没有余额。",'',
             '| 角色purpose | 请求 | 输入tokens | 输出tokens | 保守估算USD | 未结USD |','|---|---:|---:|---:|---:|---:|']
     for role,v in roles.items():lines.append(f"| {role} | {v['calls']} | {v['prompt_tokens']} | {v['completion_tokens']} | {v['estimated_spend_usd']:.9f} | {v['uncertain_reserved_usd']:.9f} |")
     lines+=['','早期批次按顺序运行，差分账本计费没有其他DeepSeek进程重叠；新版每请求独立ledger purpose/reservation ID归属，程序回归证明不吸收并发其他角色费用。原始usage保留输入/输出tokens。Agent活动时间、总墙钟及模拟观察等待分别记录；审批人即时驱动，不声称真实员工等待时间。', '',
