@@ -1,0 +1,58 @@
+{
+  "id": "D19",
+  "split": "development",
+  "family": "cross_system",
+  "actor": "chen.data",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Jenkins 和 Tableau 都卡着，应该是上次维护弄的。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {},
+  "user_card": {
+    "facts": {
+      "error_detail": "Jenkins 超时，Tableau 昨天的报表没更新。",
+      "environment": "亚太 2026.11。",
+      "affected_scope": "我们团队。",
+      "attempt_result": "重开页面也一样。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "jenkins",
+        "statuses": [
+          "handed_off"
+        ]
+      },
+      {
+        "service": "tableau",
+        "statuses": [
+          "handed_off"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ],
+    "counterevidence_required": [
+      "change.token.rotation",
+      "region mismatch",
+      "healthy probe"
+    ]
+  },
+  "fault_plan": {}
+}

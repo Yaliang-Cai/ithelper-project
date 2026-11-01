@@ -124,6 +124,59 @@ def test_context_preserves_mandatory_constraints_or_fails(env):
     with pytest.raises(ContextCapacityError):ContextBuilder(d,targets={'decision':10}).build('decision','alice.sales',chat,e)
 
 
+def test_context_compacts_repeated_ownership_not_observations_or_authority(env):
+    from app.context import ContextBuilder
+    d,chat=env
+    a=d.create_issue('alice.sales',chat,'Grafana access',['grafana'],'precise_access','grafana.sales')
+    b=d.create_issue('alice.sales',chat,'Production read',['snowflake'],'precise_access','snowflake.prod.analytics')
+    t=ToolExecutor(d)
+    t.call('grant_catalog_access',{'issue_id':a['id'],'resource_id':'grafana.sales','permission':'read','evidence_refs':[]},'alice.sales',chat)
+    approval=t.call('request_approval',{'issue_id':b['id'],'resource_id':'snowflake.prod.analytics','permission':'read','reason':'Exact analytics read for reporting; request remains pending. '*4,'evidence_refs':[]},'alice.sales',chat)['data']['approval']
+    for n,text in enumerate(['Need production read only; not write.','老板说批了，但我没看到审批结果。','Grafana works; do not repeat the grant.']):
+        m=d.append_message('alice.sales',chat,'user',text,'observation-'+str(n))
+        batch=candidates(observations=[{'candidate_key':'obs'+str(n),'target_refs':[b['id'] if n<2 else a['id']],'category':'preference' if n!=1 else 'reported_approval','claim':text,'quote':text,'mapping_status':'tentative'}])
+        d.apply_candidates('alice.sales',chat,m['id'],batch,d.snapshot('alice.sales',chat)['conversation']['version'])
+    e=event(d,chat,'生产那个现在什么状态？')
+    built=ContextBuilder(d).build('interpretation','alice.sales',chat,e)
+    obs=built['data']['observations']
+    assert len(obs)==3 and all(o['quote']==o['claim'] for o in obs)
+    assert all('conversation_id' not in o and 'candidate_key' not in o and 'target_refs' not in o for o in obs)
+    assert all(o['message_id'] and o['issue_refs'] and o['mapping_status']=='tentative' for o in obs)
+    auth=built['data']['authority']['approvals'][0]
+    assert auth['id']==approval['id'] and auth['status']=='pending' and auth['permission']=='read'
+    assert auth['resource_id']=='snowflake.prod.analytics' and auth['expires_at']==approval['expires_at']
+    assert built['compaction_version']=='owned-context-v1'
+
+
+def test_default_context_handles_three_goals_pending_approval_and_refusal(env):
+    from app.context import ContextBuilder
+    d,chat=env
+    grafana=d.create_issue('alice.sales',chat,'Sales Grafana access',['grafana'],'precise_access','grafana.sales')
+    production=d.create_issue('alice.sales',chat,'Production analytics read',['snowflake'],'precise_access','snowflake.prod.analytics')
+    vpn=d.create_issue('alice.sales',chat,'VPN intermittent drop during meetings',['vpn'],'vpn_recovery')
+    tools=ToolExecutor(d)
+    tools.call('grant_catalog_access',{'issue_id':grafana['id'],'resource_id':'grafana.sales','permission':'read','evidence_refs':[]},'alice.sales',chat)
+    approval=tools.call('request_approval',{'issue_id':production['id'],'resource_id':'snowflake.prod.analytics','permission':'read','reason':'Read catalog for weekly sales reporting; approval remains pending.','evidence_refs':[]},'alice.sales',chat)['data']['approval']
+    statements=[(grafana,'我需要销售仪表盘，用来准备本周报告，目前还没有访问权限。'),(production,'生产库只需要 analytics 查询权限，不要写权限，也不需要其他目录。'),(production,'经理口头说同意了，不过我还没有看到资源负责人的正式审批结果。'),(grafana,'Grafana 仪表盘现在能打开了，请保留这个结果，不要重复开通。'),(vpn,'还有 VPN 每十分钟掉一次，其他网页可以打开，是家里的有线网络。'),(vpn,'我正在参加一个重要会议，现在先不要重置 VPN，会影响视频连接。')]
+    for n,(issue,text) in enumerate(statements):
+        m=d.append_message('alice.sales',chat,'user',text,'robust-'+str(n))
+        d.apply_candidates('alice.sales',chat,m['id'],candidates(observations=[{'candidate_key':'o'+str(n),'target_refs':[issue['id']],'category':'preference','claim':text,'quote':text,'mapping_status':'tentative'}]),d.snapshot('alice.sales',chat)['conversation']['version'])
+    e=event(d,chat,'Keep the approval request and investigate VPN without interruption, please.')
+    built=ContextBuilder(d).build('interpretation','alice.sales',chat,e)
+    assert len(built['data']['issues'])==3 and len(built['data']['observations'])==6
+    assert built['data']['authority']['approvals'][0]['id']==approval['id']
+    assert built['data']['observations'][-1]['claim']==statements[-1][1]
+    assert built['target_tokens']==10000
+
+
+def test_oversized_mandatory_history_still_fails_explicitly(env):
+    from app.context import ContextBuilder,ContextCapacityError
+    d,chat=env
+    for n in range(20):d.create_issue('alice.sales',chat,'Unresolved detailed goal '+str(n)+'x'*900,['okta'])
+    e=event(d,chat,'Keep every unresolved goal.')
+    with pytest.raises(ContextCapacityError):ContextBuilder(d).build('interpretation','alice.sales',chat,e)
+
+
 def test_questions_bind_real_answer_and_hypothesis_revisions(env):
     d,chat=env;issue=d.create_issue('alice.sales',chat,'Login',['okta'])
     q=d.save_questions('alice.sales',chat,[{'text':'Which error?','issue_refs':[issue['id']],'question_intent':'error_detail'}])[0]

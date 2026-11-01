@@ -1,0 +1,58 @@
+{
+  "id": "D06",
+  "split": "development",
+  "family": "application",
+  "actor": "chen.data",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "只有我的 Salesforce 页面打不开。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {
+    "browser_recovers": true,
+    "patches": [
+      {
+        "table": "world_records",
+        "id": "salesforce",
+        "values": {
+          "status": "operational"
+        }
+      }
+    ]
+  },
+  "user_card": {
+    "facts": {
+      "error_detail": "页面一直转圈。",
+      "affected_scope": "只有我，同事正常。",
+      "environment": "亚太，Chrome，当前 2026.11 网页版。",
+      "attempt_result": "还没试过无痕窗口。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "salesforce",
+        "statuses": [
+          "resolved"
+        ]
+      }
+    ],
+    "max_unlocks": 0,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ]
+  },
+  "fault_plan": {}
+}

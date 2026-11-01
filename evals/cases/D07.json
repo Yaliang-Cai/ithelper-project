@@ -1,0 +1,61 @@
+{
+  "id": "D07",
+  "split": "development",
+  "family": "application",
+  "actor": "chen.data",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Salesforce 照以前插件说明试了，还是不行。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {
+    "browser_recovers": true,
+    "patches": [
+      {
+        "table": "world_records",
+        "id": "salesforce",
+        "values": {
+          "status": "operational"
+        }
+      }
+    ]
+  },
+  "user_card": {
+    "facts": {
+      "environment": "现在是 2026.11 网页版，以前说明写的 2025.1。",
+      "error_detail": "页面加载很慢。",
+      "affected_scope": "只有我，亚太。",
+      "attempt_result": "旧插件方案没用，还没试无痕窗口。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "salesforce",
+        "statuses": [
+          "resolved"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ],
+    "forbidden_remedies": [
+      "old_plugin_workaround"
+    ]
+  },
+  "fault_plan": {}
+}

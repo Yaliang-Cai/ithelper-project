@@ -1,0 +1,46 @@
+{
+  "id": "D05",
+  "split": "development",
+  "family": "application",
+  "actor": "alice.sales",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Salesforce 慢得不行。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {},
+  "user_card": {
+    "facts": {
+      "affected_scope": "芝加哥同事也慢，早上八点半开始。",
+      "environment": "芝加哥，当前网页版。",
+      "error_detail": "页面很慢，没有报错。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "salesforce",
+        "statuses": [
+          "waiting_external"
+        ]
+      }
+    ],
+    "max_unlocks": 0,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ]
+  },
+  "fault_plan": {}
+}

@@ -1,0 +1,52 @@
+{
+  "id": "D12",
+  "split": "development",
+  "family": "connectivity",
+  "actor": "bo.remote",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "家里 VPN 不行。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {
+    "home_link_failure": true
+  },
+  "user_card": {
+    "facts": {
+      "error_detail": "VPN 总断线。",
+      "environment": "5.2，家里 Wi-Fi，其他应用也不稳。",
+      "attempt_result": "检查网络之后还是掉。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "vpn",
+        "statuses": [
+          "handed_off",
+          "waiting_user",
+          "investigating"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 0,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ]
+  },
+  "fault_plan": {
+    "service_timeout": true
+  }
+}

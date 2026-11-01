@@ -1,0 +1,662 @@
+[
+  {
+    "id": "Q01",
+    "query": "Okta ordinary lock unlock",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-unlock"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q02",
+    "query": "Okta security disabled",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-security"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q03",
+    "query": "MFA device unavailable",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-mfa"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q04",
+    "query": "private browser login cookies",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-browser"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q05",
+    "query": "账号锁住怎么解开",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-unlock"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q06",
+    "query": "安全调查停用的账号",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-security"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q07",
+    "query": "手机认证收不到",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-mfa"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q08",
+    "query": "Okta browser login",
+    "filters": {
+      "service_id": "okta",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.account-browser"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q09",
+    "query": "Salesforce slow pages region incident",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.salesforce-slow"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q10",
+    "query": "Salesforce private window permitted browser",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.salesforce-browser"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q11",
+    "query": "销售系统只有我页面加载慢",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.salesforce-browser"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q12",
+    "query": "同地区同事页面都慢",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.salesforce-slow"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q13",
+    "query": "VPN periodic disconnect reset session",
+    "filters": {
+      "service_id": "vpn",
+      "version": "5.2"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.vpn-session"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q14",
+    "query": "VPN home Wi-Fi link loss",
+    "filters": {
+      "service_id": "vpn",
+      "version": "5.2"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.vpn-local-network"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q15",
+    "query": "每隔十分钟远程连接就断",
+    "filters": {
+      "service_id": "vpn",
+      "version": "5.2"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.vpn-session"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q16",
+    "query": "家里其他软件也掉线",
+    "filters": {
+      "service_id": "vpn",
+      "version": "5.2"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.vpn-local-network"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q17",
+    "query": "grafana sales dashboard read",
+    "filters": {
+      "service_id": "grafana",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.grafana-sales"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q18",
+    "query": "Data Engineering dashboard read",
+    "filters": {
+      "service_id": "grafana",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.grafana-data"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q19",
+    "query": "Platform dashboard read",
+    "filters": {
+      "service_id": "grafana",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.grafana-platform"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q20",
+    "query": "数据工程团队看仪表盘",
+    "filters": {
+      "service_id": "grafana",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.grafana-data"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q21",
+    "query": "Snowflake production read owner approval",
+    "filters": {
+      "service_id": "snowflake",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.snowflake-read"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q22",
+    "query": "production admin write request",
+    "filters": {
+      "service_id": "snowflake",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.snowflake-no-write"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q23",
+    "query": "analytics grant finance access",
+    "filters": {
+      "service_id": "snowflake",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.snowflake-verify"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q24",
+    "query": "生产库只读要谁批准",
+    "filters": {
+      "service_id": "snowflake",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.snowflake-read"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q25",
+    "query": "Jenkins token probe healthy rotation",
+    "filters": {
+      "service_id": "jenkins",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.jenkins-token"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q26",
+    "query": "pipeline restart production timeout",
+    "filters": {
+      "service_id": "jenkins",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.jenkins-escalate"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q27",
+    "query": "Tableau extract queue backlog",
+    "filters": {
+      "service_id": "tableau",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.tableau-extract"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q28",
+    "query": "Tableau production queue edit",
+    "filters": {
+      "service_id": "tableau",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.tableau-escalate"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q29",
+    "query": "certificate rotation consumer probe",
+    "filters": {
+      "service_id": "token_service",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.token-rotation"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q30",
+    "query": "multiple app symptoms independent goals",
+    "filters": {
+      "service_id": "token_service",
+      "version": "2026.11"
+    },
+    "source_type": "kb",
+    "expected": [
+      "kb.cross-system"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q31",
+    "query": "ZQ-8842 custom plugin executable",
+    "filters": {
+      "service_id": "tableau"
+    },
+    "source_type": "kb",
+    "expected": [],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q32",
+    "query": "printer toner PX900",
+    "filters": {},
+    "source_type": "kb",
+    "expected": [],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q33",
+    "query": "annual leave payroll",
+    "filters": {},
+    "source_type": "kb",
+    "expected": [],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q34",
+    "query": "VPN timeout",
+    "filters": {
+      "service_id": "vpn",
+      "version": "4.9"
+    },
+    "source_type": "kb",
+    "expected": [],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q35",
+    "query": "Salesforce old plugin",
+    "filters": {
+      "service_id": "salesforce",
+      "version": "2025.1"
+    },
+    "source_type": "kb",
+    "expected": [],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q36",
+    "query": "VPN reset stale session",
+    "filters": {
+      "service_id": "vpn"
+    },
+    "source_type": "history",
+    "expected": [
+      "history.05"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q37",
+    "query": "Jenkins token healthy runner saturation",
+    "filters": {
+      "service_id": "jenkins"
+    },
+    "source_type": "history",
+    "expected": [
+      "history.10"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q38",
+    "query": "Tableau queue token healthy",
+    "filters": {
+      "service_id": "tableau"
+    },
+    "source_type": "history",
+    "expected": [
+      "history.11"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q39",
+    "query": "Salesforce cookie eu-west",
+    "filters": {
+      "service_id": "salesforce",
+      "region": "eu-west"
+    },
+    "source_type": "history",
+    "expected": [
+      "history.04"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  },
+  {
+    "id": "Q40",
+    "query": "Salesforce slow regional incident",
+    "filters": {
+      "service_id": "salesforce",
+      "region": "us-central"
+    },
+    "source_type": "history",
+    "expected": [
+      "history.03"
+    ],
+    "forbidden": [
+      "kb.vpn-old",
+      "kb.salesforce-old"
+    ],
+    "basis": "Reviewed source contents, authored before retrieval execution"
+  }
+]

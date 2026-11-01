@@ -1,0 +1,50 @@
+{
+  "id": "D04",
+  "split": "development",
+  "family": "account",
+  "actor": "alice.sales",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Okta 锁了，帮我解开一下。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {},
+  "user_card": {
+    "facts": {
+      "error_detail": "页面写着 account locked。",
+      "attempt_result": "我还没试过重新登录。",
+      "environment": "当前网页版本 2026.11，用 Chrome。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "okta",
+        "statuses": [
+          "resolved"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ],
+    "required_action": "unlock_account",
+    "required_tool": "get_action_result"
+  },
+  "fault_plan": {
+    "post_commit_loss": true
+  }
+}

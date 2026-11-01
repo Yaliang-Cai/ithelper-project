@@ -1,0 +1,53 @@
+{
+  "id": "D17",
+  "split": "development",
+  "family": "cross_system",
+  "actor": "dana.platform",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "Jenkins 一直超时，Tableau 报表也不更新了。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {},
+  "user_card": {
+    "facts": {
+      "error_detail": "Jenkins 显示 token timeout，Tableau 的数据还是昨天的。",
+      "environment": "欧洲区，2026.11 版本。",
+      "affected_scope": "团队报表都没更新。",
+      "attempt_result": "已经检查过页面，没恢复。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "jenkins",
+        "statuses": [
+          "handed_off"
+        ]
+      },
+      {
+        "service": "tableau",
+        "statuses": [
+          "handed_off"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ]
+  },
+  "fault_plan": {}
+}

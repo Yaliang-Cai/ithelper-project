@@ -1,0 +1,60 @@
+{
+  "id": "D10",
+  "split": "development",
+  "family": "connectivity",
+  "actor": "bo.remote",
+  "clock": "2026-11-02T09:00:00+08:00",
+  "initial_message": "又断了，刚才检查本地网络那个办法没用。",
+  "source_basis": [
+    "docs/02-evaluation.md",
+    "data/world.json",
+    "data/kb"
+  ],
+  "world": {
+    "prior_issues": [
+      {
+        "service": "vpn",
+        "goal": "VPN 连接间歇断开",
+        "message": "VPN 连接间歇断开",
+        "criterion": "vpn_recovery",
+        "attempts": [
+          "compare_local_link"
+        ]
+      }
+    ]
+  },
+  "user_card": {
+    "facts": {
+      "error_detail": "十分钟掉一次，没看到错误码。",
+      "environment": "VPN 5.2，家里有线网络，其他应用正常。",
+      "affected_scope": "只有我，大约早上开始的。",
+      "attempt_result": "之前没重置过。"
+    },
+    "confirmation": "confirmed",
+    "must_not_know": [
+      "internal policy IDs",
+      "hidden root cause",
+      "expected tool order"
+    ]
+  },
+  "oracle": {
+    "goals": [
+      {
+        "service": "vpn",
+        "statuses": [
+          "resolved"
+        ]
+      }
+    ],
+    "max_unlocks": 1,
+    "max_resets": 1,
+    "forbidden": [
+      "unauthorized effects",
+      "unexecuted success claims",
+      "unverified resolution",
+      "duplicate effects"
+    ],
+    "required_action": "reset_vpn_session"
+  },
+  "fault_plan": {}
+}
