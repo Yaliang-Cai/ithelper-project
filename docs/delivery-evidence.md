@@ -1,6 +1,6 @@
 # 本地集成交付证据
 
-2026-11-02（Asia/Shanghai）。本页报告当前集成检查，正式评测保留为历史版本测量，没有真人专家、真实企业系统或外部发布。
+2026-11-02（Asia/Shanghai）。本页先保留65743f3的集成检查，最后记录2026-11-02最终边界修复的离线验证；正式评测保留为历史版本测量，没有真人专家、真实企业系统或外部发布。
 
 ## 实际检查
 
@@ -32,13 +32,13 @@ Starlette1.10.0 TestClient优先加载httpx2，旧httpx路径发出弃用warning
 
 ![真实桌面smoke](evidence/employee-live.png)
 
-[手机截图](evidence/employee-mobile.png)。当前服务<http://127.0.0.1:8000/>；记录时PID41816，stdout/stderr为runtime/delivery/app-restart.stdout.log、app-restart.stderr.log。PID随重启变化。
+[手机截图](evidence/employee-mobile.png)。本次65743f3记录的服务<http://127.0.0.1:8000/>；当时启动PID41816，stdout/stderr为runtime/delivery/app-restart.stdout.log、app-restart.stderr.log。PID随重启变化。
 
 ## 费用与版本
 
 smoke前USD2.608177868/751请求/0预留；增量USD0.025951501/8请求；之后USD2.634129369/759请求/0预留，原USD3内余USD0.365870631。未换模型、增加额度、迁移或清零runtime/usage.sqlite。重启/离线检查无新增费用；估算不是供应商账单。
 
-Task5自身仍为656请求/USD2.295008760，结束快照保留。生成器现按归属的已保存角色调用统计评测费用，current_project_ledger另列，不吸收后续demo。冻结版本/原文不改写。当前smoke精确runtime SHA256在[JSON](evidence/delivery-smoke.json)，正式最新已测仍630e586；[metrics](../evals/public/metrics.json)列当前代码差异。新增smoke不是正式30案例复跑。
+Task5自身仍为656请求/USD2.295008760，结束快照保留。生成器现使用evals/task5-cost-snapshot.json固定Task5截止快照，后续评测费用与current_project_ledger另列，不吸收后续demo或新评测。冻结版本/原文不改写。65743f3（最终边界修复前）smoke精确runtime SHA256在[JSON](evidence/delivery-smoke.json)，正式最新已测仍630e586；[metrics](../evals/public/metrics.json)列当前代码差异。新增smoke不是正式30案例复跑。
 
 历史66次live测量跨版本；最新候选17次/10案例，16程序有效、12满足目标、4事件错误、1次有2个必需交接缺失标记。8份旧判断过期/有争议；5/6实测校准属于grader v3，v4仅程序验证。[完整实测](evaluation-report.md)、[失败原文](../evals/public/failure-examples.md)保留未测和反例。
 
@@ -72,3 +72,16 @@ Task5自身仍为656请求/USD2.295008760，结束快照保留。生成器现按
 ## 设计与可执行契约
 
 单Agent、五场景/来源、真实模拟效果、独立多目标、审批恢复、lexical降级均实现。默认10模型/12非终结工具/120秒、10k/12k保守字节；增加guarded refine_issue。新目标来自员工请求，不因证据机械拆分。小语义匹配阈值属于开发样本启发式，不是通用语义验证；必需上下文不足停止。已知模糊反馈保留每目标上次验证，all_resolved=false且页面待澄清。概念JSON不能保证原样用于请求，实际以app/contracts.py、tools.py、main.py为准。四设计文档保留理由、历史目标和未实现扩展。
+
+
+## 最终整体审查后的确定性修复（2026-11-02）
+
+整体审查记录2项Important和2项Minor，本次逐项落实：connectivity改用所有真实模型入口共同引用的app/config.py canonical ledger，项目配置显式从仓库.env加载，RUNTIME_DIR/CWD只影响业务/输出、不分配新预算；预算已耗尽/overrun时探针在任何供应商请求前停止。API最外层Host校验只允许127.0.0.1/localhost，无通配部署默认值；攻击者匹配Host+Origin也在读取/登录/写入前400。报告开头区分已完成的旧smoke与当前修复，历史Task5费用固定快照并单列后续评测。
+
+新增离线回归先4failed/2passed，修复后相关41passed；最终全程序209passed in23.66s，无warning。真实程序/脚本模型浏览器14checks、受控时钟3checks均通过，零付费。固定历史Task5仍656请求/USD2.295008760；合成“后续新批次”的回归证明截止值不变而新费用另列。正式测量/原oracle不改写。
+
+原docs/evidence/delivery-smoke.json及其原始runtime哈希、两截图和restart.json字节保留：它测量65743f3，在当前config/main.py确定性修复之前。metrics.integration_smoke.matches_current_runtime现为false并列差异，当前没有新的live模型实测；不把旧成功路径重新贴到新HEAD。当前UI/服务加载已通过离线浏览器历史读取，未发送新消息。
+
+只停止经命令行核实的原app启动进程，再以隐藏loopback helper启动相同factory。新实际服务器PID8388，启动helper PID43028；URL仍http://127.0.0.1:8000/，日志runtime/delivery/final-fix-app.stdout.log、final-fix-app.stderr.log。正常localhost/127.0.0.1读取200；任意匹配Host+Origin的读取/health/登录/建聊天/入队请求全部400。消息4/事件2/运行2/动作1及内容摘要、759条账本行指纹完全一致；花费USD2.634129369、预留0、剩余USD0.365870631，未新增付费调用。
+
+[最终离线边界与重启证据](evidence/final-boundary-checks.json)记录模式、前后摘要、Host状态和进程。修复实施不等于最终复核批准，复核结论由控制方另行记录；源码ZIP由控制方在修复复核后重新生成。

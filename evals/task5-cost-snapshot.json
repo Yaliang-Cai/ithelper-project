@@ -1,0 +1,38 @@
+{
+  "scope": "Immutable Task5-end cost cutoff; reviewed5955000, pre-integration smoke. Future evaluation calls are reported separately.",
+  "reviewed_git_head": "5955000",
+  "start_ledger": {
+    "spent_usd": 0.313169108,
+    "requests": 95,
+    "reserved_usd": 0
+  },
+  "end_ledger": {
+    "accounting_overrun": false,
+    "spent_usd": 2.608177868,
+    "reserved_usd": 0.0,
+    "limit_usd": 3.0,
+    "requests": 751
+  },
+  "request_delta": 656,
+  "settled_estimate_delta_usd": 2.29500876,
+  "unsettled_reservations_usd": 0,
+  "recorded_batches": [
+    "ambiguity-development-llm",
+    "ambiguity-development-regression",
+    "calibration-v1",
+    "calibration-v2",
+    "calibration-v3",
+    "candidate-v3-contrast-hybrid",
+    "candidate-v3-contrast-lexical",
+    "candidate-v3-critical-r2",
+    "candidate-v3-critical-r3",
+    "candidate-v3-replacement-r1",
+    "dev-capacity-v4",
+    "dev-core-v1",
+    "dev-postfix-llm-v3",
+    "dev-remaining-v2",
+    "frozen-critical-r2",
+    "frozen-regressions-hybrid",
+    "holdout-frozen-r1"
+  ]
+}

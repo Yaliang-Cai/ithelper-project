@@ -242,11 +242,11 @@
       "app/auth.py": "d2f41beba199937fa5e4f0be2f710152441f7e3d007fa070630ab4ecb108d078",
       "app/budget.py": "5b30409d8fcbfcab6b8e67d9676cca044902b8fa2b282d226978b07160cafd6d",
       "app/catalog.py": "ff0684194e53cc942e671996ee3c5f45b15d7bf08cd4a828ae52d1486561ab56",
-      "app/config.py": "d82dc3f909bd641cc3148c90b645d8b78599cd0ecfd9184dbc233782373c5cb9",
+      "app/config.py": "17252a8019da41a030c1cc3ecd1e9d8c3a75744063113b540253f5e31d4c1bca",
       "app/context.py": "b7c55fe002a356b98191328263b82ca769d0a807097a23d097e2155586967a4e",
       "app/contracts.py": "445bf724e079bc1303162b26001e24c87b0c1e8ec47cc001d35aef315e0deb53",
       "app/domain.py": "6186b7c906d9cb4951ee0c7f5612f5ed754d850905d1456d663ab02be39f08fe",
-      "app/main.py": "ecbaf443ea81870b90c8735fe7180f771594da6d7ad077c42d8d21c9c5c107d0",
+      "app/main.py": "17b5b268326fb004ebaa7f6bf0b3ed319c81f57645dafb79b41c577842ce8ea6",
       "app/prompts.py": "3563f37964d0b30d54b97da0d74dbb0f50f45053f0a7387a5d58a8f7c27b9054",
       "app/providers.py": "35c6a639bbfac3e28be40b8212b8941c156d9e284713297dbd31dda2445e37fa",
       "app/retrieval.py": "3227bbea1cedd62533c0dc8fcecd536b7fd841a1f8060d95d9cad73e0089ee40",
@@ -257,19 +257,25 @@
       "app/__init__.py": "41d1c9cdcfa1d5717a4209c6e75b5946594bedc04c14ade06dd92fabaf693b9e"
     },
     "runtime_files_changed_since_measurement": [
+      "app/config.py",
       "app/domain.py",
       "app/main.py",
       "app/tools.py"
     ],
     "current_delivery_live_measurements": 0,
-    "validation": "Formal benchmark measurements remain historical; current program regressions and fresh HTTP/browser smoke are separate evidence.",
+    "validation": "Formal benchmarks remain historical; completed65743f3 live smoke is pre-hardening evidence. Current runtime has offline program/HTTP/browser validation only.",
     "integration_smoke": {
       "path": "docs/evidence/delivery-smoke.json",
       "formal_benchmark": false,
       "mode": "live_agent_real_http_browser_developer_authored_fresh_inputs",
       "model_requests": 8,
       "settled_estimate_usd": 0.025951501,
-      "matches_current_runtime": true
+      "matches_current_runtime": false,
+      "measured_runtime_revision": "65743f3",
+      "runtime_files_changed_since_smoke": [
+        "app/config.py",
+        "app/main.py"
+      ]
     }
   },
   "current_project_ledger": {
@@ -279,7 +285,13 @@
     "limit_usd": 3.0,
     "requests": 759
   },
-  "cost_scope": "ledger is historical Task5 evaluation-end snapshot; current_project_ledger includes later integration; roles and Task5 deltas only include saved evaluation calls",
+  "subsequent_evaluation_costs": {
+    "calls": 0,
+    "settled_estimate_usd": 0.0,
+    "unsettled_reservations_usd": 0.0
+  },
+  "task5_cost_snapshot": "evals/task5-cost-snapshot.json",
+  "cost_scope": "ledger and Task5 deltas use immutable Task5-end snapshot; roles include all collected evaluations; subsequent_evaluation_costs separately reports later evaluation calls; current_project_ledger also includes integration",
   "harness_error_measurements": 0,
   "stale_judgments": [
     {

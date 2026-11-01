@@ -1,6 +1,6 @@
 # 实现状态与运行证据
 
-2026-11-02 本地集成交付。四份设计文件保留目标与理由，实际行为、偏差与证据以本文件、[交付记录](delivery-evidence.md)、[实测报告](evaluation-report.md)为准。当前交付尚待整体分支复核，不声称最终审查完成。
+2026-11-02 本地集成交付。四份设计文件保留目标与理由，实际行为、偏差与证据以本文件、[交付记录](delivery-evidence.md)、[实测报告](evaluation-report.md)为准。2026-11-02整体分支审查记录2项Important与2项Minor；本次针对四项完成修复及下述离线验证，修复复核结论由控制方另记，本文不将修复实施等同于审查批准。
 
 ## 当前实现
 
@@ -12,9 +12,9 @@ Settings/供应商适配/费用账本、SQLite模拟业务、认证/CSRF、严�
 
 ## 验证与费用
 
-- 最终程序套件203 passed in23.33s，无warning；API不确定性、闲置到期显示、重置费用边界均先复现失败。
+- 最终边界修复程序套件209 passed in23.66s，无warning；此前65743f3为203 passed in23.33s。API不确定性、闲置到期显示、重置费用边界均先复现失败。
 - scripted external model + real Agent/HTTP/browser14checks通过，零付费；受控时钟真实UI另3checks通过。
-- 真实DeepSeek HTTP/browser新输入smoke：2用户轮、2完成运行、8模型请求、5工具、1实际模拟解锁、0事件错误、最终resolved；页面重载和真实进程重启状态不变。首个驱动时序错误在既有聊天恢复，未重发/重复执行。[完整证据](delivery-evidence.md)。
+- 真实DeepSeek HTTP/browser新输入smoke（65743f3，最终边界修复前）：2用户轮、2完成运行、8模型请求、5工具、1实际模拟解锁、0事件错误、最终resolved；页面重载状态不变。最终边界修复后仅做离线HTTP/browser与重启检查，已有状态/账本不变，无新模型调用，原smoke字节/哈希不改写。首个驱动时序错误在既有聊天恢复，未重发/重复执行。[完整证据](delivery-evidence.md)。
 - 安装和pip check通过。dev可选httpx2 2.16.0解决Starlette1.10弃用warning；运行时httpx、FastAPI/Starlette未因此升级。浏览器/文档依赖与最小运行分开。
 - 原累计USD3账本固定runtime/usage.sqlite。Task5结束USD2.608177868/751请求/0预留；smoke增量USD0.025951501/8请求；之后USD2.634129369/759请求/0预留，余USD0.365870631。重置/评测独立世界/重启不清空迁移费用；估算非供应商账单。
 
@@ -28,6 +28,6 @@ Task5自身656请求/USD2.295008760与历史结束快照分开保留。生成器
 
 ## 保留限制
 
-模型仍有协议、调用上限、上下文容量和语言误解；Schema/执行守卫不能消除错误措辞。原审批矛盾、容量失败、H01澄清顺序、历史重复交接、模拟器/grader误判保留。专门歧义守卫依赖模型识别，小样本语义阈值不是证明。实际页面出现字面反斜杠n和英文目标标题，原文安全保留。企业数据/反馈合成，无真实专家联络、个人跨聊天记忆、完整传播仿真、专家接续、真实企业API。
+模型仍有协议、调用上限、上下文容量和语言误解；Schema/执行守卫不能消除错误措辞。原审批矛盾、容量失败、H01澄清顺序、历史重复交接、模拟器/grader误判保留。本次修复统一所有真实调用入口的canonical ledger及connectivity显式项目.env路径，并在路由前限制HTTP Host为127.0.0.1/localhost；匹配的任意Host+Origin不能绕过。Task5费用截止快照固定，后来评测另列。专门歧义守卫依赖模型识别，小样本语义阈值不是证明。实际页面出现字面反斜杠n和英文目标标题，原文安全保留。企业数据/反馈合成，无真实专家联络、个人跨聊天记忆、完整传播仿真、专家接续、真实企业API。
 
 七项工程裁定与错误代价见[决策记录](engineering-decisions.md)。原题逐项映射、模式与截图见[交付记录](delivery-evidence.md)。本次服务URL/PID/日志见[evidence/restart.json](evidence/restart.json)，PID随启动变化。源码archive为runtime/helpdesk-submission.zip，来自tracked HEAD，最终审查有改动后需要重新生成。

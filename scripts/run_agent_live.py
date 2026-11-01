@@ -14,7 +14,7 @@ sys.path.insert(0,str(ROOT))
 
 from app.agent import Agent
 from app.budget import BudgetLedger
-from app.config import Settings
+from app.config import Settings, PROJECT_LEDGER
 from app.domain import Domain,redact
 from app.providers import DeepSeekClient,EmbeddingClient
 from app.retrieval import Retrieval
@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--followups',action='store_true',help='Also exercise current-chat feedback with ordinary scripted employee messages.')
     args=parser.parse_args()
     settings=Settings.load(ROOT/'.env')
-    ledger=BudgetLedger(ROOT/'runtime'/'usage.sqlite',limit_usd=settings.llm_budget_usd)
+    ledger=BudgetLedger(PROJECT_LEDGER,limit_usd=settings.llm_budget_usd)
     stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     output=ROOT/'runtime'/'live'/('task3-'+stamp)
     output.mkdir(parents=True)

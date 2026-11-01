@@ -70,7 +70,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">实测评估报告</h1>
 <p>本报告由 <code>python -m evals.report</code> 汇总所有保留版本。程序事实优先；AI 语义评分仍是暂定证据，不等于真人、外部独立评审或安全证明。没有挑选最好一次，也没有把已完成的一轮等同于目标解决。</p>
 <p>候选冻结提交：<code>630e58635221932294a889607b6605327b6ad739</code>；冻结时间：<code>2026-11-01T20:47:08.097569+00:00</code>。解释阶段上限为10,000、决策阶段12,000保守UTF-8字节；每事件仍最多10次模型、12次工具、120秒。全部模型角色请求官方 <code>deepseek-flash</code>，thinking disabled；返回模型字段和逐进程源码哈希在原始manifest/call记录中。供应商别名不构成确定checkpoint。</p>
-<p>这是最新<strong>已实测</strong>配置。审查后当前交付的运行时文件另有变化：app/domain.py, app/main.py, app/tools.py；本轮只做程序回归，没有新的真实模型验证，不能把以下旧测量称为当前交付代码成绩。当前源码哈希在metrics.json，Task6负责最终live smoke。</p>
+<p>这是最新正式基准<strong>已实测</strong>配置。当前交付运行时另有变化：app/config.py, app/domain.py, app/main.py, app/tools.py。另已完成真实HTTP/browser集成smoke，测量的是最终边界修复前的65743f3运行时；其原始字节与哈希保留。最终修复后只做离线程序/HTTP/browser验证，未重复付费模型检查，不把此前smoke或以下基准重新标为当前代码成绩。当前源码哈希及版本匹配在metrics.json，详见<a href="delivery-evidence.html">集成与修复证据</a>。</p>
 <h2 id="section-2">覆盖与版本</h2>
 <p>覆盖30个设计槽位中的 30 个；保存并测量 31 个具体变体、共 63 次场景运行。H01用于通用保护修复后移入开发；原文件、oracle和失败结果不变，第二次冻结未使用保留集，第三次冻结后新增实质变体H01b替代。独立业务数据库；共用原项目 <code>runtime/usage.sqlite</code>。D01–D20原始事实和oracle未改；原H01–H10在第一次冻结后生成封存。此前未使用的草案保留在build_cases中，不属于保留集。来源为合成源事实、政策和设计，不由Agent/检索输出反推标签。</p>
 <p>开发初测、冻结后的保留测试及重复测量分开。以下数字不是同一最终版本的30例成功率。</p>
@@ -665,7 +665,8 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>重复测量不是新增业务案例；跨版本测量不能估计同版本稳定性。最新版本未达到三次的项目属于未完成计划，不视为通过。</p>
 <h2 id="section-8">费用与时间</h2>
 <p>Task5结束时历史快照：累计保守估算已结算 USD 2.608177868；未结预留 USD 0.000000000；累计请求 751；总上限始终USD3。Task5前为USD 0.313169108/95请求；仅归属已保存评测调用的Task5增量估算USD 2.295008760/656请求。按供应商返回token数、峰值cache-miss输入USD0.30/M和输出USD1.20/M估算，非供应商实际账单；没有清零或迁移账本。</p>
-<p>生成报告时当前项目账本另为USD 2.634129369/759请求，未结USD 0.000000000；包括后续集成调用，不归入上述Task5测量。当前交付smoke另见<a href="delivery-evidence.html">集成交付记录</a>。</p>
+<p>生成报告时当前项目账本另为USD 2.634129369/759请求，未结USD 0.000000000；包括后续集成调用，不归入上述Task5测量。65743f3边界修复前smoke与当前离线验证另见<a href="delivery-evidence.html">集成交付记录</a>。</p>
+<p>Task5截止值固定在evals/task5-cost-snapshot.json；后续新增评测另计 0 请求/USD 0.000000000，未结USD 0.000000000。角色表可包含后续评测，不能回填历史Task5截止值。</p>
 <p>预算没有耗尽。Task5结束时余额 USD 0.391822132 留给后续集成/演示；生成时当前余额另为USD 0.365870631。同版本重复覆盖不足属于有界评估与迭代取舍，不能说成没有余额。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>

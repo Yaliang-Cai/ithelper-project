@@ -17,7 +17,7 @@ from datetime import datetime,timezone
 
 from app.agent import Agent
 from app.budget import BudgetLedger, BudgetExceeded
-from app.config import Settings
+from app.config import Settings, PROJECT_ROOT, PROJECT_LEDGER
 from app.domain import Domain,DomainError,redact
 from app.providers import DeepSeekClient,EmbeddingClient
 from app.retrieval import Retrieval
@@ -28,8 +28,8 @@ from app.worker import Worker
 from evals.simulators import rule_reply,llm_reply,InvalidSimulation
 from evals.grader import grade,calibration_packets
 
-ROOT=Path(__file__).resolve().parents[1]
-LEDGER_PATH=ROOT/'runtime'/'usage.sqlite'
+ROOT=PROJECT_ROOT
+LEDGER_PATH=PROJECT_LEDGER
 VERSION='eval-v1'
 ASSERTION_VERSION='durable-handoff-v3'
 

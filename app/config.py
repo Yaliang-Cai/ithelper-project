@@ -5,6 +5,9 @@ import math
 import os
 from dotenv import dotenv_values
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_LEDGER = PROJECT_ROOT / 'runtime' / 'usage.sqlite'
+
 @dataclass(frozen=True)
 class Settings:
     deepseek_api_key: str = field(default='', repr=False)

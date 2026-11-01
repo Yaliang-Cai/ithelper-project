@@ -35,7 +35,7 @@ def env(tmp_path):
     d = Domain(Store(tmp_path / 'world.sqlite').initialize())
     provider = Scripted()
     app = create_app(Settings(runtime_dir=tmp_path, deepseek_api_key='never-expose-key'), domain=d, provider=provider, provider_mode='scripted_agent', start_worker=False)
-    with TestClient(app) as client:
+    with TestClient(app, base_url='http://localhost') as client:
         yield client, d, app, provider
 
 
@@ -67,6 +67,36 @@ def test_owned_snapshot_exposes_only_safe_uncertainty_references(env):
     assert 'observations' not in result and 'candidate_batches' not in result
 
 
+def test_matching_attacker_host_and_origin_reject_reads_auth_and_queued_writes(env):
+    c, d, app, provider = env
+    h = login(c, 'dev.debug'); cid = chat(c, h)
+    with d.store.read() as db:
+        before = [db.execute('SELECT COUNT(*) FROM ' + table).fetchone()[0] for table in ('sessions', 'conversations', 'events')]
+    malicious = {**h, 'Host': 'rebind.attacker.example:8000', 'Origin': 'http://rebind.attacker.example:8000', 'Sec-Fetch-Site': 'same-origin'}
+    responses = [
+        c.get('/me', headers=malicious), c.get('/debug/runs', headers=malicious),
+        c.get('/health', headers=malicious), c.get('/', headers=malicious),
+        c.post('/conversations', json={}, headers=malicious),
+        c.post(f'/conversations/{cid}/messages', json={'content': 'billed work', 'idempotency_key': 'attack'}, headers=malicious),
+        c.post('/auth/login', json={'username': 'dev.debug', 'password': 'DemoPass123!'}, headers=malicious),
+    ]
+    assert [r.status_code for r in responses] == [400] * len(responses)
+    with d.store.read() as db:
+        assert before == [db.execute('SELECT COUNT(*) FROM ' + table).fetchone()[0] for table in ('sessions', 'conversations', 'events')]
+    assert provider.calls == 0
+
+
+@pytest.mark.parametrize('host', ['localhost', '127.0.0.1'])
+def test_loopback_hosts_allow_login_reads_and_csrf_writes(env, host):
+    c, d, app, provider = env
+    with TestClient(app, base_url='http://' + host + ':8000') as local:
+        headers = login(local)
+        cid = chat(local, headers)
+        assert local.get('/conversations/' + cid).status_code == 200
+        assert local.post('/conversations', json={}, headers={**headers, 'Origin': 'http://' + host + ':8000'}).status_code == 201
+        assert local.post('/conversations', json={}, headers={**headers, 'Origin': 'http://other.example'}).status_code == 403
+
+
 def test_session_rotation_csrf_logout_and_secret_static_scope(env):
     c, d, app, provider = env
     assert c.get('/me').status_code == 401
@@ -75,7 +105,7 @@ def test_session_rotation_csrf_logout_and_secret_static_scope(env):
     old = c.cookies.get('helpdesk_session')
     assert 'HttpOnly' in c.post('/auth/login', json={'username': 'alice.sales', 'password': 'DemoPass123!'}).headers['set-cookie']
     assert old != c.cookies.get('helpdesk_session')
-    with TestClient(app) as other:
+    with TestClient(app, base_url='http://localhost') as other:
         other.cookies.set('helpdesk_session', old)
         assert other.get('/me').status_code == 401
     h = {'X-CSRF-Token': c.get('/me').json()['csrf_token']}
@@ -199,7 +229,7 @@ def test_http_queue_failure_returns_safe_unavailable_and_rolls_back(env):
     h = login(c); cid = chat(c, h)
     with d.store.write() as connection:
         connection.execute("CREATE TRIGGER queue_down BEFORE INSERT ON events BEGIN SELECT RAISE(ABORT, 'never-expose-key storage detail'); END")
-    with TestClient(app, raise_server_exceptions=False) as http:
+    with TestClient(app, base_url='http://localhost', raise_server_exceptions=False) as http:
         http.cookies.update(c.cookies)
         result = http.post(f'/conversations/{cid}/messages', json={'content': 'help', 'idempotency_key': 'failure'}, headers=h)
     assert result.status_code == 503
@@ -211,7 +241,7 @@ def test_http_queue_failure_returns_safe_unavailable_and_rolls_back(env):
 
 def test_secure_cookie_origin_validation_strict_body_and_safe_snapshot(env):
     c, d, app, provider = env
-    with TestClient(app, base_url='https://testserver') as https:
+    with TestClient(app, base_url='https://localhost') as https:
         r = https.post('/auth/login', json={'username': 'alice.sales', 'password': 'DemoPass123!'})
         assert 'Secure' in r.headers['set-cookie'] and 'SameSite=strict' in r.headers['set-cookie']
     assert c.post('/auth/login', json={'username': 'alice.sales', 'password': 'DemoPass123!'}, headers={'Origin': 'https://attacker.example'}).status_code == 403
@@ -268,7 +298,7 @@ def test_concurrent_http_cancel_and_approve_cannot_leave_reusable_authority(env)
     issue = d.create_issue('alice.sales', cid, 'Production', ['snowflake'], 'precise_access', 'snowflake.prod.analytics')
     tools = ToolExecutor(d)
     approval = tools.call('request_approval', dict(issue_id=issue['id'], resource_id='snowflake.prod.analytics', permission='read', reason='race', evidence_refs=[]), 'alice.sales', cid)['data']['approval']
-    with TestClient(app) as pat:
+    with TestClient(app, base_url='http://localhost') as pat:
         ph = login(pat, 'pat.approver')
         barrier = threading.Barrier(2)
         def decide(client, headers, decision):

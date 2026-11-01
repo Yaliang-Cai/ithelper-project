@@ -7,6 +7,8 @@ from pathlib import Path
 from evals.runner import ROOT,LEDGER_PATH,save,hard_assertions,ASSERTION_VERSION
 from app.budget import BudgetLedger
 
+TASK5_SNAPSHOT = Path(__file__).with_name('task5-cost-snapshot.json')
+
 START_SPEND=0.313169108
 START_REQUESTS=95
 CRITICAL=['D04','D13','D14','D19','H01b','H06','H07','H10']
@@ -16,6 +18,17 @@ def measurement_costs(roles):
     return {'calls':sum(v['calls'] for v in roles.values()),
             'settled_estimate_usd':round(sum(v['estimated_spend_usd'] for v in roles.values()),9),
             'unsettled_reservations_usd':round(sum(v['uncertain_reserved_usd'] for v in roles.values()),9)}
+
+def cost_scopes(roles):
+    """Historical cutoff is immutable; later collected batches cannot rewrite it."""
+    task5=json.loads(TASK5_SNAPSHOT.read_text(encoding='utf-8'))
+    total=measurement_costs(roles)
+    later={'calls':total['calls']-task5['request_delta'],
+           'settled_estimate_usd':round(total['settled_estimate_usd']-task5['settled_estimate_delta_usd'],9),
+           'unsettled_reservations_usd':round(total['unsettled_reservations_usd']-task5['unsettled_reservations_usd'],9)}
+    if any(v<0 for v in later.values()):
+        raise ValueError('Collected evaluations omit historical Task5 costs; restore saved evidence before regeneration')
+    return {'task5':task5,'subsequent_evaluations':later}
 
 def harness_failure_record(folder,entry,summary,config,frozen,profiles):
     cid=entry['case'];path=folder/(cid+'-checkpoint.json')
@@ -115,31 +128,34 @@ def main():
     for r in formal:latest[r['case_id']]=r;first.setdefault(r['case_id'],r)
     final=[r for r in formal if r['frozen_profile']];baseline=[r for r in first.values() if r['case_id'].startswith('D')]
     current_ledger=BudgetLedger(LEDGER_PATH).report()
-    measured_cost=measurement_costs(roles)
-    # Historical evaluation snapshot is reconstructed from its attributed calls.
-    # Later HTTP/browser integration requests belong only to current_ledger.
-    ledger={'accounting_overrun':False,'spent_usd':round(START_SPEND+measured_cost['settled_estimate_usd'],9),'reserved_usd':measured_cost['unsettled_reservations_usd'],'limit_usd':3.0,'requests':START_REQUESTS+measured_cost['calls']}
+    scopes=cost_scopes(roles)
+    measured_cost={'calls':scopes['task5']['request_delta'],'settled_estimate_usd':scopes['task5']['settled_estimate_delta_usd']}
+    ledger=scopes['task5']['end_ledger']
     repeat={c:{'all_versions':sum(r['case_id']==c for r in formal),'frozen_profile':sum(r['case_id']==c for r in final)} for c in CRITICAL}
     delivered_hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in ROOT.glob('app/*.py')}
-    delivery={'latest_measured_freeze':'freeze-v3.json','latest_measured_git_head':frozen['git_head'],'delivered_runtime_hashes':delivered_hashes,'runtime_files_changed_since_measurement':[p for p,h in delivered_hashes.items() if frozen['hashes'].get(p)!=h],'current_delivery_live_measurements':0,'validation':'Formal benchmark measurements remain historical; current program regressions and fresh HTTP/browser smoke are separate evidence.'}
+    delivery={'latest_measured_freeze':'freeze-v3.json','latest_measured_git_head':frozen['git_head'],'delivered_runtime_hashes':delivered_hashes,'runtime_files_changed_since_measurement':[p for p,h in delivered_hashes.items() if frozen['hashes'].get(p)!=h],'current_delivery_live_measurements':0,'validation':'Formal benchmarks remain historical; completed65743f3 live smoke is pre-hardening evidence. Current runtime has offline program/HTTP/browser validation only.'}
     smoke_path=ROOT/'docs/evidence/delivery-smoke.json'
     if smoke_path.exists():
         smoke=json.loads(smoke_path.read_text(encoding='utf-8'))
         delivery['integration_smoke']={'path':'docs/evidence/delivery-smoke.json','formal_benchmark':False,'mode':smoke['mode'],'model_requests':smoke['request_delta'],'settled_estimate_usd':smoke['settled_estimate_delta_usd'],'matches_current_runtime':all((ROOT/p).exists() and hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in smoke['runtime_hashes'].items())}
+        delivery['integration_smoke']['measured_runtime_revision']='65743f3'
+        delivery['integration_smoke']['runtime_files_changed_since_smoke']=[p for p,h in smoke['runtime_hashes'].items() if not (ROOT/p).exists() or hashlib.sha256((ROOT/p).read_bytes()).hexdigest()!=h]
     manifest_by_batch={m['batch']:m['process_start_manifest'] for m in json.loads((ROOT/'evals/public/manifests.json').read_text(encoding='utf-8'))['runs']}
     delivery['current_delivery_live_measurements']=sum(all(manifest_by_batch.get(r['batch'],{}).get('hashes',{}).get(p)==h for p,h in delivered_hashes.items()) for r in rows)
     summary={'ledger':ledger,'task5_settled_estimate_usd':ledger['spent_usd']-START_SPEND,'task5_request_delta':ledger['requests']-START_REQUESTS,'roles':roles,'coverage':sorted(first),'design_slots_covered':len({c[:3] for c in first}),'original_H01_moved_to_development':True,'replacement_measured':'H01b' in first,'initial_development_mixed_versions':metrics(baseline),'frozen_profile_all_measurements':metrics(final),'all_formal_versions_descriptive_only':metrics(formal),'critical_repeats':repeat,'calibration':[{'batch':c['batch'],'matched':c['matched'],'total':c['total']} for c in calibration],
              'frozen_missing_cases':sorted(set(first)-{r['case_id'] for r in final}),'business_program_proxies_latest_candidate':business_metrics(final),'grade_scores_provisional':True,'no_single_final_30_case_success_rate':True}
     summary['delivery_vs_measurement']=delivery
     summary['current_project_ledger']=current_ledger
-    summary['cost_scope']='ledger is historical Task5 evaluation-end snapshot; current_project_ledger includes later integration; roles and Task5 deltas only include saved evaluation calls'
+    summary['subsequent_evaluation_costs']=scopes['subsequent_evaluations']
+    summary['task5_cost_snapshot']='evals/task5-cost-snapshot.json'
+    summary['cost_scope']='ledger and Task5 deltas use immutable Task5-end snapshot; roles include all collected evaluations; subsequent_evaluation_costs separately reports later evaluation calls; current_project_ledger also includes integration'
     summary['harness_error_measurements']=sum(r.get('measurement_status')=='harness_error' for r in rows)
     summary['stale_judgments']=[{'batch':r['batch'],'case_id':r['case_id']} for r in rows if r['grader_stale']]
     save(ROOT/'evals/public/metrics.json',summary);save(ROOT/'evals/public/runs.json',rows);save(ROOT/'evals/public/calibration.json',calibration)
     retrieval=json.loads((ROOT/'evals/results/retrieval-v1/retrieval.json').read_text(encoding='utf-8'));save(ROOT/'evals/public/retrieval.json',retrieval)
     lines=['# 实测评估报告','', '本报告由 `python -m evals.report` 汇总所有保留版本。程序事实优先；AI 语义评分仍是暂定证据，不等于真人、外部独立评审或安全证明。没有挑选最好一次，也没有把已完成的一轮等同于目标解决。','',
            f"候选冻结提交：`{frozen['git_head']}`；冻结时间：`{frozen['timestamp']}`。解释阶段上限为10,000、决策阶段12,000保守UTF-8字节；每事件仍最多10次模型、12次工具、120秒。全部模型角色请求官方 `deepseek-flash`，thinking disabled；返回模型字段和逐进程源码哈希在原始manifest/call记录中。供应商别名不构成确定checkpoint。",'',
-           f"这是最新**已实测**配置。审查后当前交付的运行时文件另有变化：{', '.join(delivery['runtime_files_changed_since_measurement'])}；本轮只做程序回归，没有新的真实模型验证，不能把以下旧测量称为当前交付代码成绩。当前源码哈希在metrics.json，Task6负责最终live smoke。",'',
+           f"这是最新正式基准**已实测**配置。当前交付运行时另有变化：{', '.join(delivery['runtime_files_changed_since_measurement'])}。另已完成真实HTTP/browser集成smoke，测量的是最终边界修复前的65743f3运行时；其原始字节与哈希保留。最终修复后只做离线程序/HTTP/browser验证，未重复付费模型检查，不把此前smoke或以下基准重新标为当前代码成绩。当前源码哈希及版本匹配在metrics.json，详见[集成与修复证据](delivery-evidence.md)。",'',
            '## 覆盖与版本','',f"覆盖30个设计槽位中的 {len({c[:3] for c in first})} 个；保存并测量 {len(first)} 个具体变体、共 {len(formal)} 次场景运行。H01用于通用保护修复后移入开发；原文件、oracle和失败结果不变，第二次冻结未使用保留集，第三次冻结后新增实质变体H01b替代。独立业务数据库；共用原项目 `runtime/usage.sqlite`。D01–D20原始事实和oracle未改；原H01–H10在第一次冻结后生成封存。此前未使用的草案保留在build_cases中，不属于保留集。来源为合成源事实、政策和设计，不由Agent/检索输出反推标签。",'',
            '开发初测、冻结后的保留测试及重复测量分开。以下数字不是同一最终版本的30例成功率。','',
            '| 分组 | 测量次数 | 程序目标满足 | 硬检查失败测量 | Agent事件错误 | 评分缺失/无效 |','|---|---:|---:|---:|---:|---:|']
@@ -187,7 +203,8 @@ def main():
             '## 重复风险测量','', '| 案例 | 全版本次数 | 冻结配置次数 |','|---|---:|---:|']
     for c,v in repeat.items():lines.append(f"| {c} | {v['all_versions']} | {v['frozen_profile']} |")
     lines+=['','重复测量不是新增业务案例；跨版本测量不能估计同版本稳定性。最新版本未达到三次的项目属于未完成计划，不视为通过。','', '## 费用与时间','',f"Task5结束时历史快照：累计保守估算已结算 USD {ledger['spent_usd']:.9f}；未结预留 USD {ledger['reserved_usd']:.9f}；累计请求 {ledger['requests']}；总上限始终USD3。Task5前为USD {START_SPEND:.9f}/{START_REQUESTS}请求；仅归属已保存评测调用的Task5增量估算USD {measured_cost['settled_estimate_usd']:.9f}/{measured_cost['calls']}请求。按供应商返回token数、峰值cache-miss输入USD0.30/M和输出USD1.20/M估算，非供应商实际账单；没有清零或迁移账本。",'',
-            f"生成报告时当前项目账本另为USD {current_ledger['spent_usd']:.9f}/{current_ledger['requests']}请求，未结USD {current_ledger['reserved_usd']:.9f}；包括后续集成调用，不归入上述Task5测量。当前交付smoke另见[集成交付记录](delivery-evidence.md)。",'',
+            f"生成报告时当前项目账本另为USD {current_ledger['spent_usd']:.9f}/{current_ledger['requests']}请求，未结USD {current_ledger['reserved_usd']:.9f}；包括后续集成调用，不归入上述Task5测量。65743f3边界修复前smoke与当前离线验证另见[集成交付记录](delivery-evidence.md)。",'',
+            f"Task5截止值固定在evals/task5-cost-snapshot.json；后续新增评测另计 {scopes['subsequent_evaluations']['calls']} 请求/USD {scopes['subsequent_evaluations']['settled_estimate_usd']:.9f}，未结USD {scopes['subsequent_evaluations']['unsettled_reservations_usd']:.9f}。角色表可包含后续评测，不能回填历史Task5截止值。",'',
             f"预算没有耗尽。Task5结束时余额 USD {ledger['limit_usd']-ledger['spent_usd']-ledger['reserved_usd']:.9f} 留给后续集成/演示；生成时当前余额另为USD {current_ledger['limit_usd']-current_ledger['spent_usd']-current_ledger['reserved_usd']:.9f}。同版本重复覆盖不足属于有界评估与迭代取舍，不能说成没有余额。",'',
             '| 角色purpose | 请求 | 输入tokens | 输出tokens | 保守估算USD | 未结USD |','|---|---:|---:|---:|---:|---:|']
     for role,v in roles.items():lines.append(f"| {role} | {v['calls']} | {v['prompt_tokens']} | {v['completion_tokens']} | {v['estimated_spend_usd']:.9f} | {v['uncertain_reserved_usd']:.9f} |")

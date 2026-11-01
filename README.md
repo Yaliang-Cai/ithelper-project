@@ -17,7 +17,7 @@ if (-not (Test-Path -LiteralPath .env)) { Copy-Item .env.example .env }
 powershell -ExecutionPolicy Bypass -File scripts/run_local.ps1
 ```
 
-打开 <http://127.0.0.1:8000/>。等价启动命令：
+打开 <http://127.0.0.1:8000/>。HTTP Host仅允许127.0.0.1和localhost，其他主机名在读取、登录、写入前一律拒绝；没有通配默认值。等价启动命令：
 
 ```powershell
 .venv/Scripts/python.exe -m uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
@@ -44,7 +44,7 @@ powershell -ExecutionPolicy Bypass -File scripts/run_local.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run_local.ps1
 ```
 
-重置会清空模拟业务聊天、会话、审批、确认和操作并重新种子；不会清空/迁移 `runtime/usage.sqlite`，不会恢复已用额度。业务库是 `runtime/business.sqlite`，检索缓存是 `runtime/retrieval.sqlite`；所有真实模型进程固定共享仓库内唯一的累计费用账本，与评测世界数据库分开。
+重置会清空模拟业务聊天、会话、审批、确认和操作并重新种子；不会清空/迁移 `runtime/usage.sqlite`，不会恢复已用额度。业务库是 `runtime/business.sqlite`，检索缓存是 `runtime/retrieval.sqlite`；所有真实模型入口（包括connectivity探针）通过app/config.py的固定路径共享仓库内唯一的累计费用账本，与评测世界数据库分开。
 
 ## 架构与边界
 
@@ -78,9 +78,9 @@ python scripts/verify_ui_states.py
 python docs/_tools/render_docs.py
 ```
 
-交付检查：**203 个程序测试通过，无警告**；脚本模型 + 实际 Agent/HTTP/浏览器 14 项检查通过；受控时钟另验证到期控件消失与不确定性显示。真实模型 HTTP/浏览器 smoke 用全新输入完成 2 轮、1 次实际模拟解锁、2 个完成运行、0 个事件错误；8 次 DeepSeek 请求约 USD 0.025951501。重启后 4 条消息、2 次运行、1 次操作及账本摘要完全一致。[公开交付证据](docs/delivery-evidence.md)包含实际消息、状态、截图和测试模式。
+最终确定性修复检查：**209 个程序测试通过，无警告**；脚本模型 + 实际 Agent/HTTP/浏览器 14 项检查通过；受控时钟另验证到期控件消失与不确定性显示。真实模型 HTTP/浏览器 smoke 在最终边界修复前的 `65743f3` 运行时，用全新输入完成 2 轮、1 次实际模拟解锁、2 个完成运行、0 个事件错误；8 次 DeepSeek 请求约 USD 0.025951501。最终修复后重新启动并离线检查，4 条消息、2 次运行、1 次操作及账本摘要完全一致；没有新模型调用，不将旧 smoke 重标为最终代码的实测。[公开交付证据](docs/delivery-evidence.md)包含实际消息、状态、截图和测试模式。
 
-正式评测与这次 smoke 分开：历史共 66 次真实测量，覆盖 30 个设计槽位，分属多个实现版本。最新**已测**候选 `630e586` 的 17 次/10 案例中，16 次程序模拟有效、12 次满足目标、4 个 Agent 事件错误；1 次运行有 2 个缺失交接标记，8 份历史判断过期/有争议。只有 H01b 有 3 次同候选测量。当前交付之后的确定性修复没有被重新包装成“最终 30 案例通过”。同模型 grader v4 仅有程序测试，5/6 实测校准属于 v3。[完整实测报告](docs/evaluation-report.md)、[原始可见失败](evals/public/failure-examples.md)、[脱敏机器证据](evals/public)均保留失败和版本。
+正式评测与这次 smoke 分开：历史共 66 次真实测量，覆盖 30 个设计槽位，分属多个实现版本。最新**已测**候选 `630e586` 的 17 次/10 案例中，16 次程序模拟有效、12 次满足目标、4 个 Agent 事件错误；1 次运行有 2 个缺失交接标记，8 份历史判断过期/有争议。只有 H01b 有 3 次同候选测量。当前交付的确定性修复没有被重新包装成“最终 30 案例通过”。同模型 grader v4 仅有程序测试，5/6 实测校准属于 v3。[完整实测报告](docs/evaluation-report.md)、[原始可见失败](evals/public/failure-examples.md)、[脱敏机器证据](evals/public)均保留失败和版本。
 
 检索小样本：35 条有答案查询，lexical 命中 26/35，hybrid 35/35；5 条无答案均正确返回空。真实 D01/D05 两模式各 2/2 程序目标通过，样本太小，不能推出普遍优势；没有做两阶段对单阶段消融或真人专家盲评。
 
@@ -88,6 +88,6 @@ python docs/_tools/render_docs.py
 
 ## 局限与后续
 
-模型可能误解范围、生成错误措辞或非法协议；严格状态守卫不能证明自然语言语义。短事件限额和必需上下文容量可能提前中断，失败时保持已发生动作和进度。规则用户覆盖有限，同模型评分存在共享偏差，合成小样本不代表企业分布。正式测量并未覆盖当前交付的全部 30 案例；这次 smoke 只验证一个正常账号路径。界面保留原文，实际样本出现字面 `\n` 以及英文目标标题，未作自动改写。跨聊天个人记忆、完整传播仿真、专家接续、真实企业 API/SSO/ITSM 尚未实现。
+模型可能误解范围、生成错误措辞或非法协议；严格状态守卫不能证明自然语言语义。短事件限额和必需上下文容量可能提前中断，失败时保持已发生动作和进度。规则用户覆盖有限，同模型评分存在共享偏差，合成小样本不代表企业分布。正式测量并未覆盖当前交付的全部 30 案例；`65743f3` 的 smoke 只验证一个正常账号路径；当前边界修复仅做程序/HTTP/浏览器离线验证。界面保留原文，实际样本出现字面 `\n` 以及英文目标标题，未作自动改写。跨聊天个人记忆、完整传播仿真、专家接续、真实企业 API/SSO/ITSM 尚未实现。
 
 更多时间优先提高语义/协议稳定性，补齐同一最终版本的失败复测和重复覆盖，再引入独立专家标注；之后增加 SSO、外部幂等/对账和受认证专家回流。完整理由和扩展条件保留在[设计入口](docs/index.html)、[系统设计](docs/01-system-design.md)、[评估设计](docs/02-evaluation.md)、[答辩与扩展](docs/03-defense-and-extensions.md)、[实现状态](docs/implementation-status.md)。原题逐条映射见[交付核对](docs/delivery-evidence.md)。

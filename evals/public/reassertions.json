@@ -1,6 +1,6 @@
 {
   "version": "durable-handoff-v3",
-  "evaluator_sha256": "ba5a40a8f080211c2d37b4481075dd5d51e0df9f3a7cce6ba90d9a381e8d10f0",
+  "evaluator_sha256": "a210b17ba5d4d29a09738e26a4d546f6ff3156a05b00a52c12906eec63452999",
   "method": "Offline deterministic checks on unchanged saved states and original oracles. No new Agent or grader calls. Affected prior AI judgments are stale, not rescored.",
   "rows": [
     {

@@ -1,7 +1,7 @@
 """Run bounded, metered connectivity probes; write only safe metadata."""
 import json
 from datetime import datetime, timezone
-from app.config import Settings
+from app.config import Settings, PROJECT_ROOT, PROJECT_LEDGER
 from app.budget import BudgetLedger, BudgetExceeded
 from app.providers import DeepSeekClient, EmbeddingClient, ProviderError
 
@@ -24,11 +24,18 @@ def probe_json(llm):
 
 
 def main():
-    settings = Settings.load()
-    settings.runtime_dir.mkdir(parents=True,exist_ok=True)
-    ledger = BudgetLedger(settings.runtime_dir/'usage.sqlite',settings.llm_budget_usd)
-    llm = DeepSeekClient(settings,ledger)
+    settings = Settings.load(PROJECT_ROOT / '.env')
+    output_dir = PROJECT_ROOT / settings.runtime_dir
+    output_dir.mkdir(parents=True,exist_ok=True)
+    ledger = BudgetLedger(PROJECT_LEDGER,settings.llm_budget_usd)
     result = {'checked_at':datetime.now(timezone.utc).isoformat(),'deepseek_model':settings.deepseek_model,'embedding_model':settings.embedding_model,'deepseek_key':'configured' if settings.deepseek_api_key else 'missing','embedding_key':'configured' if settings.siliconflow_api_key else 'missing'}
+    budget = ledger.report()
+    if budget['accounting_overrun'] or budget['spent_usd'] + budget['reserved_usd'] >= budget['limit_usd']:
+        result.update(authentication='not_checked_budget_exhausted', json_completion_attempts=['budget_exhausted'], json_completion='budget_exhausted', native_tool_roundtrip='not_checked_budget_exhausted', embedding_probe={'status':'not_checked_budget_exhausted'}, budget=budget)
+        (output_dir/'connectivity.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+        print(json.dumps(result,indent=2))
+        return
+    llm = DeepSeekClient(settings,ledger)
     try:
         models = llm.list_models()
         result['authentication'] = 'ok'
@@ -60,7 +67,7 @@ def main():
     else:
         result['embedding_probe'] = {'status':'disabled; lexical retrieval only'}
     result['budget'] = ledger.report()
-    (settings.runtime_dir/'connectivity.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+    (output_dir/'connectivity.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result,indent=2))
 
 if __name__ == '__main__':

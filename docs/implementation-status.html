@@ -68,16 +68,16 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
 <nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html" aria-current="page">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">当前实现</a><a href="#section-3">验证与费用</a><a href="#section-4">正式评测与版本</a><a href="#section-5">保留限制</a></details></aside>
 <main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">实现状态与运行证据</h1>
-<p>2026-11-02 本地集成交付。四份设计文件保留目标与理由，实际行为、偏差与证据以本文件、<a href="delivery-evidence.html">交付记录</a>、<a href="evaluation-report.html">实测报告</a>为准。当前交付尚待整体分支复核，不声称最终审查完成。</p>
+<p>2026-11-02 本地集成交付。四份设计文件保留目标与理由，实际行为、偏差与证据以本文件、<a href="delivery-evidence.html">交付记录</a>、<a href="evaluation-report.html">实测报告</a>为准。2026-11-02整体分支审查记录2项Important与2项Minor；本次针对四项完成修复及下述离线验证，修复复核结论由控制方另记，本文不将修复实施等同于审查批准。</p>
 <h2 id="section-2">当前实现</h2>
 <p>Settings/供应商适配/费用账本、SQLite模拟业务、认证/CSRF、严格Schema、单Agent两阶段循环、上下文/混合检索、持久事件worker、员工/审批/调试页面均已实现。6演示账号、8服务、5资源、12政策、22KB、12通用历史；16业务工具，加内部refine_issue与submit_turn。启动、账号、重置/重启见<a href="../README.md">根README</a>。</p>
 <p>所有LLM角色固定官方deepseek-flash；embedding固定SiliconFlow BAAI/bge-m3。本机两家凭据已配置，Settings.load读取gitignored .env/环境，不进入模型或浏览器。embedding缺失/错误明确lexical降级，不伪造向量；其费用不归入DeepSeek账本，也不声称永久免费。</p>
 <p>每事件10模型请求、12非终结工具、120秒；整理/决策目标10,000/12,000保守UTF-8字节，不是精确token。必需上下文超容量明确停止，没有长聊天语义摘要。实际身份/范围/版本/租约/生命周期/审批/确认/验收由后端守卫；审批事件仅恢复原问题。已知多目标歧义暂停相关新自动写入；未分配反馈保留最后验证状态但all_resolved=false，页面待澄清。当前聊天持久化，不主动检索个人其他聊天。</p>
 <h2 id="section-3">验证与费用</h2>
 <ul>
-<li>最终程序套件203 passed in23.33s，无warning；API不确定性、闲置到期显示、重置费用边界均先复现失败。</li>
+<li>最终边界修复程序套件209 passed in23.66s，无warning；此前65743f3为203 passed in23.33s。API不确定性、闲置到期显示、重置费用边界均先复现失败。</li>
 <li>scripted external model + real Agent/HTTP/browser14checks通过，零付费；受控时钟真实UI另3checks通过。</li>
-<li>真实DeepSeek HTTP/browser新输入smoke：2用户轮、2完成运行、8模型请求、5工具、1实际模拟解锁、0事件错误、最终resolved；页面重载和真实进程重启状态不变。首个驱动时序错误在既有聊天恢复，未重发/重复执行。<a href="delivery-evidence.html">完整证据</a>。</li>
+<li>真实DeepSeek HTTP/browser新输入smoke（65743f3，最终边界修复前）：2用户轮、2完成运行、8模型请求、5工具、1实际模拟解锁、0事件错误、最终resolved；页面重载状态不变。最终边界修复后仅做离线HTTP/browser与重启检查，已有状态/账本不变，无新模型调用，原smoke字节/哈希不改写。首个驱动时序错误在既有聊天恢复，未重发/重复执行。<a href="delivery-evidence.html">完整证据</a>。</li>
 <li>安装和pip check通过。dev可选httpx2 2.16.0解决Starlette1.10弃用warning；运行时httpx、FastAPI/Starlette未因此升级。浏览器/文档依赖与最小运行分开。</li>
 <li>原累计USD3账本固定runtime/usage.sqlite。Task5结束USD2.608177868/751请求/0预留；smoke增量USD0.025951501/8请求；之后USD2.634129369/759请求/0预留，余USD0.365870631。重置/评测独立世界/重启不清空迁移费用；估算非供应商账单。</li>
 </ul>
@@ -86,7 +86,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <p>Task5自身656请求/USD2.295008760与历史结束快照分开保留。生成器按已归属角色调用计费，current_project_ledger另列。公开摘要在evals/public；完整原件在本机忽略的evals/results，包包含公开投影和可见失败，不含本机数据库或密钥。</p>
 <p>检索40查询：有答案35条，lexical命中26/35、hybrid35/35；无答案5/5正确空。实际hybrid38/40，另两条预过滤空不调embedding。D01/D05同候选两模式各2/2目标通过，小样本不证明普遍优势。无两阶段准确性消融、外部独立或真人专家盲测。</p>
 <h2 id="section-5">保留限制</h2>
-<p>模型仍有协议、调用上限、上下文容量和语言误解；Schema/执行守卫不能消除错误措辞。原审批矛盾、容量失败、H01澄清顺序、历史重复交接、模拟器/grader误判保留。专门歧义守卫依赖模型识别，小样本语义阈值不是证明。实际页面出现字面反斜杠n和英文目标标题，原文安全保留。企业数据/反馈合成，无真实专家联络、个人跨聊天记忆、完整传播仿真、专家接续、真实企业API。</p>
+<p>模型仍有协议、调用上限、上下文容量和语言误解；Schema/执行守卫不能消除错误措辞。原审批矛盾、容量失败、H01澄清顺序、历史重复交接、模拟器/grader误判保留。本次修复统一所有真实调用入口的canonical ledger及connectivity显式项目.env路径，并在路由前限制HTTP Host为127.0.0.1/localhost；匹配的任意Host+Origin不能绕过。Task5费用截止快照固定，后来评测另列。专门歧义守卫依赖模型识别，小样本语义阈值不是证明。实际页面出现字面反斜杠n和英文目标标题，原文安全保留。企业数据/反馈合成，无真实专家联络、个人跨聊天记忆、完整传播仿真、专家接续、真实企业API。</p>
 <p>七项工程裁定与错误代价见<a href="engineering-decisions.html">决策记录</a>。原题逐项映射、模式与截图见<a href="delivery-evidence.html">交付记录</a>。本次服务URL/PID/日志见<a href="evidence/restart.json">evidence/restart.json</a>，PID随启动变化。源码archive为runtime/helpdesk-submission.zip，来自tracked HEAD，最终审查有改动后需要重新生成。</p>
 
 <footer>本页来自 <a href="implementation-status.md">implementation-status.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>

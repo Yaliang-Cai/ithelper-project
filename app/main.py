@@ -6,12 +6,13 @@ import sqlite3
 from fastapi import Depends, FastAPI, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.agent import Agent
 from app.auth import Auth
 from app.budget import BudgetLedger
-from app.config import Settings
+from app.config import Settings, PROJECT_LEDGER
 from app.domain import Domain, DomainError, redact, require
 from app.providers import DeepSeekClient, EmbeddingClient
 from app.retrieval import Retrieval
@@ -20,7 +21,6 @@ from app.tools import ToolExecutor
 from app.worker import Worker
 
 UI = Path(__file__).parent / 'ui'
-PROJECT_LEDGER = Path(__file__).resolve().parents[1] / 'runtime' / 'usage.sqlite'
 SESSION = 'helpdesk_session'
 CSRF = 'helpdesk_csrf'
 
@@ -249,4 +249,7 @@ def create_app(settings=None, *, domain=None, provider=None, provider_mode='live
 
     # Mount only the packaged UI, never repository/runtime/eval directories.
     app.mount('/ui', StaticFiles(directory=UI), name='ui')
+    # Added last so host validation wraps every route and the Origin check.
+    # The local application has no wildcard/deployment-host default.
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=['127.0.0.1', 'localhost'], www_redirect=False)
     return app

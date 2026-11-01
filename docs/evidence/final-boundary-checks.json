@@ -1,0 +1,59 @@
+{
+  "mode": "offline_real_http_host_hardening_restart_no_model_calls",
+  "date": "2026-11-02",
+  "pre_fix_smoke_revision": "65743f3",
+  "pre_fix_smoke_sha256": "85410ad866a0313445bc38fe67095360d70fababdefe7fd32419966eda5dcbb8",
+  "before": {
+    "state_sha256": "0c5271098419fb5cf1f7ad3d88689fb63c216e6f961ab8b800b12a19ea2e4f43",
+    "ledger_rows_sha256": "7adc937c4b8ce31c02090e44a9660ff04a2c95be598956bff74af7ea82140bb6",
+    "requests": 759,
+    "spent_usd": 2.634129369,
+    "reserved_usd": 0.0,
+    "messages": 4,
+    "actions": 1,
+    "events": 2,
+    "runs": 2
+  },
+  "after": {
+    "state_sha256": "0c5271098419fb5cf1f7ad3d88689fb63c216e6f961ab8b800b12a19ea2e4f43",
+    "ledger_rows_sha256": "7adc937c4b8ce31c02090e44a9660ff04a2c95be598956bff74af7ea82140bb6",
+    "requests": 759,
+    "spent_usd": 2.634129369,
+    "reserved_usd": 0.0,
+    "messages": 4,
+    "actions": 1,
+    "events": 2,
+    "runs": 2
+  },
+  "unchanged": true,
+  "allowed_hosts": {
+    "localhost:8000": 200,
+    "127.0.0.1:8000": 200
+  },
+  "rejected_matching_host_origin": {
+    "read": 400,
+    "health": 400,
+    "login": 400,
+    "write": 400,
+    "enqueue": 400
+  },
+  "health": {
+    "status": "ready",
+    "worker_running": true,
+    "recovery": null
+  },
+  "url": "http://127.0.0.1:8000/",
+  "launcher_pid": 43028,
+  "server_pid": 8388,
+  "logs": [
+    "runtime/delivery/final-fix-app.stdout.log",
+    "runtime/delivery/final-fix-app.stderr.log"
+  ],
+  "paid_calls": 0,
+  "existing_history_browser": {
+    "passed": true,
+    "new_messages": 0,
+    "model_calls": 0,
+    "mode": "normal_app_browser_read_existing_pre_fix_history"
+  }
+}
