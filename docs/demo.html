@@ -98,7 +98,7 @@ python -m scripts.record_demo --output runtime/my-new-demo
 python scripts/verify_browser.py
 python scripts/verify_ui_states.py
 </code></pre>
-<p>当前完整程序回归 209 passed（24.26 秒），案例结构验证 31 个变体；脚本模型 + 真实 Agent/HTTP/浏览器 14 项、受控时钟真实 UI 3 项通过。后两者是明确的离线测试，不是模型自主决策证据，也没有另存“实模”录屏。GitHub Actions 只执行安装、pytest 和案例结构检查，不配置凭据或付费请求。</p>
+<p>录制时完整程序回归 209 passed（24.26 秒），案例结构验证 31 个变体；脚本模型 + 真实 Agent/HTTP/浏览器 14 项、受控时钟真实 UI 3 项通过。后两者是明确的离线测试，不是模型自主决策证据，也没有另存“实模”录屏。后续仅修正历史密封校验的换行可移植性，最新 214 项离线结果见<a href="delivery-evidence.html">交付记录</a>，录屏与应用 v7 不变。GitHub Actions 只执行安装、pytest 和案例结构检查，不配置凭据或付费请求。</p>
 <p>WebM 已在 Chromium 实际播放，并用离线解码检查 12/30 秒画面文字；1440×1000、33.32 秒、3,371,345 字节，无音轨。<a href="evidence/demo-v7-recording/playback.json">播放检查</a>保留媒体哈希。原 <a href="evidence/delivery-smoke.json">smoke</a>、截图与 <a href="evidence/restart.json">restart</a> 全部保持原字节；本次费用增量 USD0.021356400 / 7 请求与 Task1 的 69 请求另列，不混入历史评测。</p>
 
 <footer>本页来自 <a href="demo.md">demo.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>

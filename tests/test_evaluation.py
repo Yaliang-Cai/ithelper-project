@@ -280,8 +280,49 @@ def test_rule_question_must_agree_with_visible_assistant_text():
     with pytest.raises(InvalidSimulation):rule_reply({'facts':{'target_resource':'analytics'}},{'question_intent':'target_resource','text':'哪个数据库？','visible_text':'本轮已达到调用上限，已保存进度。'}, {})
 
 
+def _matches_historical_seal(content, expected):
+    """Original CRLF byte seals also allow a uniform LF checkout, nothing else."""
+    import hashlib
+    if hashlib.sha256(content).hexdigest() == expected:
+        return True
+    return (b'\r' not in content
+            and hashlib.sha256(content.replace(b'\n', b'\r\n')).hexdigest() == expected)
+
+
+@pytest.mark.parametrize('newline', [b'\n', b'\r\n'], ids=['LF', 'CRLF'])
+def test_historical_seals_accept_lf_and_crlf_checkouts(newline):
+    import json
+    from evals.runner import ROOT
+    seal = json.loads((ROOT / 'evals/holdout-seal.json').read_text(encoding='utf-8'))
+    for cid, expected in seal['cases'].items():
+        lf = (ROOT / 'evals/cases' / (cid + '.json')).read_bytes().replace(b'\r\n', b'\n')
+        assert _matches_historical_seal(lf.replace(b'\n', newline), expected), cid
+
+
+@pytest.mark.parametrize('newline', [b'\n', b'\r\n'], ids=['LF', 'CRLF'])
+def test_historical_seal_rejects_changed_json_fact(newline):
+    import json
+    from evals.runner import ROOT
+    seal = json.loads((ROOT / 'evals/holdout-seal.json').read_text(encoding='utf-8'))
+    lf = (ROOT / 'evals/cases/H01.json').read_bytes().replace(b'\r\n', b'\n')
+    changed = lf.replace(b'"actor": "alice.sales"', b'"actor": "bo.remote"')
+    assert json.loads(changed)['actor'] == 'bo.remote'
+    assert not _matches_historical_seal(changed.replace(b'\n', newline), seal['cases']['H01'])
+
+
+def test_historical_seal_rejects_other_byte_changes():
+    import json
+    from evals.runner import ROOT
+    seal = json.loads((ROOT / 'evals/holdout-seal.json').read_text(encoding='utf-8'))
+    lf = (ROOT / 'evals/cases/H01.json').read_bytes().replace(b'\r\n', b'\n')
+    crlf = lf.replace(b'\n', b'\r\n')
+    for changed in (b' ' + crlf, b'\xef\xbb\xbf' + crlf,
+                    crlf.replace(b'\r\n', b'\n', 1), crlf.replace(b'\r\n', b'\r', 1)):
+        assert not _matches_historical_seal(changed, seal['cases']['H01'])
+
+
 def test_sealed_case_counts_and_retrieval_labels_have_real_source_ids(tmp_path):
-    import json,hashlib
+    import json
     from collections import Counter
     from evals.runner import ROOT,Clock,patch_world,seed_history,FaultTools
     from app.seed import knowledge_documents
@@ -296,7 +337,7 @@ def test_sealed_case_counts_and_retrieval_labels_have_real_source_ids(tmp_path):
     assert len(queries)==40 and len({q['id'] for q in queries})==40
     assert all(set(q['expected'])<=source_ids for q in queries)
     seal=json.loads((ROOT/'evals/holdout-seal.json').read_text(encoding='utf-8'))
-    for cid,expected in seal['cases'].items():assert hashlib.sha256((ROOT/'evals/cases'/(cid+'.json')).read_bytes()).hexdigest()==expected
+    for cid,expected in seal['cases'].items():assert _matches_historical_seal((ROOT/'evals/cases'/(cid+'.json')).read_bytes(),expected)
     for c in (c for c in cases if c['split']=='holdout'):
         d=Domain(Store(tmp_path/(c['id']+'.sqlite'),clock=Clock()).initialize());patch_world(d,c['world']);chat=d.create_conversation(c['actor'])['id']
         seed_history(d,chat,c,FaultTools(d))
