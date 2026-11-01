@@ -1,29 +1,63 @@
 """Bounded synchronous provider adapters. No retries and no model fallback."""
 import json
 import math
+import asyncio
+from contextlib import contextmanager
+from contextvars import ContextVar
+import time
 import httpx
 
+_DEADLINE=ContextVar('provider_request_deadline',default=None)
+
+
+@contextmanager
+def request_deadline(seconds):
+    """Share one monotonic deadline across all requests in an Agent tool call."""
+    previous=_DEADLINE.get()
+    until=time.monotonic()+max(0,seconds)
+    token=_DEADLINE.set(min(previous,until) if previous is not None else until)
+    try:yield
+    finally:_DEADLINE.reset(token)
+
 class ProviderError(RuntimeError):
-    pass
+    def __init__(self,message='Provider request failed; request details withheld',*,category='protocol',http_status=None):
+        super().__init__(message)
+        self.category,self.http_status=category,http_status
 
 class EmbeddingDisabled(ProviderError):
     pass
 
-def _request(settings, base_url, key, path, payload=None, transport=None):
+async def _exchange(base_url,key,path,payload,transport,timeout_seconds):
+    # asyncio's total deadline also cancels a server that sends tiny heartbeats
+    # forever; HTTPX inactivity timeouts alone do not provide that guarantee.
+    async with asyncio.timeout(timeout_seconds):
+        async with httpx.AsyncClient(base_url=base_url.rstrip('/')+'/',headers={'Authorization':'Bearer '+key},timeout=httpx.Timeout(timeout_seconds,connect=min(10,timeout_seconds)),transport=transport,follow_redirects=False) as client:
+            return await client.get(path) if payload is None else await client.post(path,json=payload)
+
+
+def _request(settings, base_url, key, path, payload=None, transport=None, timeout_seconds=45):
+    if _DEADLINE.get() is not None:
+        timeout_seconds=min(timeout_seconds,_DEADLINE.get()-time.monotonic())
+    if timeout_seconds<=0:raise ProviderError(category='timeout')
     failed = False
+    category='protocol';status=None
     try:
-        with httpx.Client(base_url=base_url.rstrip('/')+'/',headers={'Authorization':'Bearer '+key},timeout=httpx.Timeout(45,connect=10),transport=transport,follow_redirects=False) as client:
-            response = client.get(path) if payload is None else client.post(path,json=payload)
-            if response.status_code != 200:
-                failed = True
-                result = None
-            else:
-                result = response.json()
-    except (httpx.HTTPError, ValueError, TypeError):
+        response=asyncio.run(_exchange(base_url,key,path,payload,transport,timeout_seconds))
+        if response.status_code != 200:
+            status=response.status_code
+            category={401:'authentication',402:'insufficient_balance',429:'rate_limit'}.get(status,'upstream' if status>=500 else 'request_rejected')
+            failed = True
+            result = None
+        else:
+            result = response.json()
+    except (TimeoutError,httpx.TimeoutException):
+        category='timeout';failed=True;result=None
+    except (httpx.HTTPError, ValueError, TypeError) as exc:
+        category='transport' if isinstance(exc,httpx.HTTPError) else 'protocol'
         failed = True
         result = None
     if failed:
-        raise ProviderError('Provider request failed; request details withheld')
+        raise ProviderError(category=category,http_status=status)
     if not isinstance(result,dict):
         raise ProviderError('Invalid provider response')
     return result
@@ -40,9 +74,11 @@ class DeepSeekClient:
             raise ProviderError('Invalid model list')
         return [m.get('id') for m in data['data'] if isinstance(m,dict)]
 
-    def complete(self, messages, *, purpose, tools=None, response_format=None, thinking=False, max_tokens=2048, tool_choice=None):
+    def complete(self, messages, *, purpose, tools=None, response_format=None, thinking=False, max_tokens=2048, tool_choice=None, timeout_seconds=45):
         if not self.settings.deepseek_api_key:
-            raise ProviderError('DeepSeek key is missing')
+            raise ProviderError('DeepSeek key is missing',category='configuration')
+        if isinstance(timeout_seconds,bool) or not isinstance(timeout_seconds,(int,float)) or not math.isfinite(timeout_seconds) or not 0<timeout_seconds<=45:
+            raise ValueError('Invalid provider timeout')
         if not isinstance(max_tokens,int) or isinstance(max_tokens,bool) or not 1 <= max_tokens <= 8192:
             raise ValueError('Invalid output token limit')
         payload = {'model':self.settings.deepseek_model,'messages':messages,'thinking':{'type':'enabled' if thinking else 'disabled'},'max_tokens':max_tokens,'stream':False}
@@ -53,7 +89,7 @@ class DeepSeekClient:
         # generous protocol overhead per message/tool; output includes reasoning.
         input_bound = 2 * len(json.dumps(payload,ensure_ascii=False).encode('utf-8')) + 4096 + 256 * (len(messages) + len(tools or []))
         reservation = self.budget.reserve((input_bound*.30+max_tokens*1.20)/1e6,purpose=purpose)
-        data = _request(self.settings,self.settings.deepseek_base_url,self.settings.deepseek_api_key,'chat/completions',payload,self.transport)
+        data = _request(self.settings,self.settings.deepseek_base_url,self.settings.deepseek_api_key,'chat/completions',payload,self.transport,timeout_seconds)
         # Account any well-formed usage even when response protocol is malformed.
         # Provider-reported cost is never clamped to the estimate or allowance.
         usage = data.get('usage')

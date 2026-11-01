@@ -28,7 +28,7 @@ class ToolExecutor:
         return self._envelope(False,data,action_id=action_id,error={'code':code,'message':message,'retryable':code in ('TEMPORARY_UNAVAILABLE','TIMEOUT'),
                               'execution_status':'uncertain' if uncertain else 'not_executed'})
 
-    def call(self,name,arguments,actor_id,conversation_id):
+    def call(self,name,arguments,actor_id,conversation_id,*,before_effect=None):
         call_id=new_id('TOOL');new_action=False
         try:
             validate_arguments(name,arguments)
@@ -43,6 +43,7 @@ class ToolExecutor:
                 except Exception:raise DomainError('TEMPORARY_UNAVAILABLE','Retrieval service unavailable') from None
             with self.store.write() as c:
                 self.domain._conversation(c,actor_id,conversation_id)
+                if before_effect is not None:before_effect()
                 result,new_action=self._dispatch(c,name,arguments,actor_id,conversation_id,search_result)
                 c.execute('INSERT INTO tool_calls VALUES(?,?,?,?,?)',(call_id,conversation_id,actor_id,self.store.clock(),dumps({'name':name,'arguments':arguments,'result':result})))
             if new_action and self.adapter is not None:
@@ -70,6 +71,12 @@ class ToolExecutor:
 
     def _world(self,c,kind):
         return [unpack(r) for r in c.execute('SELECT * FROM world_records WHERE kind=? ORDER BY id',(kind,))]
+
+    @staticmethod
+    def _approval_scope(actor,approvals):
+        return {'actor_id':actor,'approval_ids':[r['id'] for r in approvals],
+                'approval_revisions':{r['id']:str(r['revision']) for r in approvals},
+                'approval_scopes':{r['id']:{k:r[k] for k in ('issue_id','resource_id','permission')} for r in approvals}}
 
     def _resource(self,c,rid):
         resource=unpack(c.execute('SELECT * FROM resources WHERE id=?',(rid,)).fetchone())
@@ -141,7 +148,7 @@ class ToolExecutor:
             for item in approvals:
                 if item['status'] in ('pending','approved') and item['expires_at']<=self.store.clock():
                     c.execute("UPDATE approvals SET status='expired',revision=revision+1 WHERE id=?",(item['id'],));item['status']='expired';item['revision']+=1
-            return self._read(c,actor,chat,'approval_event',a.get('approval_id','approvals:'+chat),max(r['revision'] for r in approvals),{'approvals':approvals})
+            return self._read(c,actor,chat,'approval_event',a.get('approval_id','approvals:'+chat),max(r['revision'] for r in approvals),{'approvals':approvals},self._approval_scope(actor,approvals))
         if name=='get_action_result':
             action=unpack(c.execute('SELECT * FROM actions WHERE id=? AND actor_id=? AND conversation_id=?',(a['action_id'],actor,chat)).fetchone());require(action is not None,'NOT_FOUND','No own action matching this ID')
             result,_=self._read(c,actor,chat,'tool_receipt',action['id'],1,action,{'actor_id':actor,'issue_id':action['issue_id']});result['action_id']=action['id'];return result,False
@@ -176,7 +183,7 @@ class ToolExecutor:
             item=unpack(c.execute('SELECT * FROM approvals WHERE id=?',(aid,)).fetchone())
             self._bind_resource(c,issue,resource)
             c.execute("UPDATE issues SET status='waiting_approval',version=version+1 WHERE id=?",(issue['id'],))
-        return self._read(c,actor,chat,'approval_event',item['id'],item['revision'],{'approval':item},{'actor_id':actor,'issue_id':issue['id'],'resource_id':resource['id']})
+        return self._read(c,actor,chat,'approval_event',item['id'],item['revision'],{'approval':item},self._approval_scope(actor,[item]))
 
     def _bind_resource(self,c,issue,resource):
         if not issue.get('resource_id'):

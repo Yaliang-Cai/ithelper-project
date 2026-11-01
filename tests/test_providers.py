@@ -16,6 +16,50 @@ def test_forbidden_fallback():
         settings(embedding_model='Pro/BAAI/bge-m3')
 
 
+@pytest.mark.parametrize('status,category',[(402,'insufficient_balance'),(401,'authentication'),(429,'rate_limit'),(503,'upstream')])
+def test_safe_http_categories_and_bounded_timeout(tmp_path,status,category):
+    from app.providers import ProviderError
+    def handler(request):
+        assert request.extensions['timeout']['read']<=1.5
+        return httpx.Response(status,json={'error':'test-secret'})
+    c,ledger=client(tmp_path,handler)
+    with pytest.raises(ProviderError) as error:
+        c.complete([{'role':'user','content':'hi'}],purpose='agent',timeout_seconds=1.5)
+    assert error.value.category==category and error.value.http_status==status
+    assert 'test-secret' not in str(error.value) and ledger.report()['reserved_usd']>0
+
+
+def test_total_timeout_cancels_delayed_transport_and_retains_charge(tmp_path):
+    import asyncio
+    import time
+    from app.providers import ProviderError
+    async def delayed(request):
+        await asyncio.sleep(1)
+        return httpx.Response(200,json={'choices':[{'message':{'role':'assistant','content':'late'}}]})
+    c,ledger=client(tmp_path,delayed)
+    start=time.monotonic()
+    with pytest.raises(ProviderError) as error:
+        c.complete([{'role':'user','content':'hello'}],purpose='agent',timeout_seconds=.02)
+    assert error.value.category=='timeout' and time.monotonic()-start<.5
+    assert ledger.report()['reserved_usd']>0 and ledger.report()['spent_usd']==0
+
+
+def test_shared_request_deadline_bounds_multiple_embedding_requests():
+    import asyncio
+    import time
+    from app.providers import EmbeddingClient, ProviderError,request_deadline
+    async def delayed(request):
+        payload=json.loads(request.content)
+        await asyncio.sleep(.01 if payload['input']==['first'] else 1)
+        return httpx.Response(200,json={'data':[{'index':0,'embedding':[1.0]*1024}]})
+    embedding=EmbeddingClient(settings(siliconflow_api_key='test-secret'),transport=httpx.MockTransport(delayed))
+    started=time.monotonic()
+    with request_deadline(.1):
+        assert len(embedding.embed(['first'])[0])==1024
+        with pytest.raises(ProviderError) as error:embedding.embed(['second'])
+    assert error.value.category=='timeout' and time.monotonic()-started<.5
+
+
 def test_restart_and_concurrency(tmp_path):
     from app.budget import BudgetLedger, BudgetExceeded
     path = tmp_path / 'usage.sqlite'

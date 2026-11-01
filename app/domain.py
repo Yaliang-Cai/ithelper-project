@@ -80,6 +80,13 @@ class Domain:
         with self.store.read() as c:
             return self._actor(c,actor_id)
 
+    def context_catalog(self,actor_id):
+        """Public catalog identities, without treating catalog names as evidence."""
+        with self.store.read() as c:
+            self._actor(c,actor_id)
+            return {'service_ids':[r['id'] for r in c.execute("SELECT id FROM world_records WHERE kind='services' ORDER BY id")],
+                    'resources':[{k:unpack(r)[k] for k in ('id','service_id')} for r in c.execute('SELECT * FROM resources ORDER BY id')]}
+
     def create_conversation(self,actor_id,title='New conversation'):
         text_value(title,200)
         with self.store.write() as c:
@@ -132,7 +139,7 @@ class Domain:
         require(isinstance(criterion_id,str) and criterion_id in CRITERIA and isinstance(service_refs,list) and len(service_refs)<=8)
         for sid in service_refs:
             text_value(sid,200)
-            require(c.execute("SELECT 1 FROM world_records WHERE kind='services' AND id=?",(sid,)).fetchone() is not None)
+            require(c.execute("SELECT 1 FROM world_records WHERE kind='services' AND id=?",(sid,)).fetchone() is not None,'INVALID_ARGUMENT','Unknown service reference; use visible catalog service_ids or an empty list when unknown')
         if resource_id:
             r=unpack(c.execute('SELECT * FROM resources WHERE id=?',(resource_id,)).fetchone())
             require(r is not None and r['service_id'] in service_refs,'INVALID_ARGUMENT','Resource must match issue service')
@@ -148,9 +155,10 @@ class Domain:
             c.execute('UPDATE conversations SET version=version+1 WHERE id=?',(conversation_id,))
             return issue
 
-    def refine_issue(self,actor_id,conversation_id,issue_id,expected_version,service_refs=None,resource_id=None,criterion_id=None):
+    def refine_issue(self,actor_id,conversation_id,issue_id,expected_version,service_refs=None,resource_id=None,criterion_id=None,*,before_effect=None):
         """Fill missing scope or strengthen criteria; never repurpose an authorized issue."""
         with self.store.write() as c:
+            if before_effect is not None:before_effect()
             issue=self._issue(c,actor_id,conversation_id,issue_id,True)
             require(issue['version']==expected_version,'STALE_STATE','Issue changed')
             for table in ('actions','approvals','confirmations','attempts'):
@@ -204,7 +212,14 @@ class Domain:
                 return old
             prior=[unpack(r) for r in c.execute('SELECT * FROM attempts WHERE issue_id=?',(issue_id,))]
             require(len(prior)<2,'ATTEMPT_LIMIT','Two distinct repair paths already attempted')
-            if prior:require(bool(set(evidence_refs)-{ref for row in prior for ref in row.get('evidence_refs',[])}),'NO_APPLICABLE_EVIDENCE','Another remedy requires new evidence')
+            if prior:
+                require(bool(set(evidence_refs)-{ref for row in prior for ref in row.get('evidence_refs',[])}),'NO_APPLICABLE_EVIDENCE','Another remedy requires new evidence')
+                previous=prior[-1];sequence=previous.get('after_message_sequence',0)
+                if previous.get('action_id'):
+                    action=unpack(c.execute('SELECT * FROM actions WHERE id=?',(previous['action_id'],)).fetchone())
+                    sequence=action['receipt']['after_message_sequence']
+                failures=[unpack(r) for r in c.execute('SELECT o.* FROM observations o JOIN messages m ON m.id=o.message_id WHERE o.conversation_id=? AND m.rowid>?',(conversation_id,sequence))]
+                require(any(issue_id in o['issue_refs'] and o.get('status')=='active' and o['category'] in ('reported_failure','symptom','correction') and o.get('mapping_status')=='tentative' for o in failures),'WAITING_FOR_ATTEMPT_FEEDBACK','Verify the previous remedy first; a different guidance path requires later issue-bound failure feedback')
             aid=new_id('ATTEMPT');payload={'normalized_parameters':normalized_parameters,'evidence_refs':evidence_refs,'outcome':'guidance_offered','reviewed_steps':[article['text'] for article in valid],
                                          'after_message_sequence':c.execute('SELECT COALESCE(MAX(rowid),0) FROM messages WHERE conversation_id=?',(conversation_id,)).fetchone()[0]}
             c.execute('INSERT INTO attempts VALUES(?,?,?,?,?,?)',(aid,conversation_id,issue_id,remedy_id,self.store.clock(),dumps(payload)))
@@ -301,6 +316,14 @@ class Domain:
                 payload['lifecycle']+=1
                 c.execute("UPDATE issues SET status='investigating',payload=? WHERE id=?",(dumps(payload),iid))
 
+    def get_interpretation(self,actor_id,conversation_id,message_id):
+        """Owned persisted candidate result, including unresolved references."""
+        with self.store.read() as c:
+            self._conversation(c,actor_id,conversation_id)
+            require(c.execute('SELECT 1 FROM messages WHERE id=? AND conversation_id=?',(message_id,conversation_id)).fetchone() is not None,'FORBIDDEN','Message unavailable')
+            row=c.execute('SELECT result FROM candidate_batches WHERE message_id=?',(message_id,)).fetchone()
+            return json.loads(row['result']) if row else None
+
     def _validate_refs(self,c,actor_id,conversation_id,refs,issue_id=None):
         require(isinstance(refs,list) and len(refs)<=100)
         found=[]
@@ -344,8 +367,7 @@ class Domain:
                 refs=self._validate_refs(c,actor_id,conversation_id,p['evidence_refs'],issue['id'])
                 status=p['requested_status']
                 if status=='resolved': self._accept(c,actor_id,issue,refs)
-                if status=='waiting_approval':
-                    require(any(t=='approvals' and r['status']=='pending' and r['expires_at']>self.store.clock() for t,r in refs),'PRECONDITION_FAILED','No pending approval')
+                if status=='waiting_approval':self._require_pending_approval(c,actor_id,issue,refs)
                 if status=='handed_off': require(any(t=='handoffs' and issue['id'] in r['issue_refs'] for t,r in refs),'PRECONDITION_FAILED','No persisted handoff')
                 if status=='denied': require(any(t=='approvals' and r['status']=='rejected' for t,r in refs) or any(t=='evidence' and r['source']=='policy' for t,r in refs),'PRECONDITION_FAILED','No denial evidence')
                 if status=='waiting_external':
@@ -355,6 +377,35 @@ class Domain:
                 result.append(unpack(c.execute('SELECT * FROM issues WHERE id=?',(issue['id'],)).fetchone()))
             c.execute('UPDATE conversations SET version=version+1 WHERE id=?',(conversation_id,))
             return result
+
+    def _require_pending_approval(self,c,actor_id,issue,refs):
+        """Dereference exact backend approval evidence, never its claimed content."""
+        current=[unpack(r) for r in c.execute('SELECT * FROM approvals WHERE actor_id=? AND conversation_id=? AND issue_id=?',(actor_id,issue['conversation_id'],issue['id']))]
+        by_id={r['id']:r for r in current}
+        def pending(row):
+            return row['status']=='pending' and row['expires_at']>self.store.clock() and row['resource_id']==issue.get('resource_id') and row.get('lifecycle',1)==issue['lifecycle']
+        for table,ref in refs:
+            if table=='approvals' and ref['id'] in by_id and pending(by_id[ref['id']]):return
+            if table!='evidence' or ref['source']!='approval_event':continue
+            scope=ref['scope']
+            if scope.get('actor_id')!=actor_id:continue
+            ids=scope.get('approval_ids',[]);revisions=scope.get('approval_revisions',{});scopes=scope.get('approval_scopes',{})
+            if not isinstance(ids,list) or not isinstance(revisions,dict) or not isinstance(scopes,dict):continue
+            if not all(isinstance(aid,str) and aid in revisions and aid in scopes for aid in ids):continue
+            try:aggregate_revision=str(max(int(revisions[aid]) for aid in ids))
+            except (ValueError,TypeError):continue
+            for aid in ids:
+                row=by_id.get(aid)
+                if row is None or not pending(row):continue
+                expected_scope={k:row[k] for k in ('issue_id','resource_id','permission')}
+                if scopes[aid]!=expected_scope or str(revisions[aid])!=str(row['revision']):continue
+                if ref['record_id']==aid and ref['revision']==str(row['revision']):return
+                if ref['record_id']=='approvals:'+issue['conversation_id'] and ref['revision']==aggregate_revision:return
+        available=any(pending(r) for r in current)
+        info=[{k:r[k] for k in ('id','issue_id','resource_id','permission','status','revision','expires_at')} for r in current]
+        message=('A current pending approval exists, but the proposed references lack a matching current approval link. Use its APPROVAL-* ID or fresh get_approval EVID-* evidence; stale/wrong-scope wrappers do not count.' if available else
+                 'No current pending approval exists for this owned issue; proposed references cannot create one. Current owned approval records are attached.')
+        raise DomainError('PRECONDITION_FAILED',message,{'reference_problem':'pending_exists_but_proposed_refs_invalid' if available else 'no_current_pending_approval','current_approvals':info})
 
     @staticmethod
     def _matching_incident(content,issue,user):
@@ -508,10 +559,125 @@ class Domain:
             for item in questions:
                 fields(item,{'text','issue_refs','question_intent'}, {'text','issue_refs','question_intent'});text_value(item['text'])
                 require(item['question_intent'] in ('affected_scope','error_detail','attempt_result','target_resource','reference_clarification','environment','general'))
+                require(isinstance(item['issue_refs'],list) and len(item['issue_refs'])<=8)
                 for ref in item['issue_refs']:self._issue(c,actor_id,conversation_id,ref)
-                qid=new_id('QUESTION');c.execute('INSERT INTO questions VALUES(?,?,?,?,?)',(qid,conversation_id,actor_id,'pending',dumps(item)))
+                old=next((unpack(r) for r in c.execute("SELECT * FROM questions WHERE actor_id=? AND conversation_id=? AND status='pending'",(actor_id,conversation_id)) if all(unpack(r).get(k)==v for k,v in item.items())),None)
+                if old:result.append(old);continue
+                payload={**item,'history':[],'created_after_message_sequence':c.execute('SELECT COALESCE(MAX(rowid),0) FROM messages WHERE conversation_id=?',(conversation_id,)).fetchone()[0]}
+                qid=new_id('QUESTION');c.execute('INSERT INTO questions VALUES(?,?,?,?,?)',(qid,conversation_id,actor_id,'pending',dumps(payload)))
                 result.append(unpack(c.execute('SELECT * FROM questions WHERE id=?',(qid,)).fetchone()))
             return result
+
+    def update_questions(self,actor_id,conversation_id,proposals):
+        """Retain question history; answering/cancelling requires a later owned user message."""
+        require(isinstance(proposals,list) and len(proposals)<=8)
+        with self.store.write() as c:
+            self._conversation(c,actor_id,conversation_id);result=[];seen=set()
+            for p in proposals:
+                fields(p,{'question_id','status','answer_message_id'},{'question_id','status','answer_message_id'})
+                require(p['status'] in ('answered','cancelled'))
+                require(p['question_id'] not in seen);seen.add(p['question_id'])
+                old=unpack(c.execute('SELECT * FROM questions WHERE id=? AND conversation_id=? AND actor_id=?',(p['question_id'],conversation_id,actor_id)).fetchone())
+                require(old is not None,'FORBIDDEN','Question unavailable')
+                message=c.execute("SELECT rowid,* FROM messages WHERE id=? AND conversation_id=? AND actor_id=? AND role='user'",(p['answer_message_id'],conversation_id,actor_id)).fetchone()
+                require(message is not None and message['rowid']>old.get('created_after_message_sequence',0),'INVALID_ARGUMENT','Answer must be a later owned user message')
+                if old['status']==p['status'] and old.get('answer_message_id')==p['answer_message_id']:result.append(old);continue
+                require(old['status']=='pending','CONFLICT','Question already decided')
+                payload={k:v for k,v in old.items() if k not in ('id','actor_id','conversation_id','status')}
+                payload['history']=[*old.get('history',[]),{'status':old['status'],'answer_message_id':old.get('answer_message_id')}]
+                payload['answer_message_id']=p['answer_message_id']
+                c.execute('UPDATE questions SET status=?,payload=? WHERE id=?',(p['status'],dumps(payload),old['id']))
+                result.append(unpack(c.execute('SELECT * FROM questions WHERE id=?',(old['id'],)).fetchone()))
+            return result
+
+    def save_hypotheses(self,actor_id,conversation_id,proposals):
+        """Versioned assumptions; real references cannot create business authority."""
+        require(isinstance(proposals,list) and len(proposals)<=12)
+        with self.store.write() as c:
+            self._conversation(c,actor_id,conversation_id);result=[];seen=set()
+            for p in proposals:
+                fields(p,{'hypothesis_id','expected_version','issue_id','claim','status','support_refs','contradict_refs'},{'issue_id','claim','status','support_refs','contradict_refs'})
+                self._issue(c,actor_id,conversation_id,p['issue_id']);text_value(p['claim'])
+                require(p['status'] in ('tentative','supported','rejected'))
+                self._validate_refs(c,actor_id,conversation_id,p['support_refs'],p['issue_id'])
+                self._validate_refs(c,actor_id,conversation_id,p['contradict_refs'],p['issue_id'])
+                require(p['status']!='supported' or bool(p['support_refs']),'INVALID_ARGUMENT','Supported hypothesis needs support')
+                require(p['status']!='rejected' or bool(p['contradict_refs']),'INVALID_ARGUMENT','Rejected hypothesis needs counterevidence')
+                old=None
+                if p.get('hypothesis_id'):
+                    require(p['hypothesis_id'] not in seen);seen.add(p['hypothesis_id'])
+                    old=unpack(c.execute('SELECT * FROM hypotheses WHERE id=? AND conversation_id=? AND issue_id=?',(p['hypothesis_id'],conversation_id,p['issue_id'])).fetchone())
+                    require(old is not None,'FORBIDDEN','Hypothesis unavailable')
+                    require(type(p.get('expected_version')) is int and p['expected_version']==old['version'],'STALE_STATE','Hypothesis changed')
+                else:require('expected_version' not in p,'INVALID_ARGUMENT','Version requires existing hypothesis')
+                payload={k:v for k,v in p.items() if k not in ('hypothesis_id','expected_version','issue_id')}
+                payload.update(source_kind='model_hypothesis',history=[] if old is None else [*old.get('history',[]),{k:v for k,v in old.items() if k not in ('history','id','conversation_id','issue_id')}])
+                hid=old['id'] if old else new_id('HYPOTHESIS');version=old['version']+1 if old else 1
+                c.execute('INSERT INTO hypotheses VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET version=excluded.version,payload=excluded.payload',(hid,conversation_id,p['issue_id'],version,dumps(payload)))
+                result.append(unpack(c.execute('SELECT * FROM hypotheses WHERE id=?',(hid,)).fetchone()))
+            return result
+
+    def update_relations(self,actor_id,conversation_id,proposals):
+        """Revise tentative relationships with retained counterevidence; no status propagation."""
+        require(isinstance(proposals,list) and len(proposals)<=12)
+        with self.store.write() as c:
+            self._conversation(c,actor_id,conversation_id);result=[];seen=set()
+            for p in proposals:
+                fields(p,{'relation_id','expected_version','status','support_refs','contradict_refs'},{'relation_id','expected_version','status','support_refs','contradict_refs'})
+                require(p['relation_id'] not in seen);seen.add(p['relation_id'])
+                old=unpack(c.execute('SELECT * FROM relations WHERE id=? AND conversation_id=?',(p['relation_id'],conversation_id)).fetchone())
+                require(old is not None,'FORBIDDEN','Relation unavailable')
+                require(type(p['expected_version']) is int and old['version']==p['expected_version'],'STALE_STATE','Relation changed')
+                require(p['status'] in ('candidate','rejected','superseded'))
+                self._validate_refs(c,actor_id,conversation_id,p['support_refs'])
+                self._validate_refs(c,actor_id,conversation_id,p['contradict_refs'])
+                require(bool(p['support_refs']) if p['status']=='candidate' else bool(p['contradict_refs']),'INVALID_ARGUMENT','Relationship revision requires real support/counterevidence')
+                payload={k:v for k,v in old.items() if k not in ('id','conversation_id','version')}
+                payload.update(status=p['status'],evidence_refs=p['support_refs'],contradict_refs=p['contradict_refs'],history=[*old.get('history',[]),{k:v for k,v in old.items() if k not in ('id','conversation_id','history')}])
+                c.execute('UPDATE relations SET version=version+1,payload=? WHERE id=?',(dumps(payload),old['id']))
+                result.append(unpack(c.execute('SELECT * FROM relations WHERE id=?',(old['id'],)).fetchone()))
+            return result
+
+    def submit_turn(self,actor_id,conversation_id,proposal,idempotency_key,*,before_effect=None):
+        """Commit all validated internal proposals and reply together, or none."""
+        from contextlib import contextmanager
+        from app.contracts import Turn
+        value=Turn.model_validate(proposal).model_dump(exclude_none=True)
+        outer=self.store
+        with outer.write() as connection:
+            self._conversation(connection,actor_id,conversation_id)
+            if before_effect is not None:before_effect()
+            # A transaction-bound Domain reuses the existing services and checks.
+            # It never escapes this call or gives a model access to a connection.
+            class BoundStore:
+                clock=staticmethod(outer.clock)
+                @contextmanager
+                def write(self):yield connection
+                @contextmanager
+                def read(self):yield connection
+            bound=Domain(BoundStore())
+            for p in value['refinements']:bound.refine_issue(actor_id,conversation_id,**p)
+            guidance=[bound.record_attempt(actor_id,conversation_id,**p) for p in value['guidance']]
+            bound.save_questions(actor_id,conversation_id,value['questions'])
+            bound.update_questions(actor_id,conversation_id,value['question_updates'])
+            bound.save_hypotheses(actor_id,conversation_id,value['hypotheses'])
+            bound.update_relations(actor_id,conversation_id,value['relation_updates'])
+            # Closing an obsolete request also revokes its still-unexecuted
+            # exact-scope authority through the existing audited decision path.
+            for p in value['issue_updates']:
+                if p['requested_status']!='cancelled':continue
+                bound._issue(connection,actor_id,conversation_id,p['issue_id'])
+                for row in connection.execute("SELECT * FROM approvals WHERE actor_id=? AND conversation_id=? AND issue_id=? AND status IN ('pending','approved') AND expires_at>?",(actor_id,conversation_id,p['issue_id'],outer.clock())).fetchall():
+                    if connection.execute("SELECT 1 FROM actions WHERE issue_id=? AND json_extract(receipt,'$.approval_id')=?",(p['issue_id'],row['id'])).fetchone() is None:
+                        bound.decide_approval(actor_id,row['id'],'cancelled')
+                for row in connection.execute("SELECT * FROM confirmations WHERE actor_id=? AND conversation_id=? AND issue_id=? AND decision IN ('pending','confirmed') AND expires_at>?",(actor_id,conversation_id,p['issue_id'],outer.clock())).fetchall():
+                    if connection.execute('SELECT 1 FROM actions WHERE fingerprint=?',(row['fingerprint'],)).fetchone() is None:
+                        bound.decide_confirmation(actor_id,row['id'],'cancelled')
+            if value['issue_updates']:bound.apply_issue_updates(actor_id,conversation_id,value['issue_updates'])
+            steps=[step for attempt in guidance for step in attempt['reviewed_steps']]
+            content=value['reply']+('\n\n'+ '\n\n'.join(steps) if steps else '')
+            message=bound.append_message(actor_id,conversation_id,'assistant',content,idempotency_key)
+            return {'message':message,'guidance_refs':[a['id'] for a in guidance]}
 
     def create_run(self,actor_id,conversation_id,event_id,metadata=None):
         with self.store.write() as c:
