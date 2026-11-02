@@ -1,6 +1,6 @@
 # IT Helpdesk Agent：取舍、答辩与扩展
 
-> 交付说明（2026-11-02）：本文保留原选择理由和扩展边界，不把规划当成绩。当前唯一授权LLM已锁定deepseek-flash，embedding固定BAAI/bge-m3；不是待选供应商。真实程序/模拟背景/fixture/实时模型模式在[交付证据](delivery-evidence.md)分别记录；[实测报告](evaluation-report.md)保留原失败，不能声称通用语义正确或最终30全通过。七项工程裁定的理由和错误代价见[决策记录](engineering-decisions.md)。专家接续、个人跨聊天记忆、传播仿真、真实企业接入仍未实现。
+> 本文是详细设计与答辩参考。当前模型为 deepseek-flash，embedding 为 BAAI/bge-m3；实际验证范围见[验证结果](implementation-status.md)，早期调整见[决策记录](engineering-decisions.md)。专家接续、跨聊天个人记忆、完整故障传播仿真与真实企业接入列为扩展。
 
 本文解释为什么这样设计、已有依据的边界，以及以后增加能力的条件。选择表中的预期收益不自动成为已验证效果；实际实现和实测另有明确记录。
 

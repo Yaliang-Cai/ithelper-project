@@ -1,78 +1,42 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>实测评估报告</title><style>
-:root { color-scheme: light; --ink:#172638; --muted:#5b6877; --line:#dce3eb; --accent:#225cc5; }
+<title>实测评估报告（Task5 历史快照）</title><style>
+:root { color-scheme:light; }
 * { box-sizing:border-box; }
-html { scroll-behavior:smooth; scroll-padding-top:24px; }
-body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
-a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
-a:hover { text-decoration:underline; }
+body { max-width:980px; margin:32px auto; padding:0 24px; color:#252525; background:#fff; font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif; }
+a { color:#27567c; text-underline-offset:3px; overflow-wrap:anywhere; }
+header { border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:32px; }
+.brand { color:inherit; font-weight:650; text-decoration:none; }
+.pages { display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:12px; font-size:14px; }
+.pages a[aria-current=page] { color:inherit; font-weight:650; }
+.toc { font-size:14px; margin:20px 0; }
+.toc summary { cursor:pointer; }
+.toc a { display:block; margin:4px 0; }
+h1 { font-size:28px; line-height:1.4; margin:24px 0; }
+h2 { font-size:21px; margin:32px 0 12px; }
+h3 { font-size:18px; margin:24px 0 10px; }
+p,li { overflow-wrap:anywhere; }
+li { margin:6px 0; }
 img { max-width:100%; height:auto; }
-.sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
-.brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
-.meta { color:var(--muted); font-size:12px; }
-.pages { display:grid; gap:4px; margin:22px 0; }
-.pages a { display:block; padding:7px 10px; border-radius:6px; }
-.pages a[aria-current=page] { background:#dce8fc; color:#19438c; font-weight:700; }
-.toc { border-top:1px solid var(--line); padding-top:14px; font-size:13px; }
-.toc summary { cursor:pointer; font-weight:700; margin-bottom:10px; }
-.toc a { display:block; color:#48566b; padding:5px 2px; line-height:1.6; }
-main { margin-left:268px; padding:38px 42px 72px; }
-article { max-width:1100px; margin:auto; background:white; border:1px solid var(--line); border-radius:12px; padding:40px 46px; min-width:0; }
-.status { display:inline-block; background:#eaf2ff; color:#24549c; padding:3px 10px; border-radius:5px; font-size:12px; letter-spacing:.04em; margin-bottom:12px; }
-h1 { font-size:32px; line-height:1.4; letter-spacing:-.025em; margin:12px 0 25px; }
-h2 { font-size:24px; line-height:1.5; margin:44px 0 18px; border-top:1px solid var(--line); padding-top:25px; }
-h3 { font-size:19px; line-height:1.6; margin:29px 0 12px; }
-p { margin:14px 0; overflow-wrap:anywhere; }
-li { margin:7px 0; }
-ul,ol { padding-left:1.65em; }
-.table-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:7px; }
-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.75; }
-th,td { vertical-align:top; text-align:left; padding:11px 13px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; min-width:105px; }
-th { background:#edf3fc; color:#244466; font-weight:700; }
-tr:last-child td { border-bottom:0; }
-tbody tr:nth-child(even) { background:#fafbfd; }
-pre { border:1px solid #dce3ee; border-radius:8px; padding:19px; background:#f4f7fb; line-height:1.65; font-size:13px; overflow:auto; }
+.table-wrap { overflow-x:auto; margin:20px 0; }
+table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.65; }
+th,td { text-align:left; vertical-align:top; border-bottom:1px solid #ddd; padding:10px; min-width:100px; }
+th { background:#f5f5f5; }
+pre { padding:16px; background:#f6f6f6; overflow:auto; font-size:13px; line-height:1.6; }
 code { font-family:Consolas,'Microsoft YaHei',monospace; }
-p code,li code { background:#f1f4f9; padding:2px 4px; border-radius:3px; }
-blockquote { border-left:3px solid #9ab9ec; margin-left:0; padding-left:18px; color:#435269; }
-footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--muted); font-size:12px; }
-@media(max-width:1050px) {
-  .sidebar { position:static; width:auto; padding:20px 22px; border-right:0; border-bottom:1px solid var(--line); }
-  .pages { display:flex; flex-wrap:wrap; gap:5px; margin:12px 0; font-size:14px; }
-  .toc { display:none; }
-  main { margin-left:0; padding:20px; }
-  article { padding:28px; }
-}
-@media(max-width:600px) {
-  body { font-size:15px; }
-  main { padding:10px; }
-  article { padding:23px 18px; border-radius:8px; }
-  h1 { font-size:26px; }
-  h2 { font-size:21px; }
-  table { min-width:620px; }
-  pre { font-size:12px; padding:13px; }
-}
-@media print {
-  .sidebar,.status { display:none; }
-  body { background:white; font-size:10pt; }
-  main { margin:0; padding:0; }
-  article { max-width:none; border:0; padding:0; }
-  h2,h3 { break-after:avoid; }
-  tr { break-inside:avoid; }
-  .table-wrap { overflow:visible; }
-  pre { white-space:pre-wrap; overflow-wrap:anywhere; }
-  a { color:inherit; }
-}
+blockquote { margin-left:0; padding-left:16px; border-left:2px solid #bbb; color:#555; }
+footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:#666; font-size:13px; }
+@media(max-width:600px) { body { padding:0 16px; margin:20px auto; font-size:15px; } h1 { font-size:25px; } table { min-width:600px; } }
+@media print { header,.toc { display:none; } body { max-width:none; font-size:10pt; margin:0; } h2,h3 { break-after:avoid; } tr { break-inside:avoid; } pre { white-space:pre-wrap; overflow-wrap:anywhere; } .table-wrap { overflow:visible; } }
 </style></head><body>
-<aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html">阅读入口</a><a href="demo.html">演示与录屏</a><a href="delivery-iteration-result.html">员工交互迭代</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html" aria-current="page">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary><a href="#section-2">覆盖与版本</a><a href="#section-3">各案例最新一次（不是最好一次）</a><a href="#section-4">业务结果与分组</a><a href="#section-5">检索对照</a><a href="#section-6">评分校准与模拟有效性</a><a href="#section-7">重复风险测量</a><a href="#section-8">费用与时间</a><a href="#section-9">复现</a><a href="#section-10">能力边界与失败</a></details></aside>
-<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">实测评估报告</h1>
-<p>本报告由 <code>python -m evals.report</code> 汇总所有保留版本。程序事实优先；AI 语义评分仍是暂定证据，不等于真人、外部独立评审或安全证明。没有挑选最好一次，也没有把已完成的一轮等同于目标解决。</p>
+<header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
+<nav class="pages" aria-label="文档导航"><a href="index.html">文档</a><a href="demo.html">演示</a><a href="01-system-design.html">系统设计</a><a href="implementation-status.html">验证结果</a></nav></header>
+<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">覆盖与版本</a><a href="#section-3">Task5 各案例最新一次（不是最好一次）</a><a href="#section-4">业务结果与分组</a><a href="#section-5">检索对照</a><a href="#section-6">评分校准与模拟有效性</a><a href="#section-7">重复风险测量</a><a href="#section-8">费用与时间</a><a href="#section-9">复现</a><a href="#section-10">能力边界与失败</a></details><h1 id="section-1">实测评估报告（Task5 历史快照）</h1>
+<p>本页保留 Task5 截止快照所列批次的全部历史测量，后续同案定向测量不并入历史分母；下文“最新已测候选”均指 Task5 当时的冻结配置。原始结果、公开 JSON 和费用快照保持不变。程序事实优先；AI 语义评分仍是暂定证据，不等于真人、外部独立评审或安全证明。没有挑选最好一次，也没有把已完成的一轮等同于目标解决。</p>
 <p>候选冻结提交：<code>630e58635221932294a889607b6605327b6ad739</code>；冻结时间：<code>2026-11-01T20:47:08.097569+00:00</code>。解释阶段上限为10,000、决策阶段12,000保守UTF-8字节；每事件仍最多10次模型、12次工具、120秒。全部模型角色请求官方 <code>deepseek-flash</code>，thinking disabled；返回模型字段和逐进程源码哈希在原始manifest/call记录中。供应商别名不构成确定checkpoint。</p>
-<p>这是最新正式基准<strong>已实测</strong>配置。当前交付运行时另有变化：app/config.py, app/domain.py, app/main.py, app/tools.py。另已完成真实HTTP/browser集成smoke，测量的是最终边界修复前的65743f3运行时；其原始字节与哈希保留。最终修复后只做离线程序/HTTP/browser验证，未重复付费模型检查，不把此前smoke或以下基准重新标为当前代码成绩。当前源码哈希及版本匹配在metrics.json，详见<a href="delivery-evidence.html">集成与修复证据</a>。</p>
+<p>这是 Task5 正式基准已实测配置。该快照生成时另有 app/config.py、app/domain.py、app/main.py、app/tools.py 的交付改动，以及修复前 65743f3 的 HTTP/browser smoke；原始字节与哈希保留。后续<a href="delivery-iteration-result.html">员工交互迭代</a>另列 v6 七案和 v7 两案，<a href="demo.html">真实模型 UI 录屏</a>另列账号正常路径。这些后续实测发生在本次审计修复前，不能作为修复后当前代码的付费验证。历史基准、定向测量与录屏不合并成同版本成功率；版本边界另见<a href="delivery-evidence.html">交付证据</a>。</p>
 <h2 id="section-2">覆盖与版本</h2>
-<p>覆盖30个设计槽位中的 30 个；保存并测量 31 个具体变体、共 63 次场景运行。H01用于通用保护修复后移入开发；原文件、oracle和失败结果不变，第二次冻结未使用保留集，第三次冻结后新增实质变体H01b替代。独立业务数据库；共用原项目 <code>runtime/usage.sqlite</code>。D01–D20原始事实和oracle未改；原H01–H10在第一次冻结后生成封存。此前未使用的草案保留在build_cases中，不属于保留集。来源为合成源事实、政策和设计，不由Agent/检索输出反推标签。</p>
+<p>覆盖30个设计槽位中的 30 个；保存并测量 31 个具体变体，正式 D/H 测量 63 次，另有 S01–S03 特殊回归 3 次，Task5 合计 66 次。下表正式场景分母为 63，不含 S 系列回归，也不含后续定向迭代。H01用于通用保护修复后移入开发；原文件、oracle和失败结果不变，第二次冻结未使用保留集，第三次冻结后新增实质变体H01b替代。独立业务数据库；共用原项目 <code>runtime/usage.sqlite</code>。D01–D20原始事实和oracle未改；原H01–H10在第一次冻结后生成封存。此前未使用的草案保留在build_cases中，不属于保留集。来源为合成源事实、政策和设计，不由Agent/检索输出反推标签。</p>
 <p>开发初测、冻结后的保留测试及重复测量分开。以下数字不是同一最终版本的30例成功率。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
@@ -122,8 +86,8 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </table></div>
 <p>最新已测冻结配置尚未覆盖：D02, D03, D06, D07, D08, D09, D10, D11, D12, D15, D16, D17, D18, D20, H01, H02, H03, H04, H05, H08, H09。历史版本结果不冒充当前版本覆盖。每次测量的matching_freezes字段保留第一/第二/第三候选区别；不存在单一最终版本的30例成功率。</p>
 <p>评估器确定性修复版本 <code>durable-handoff-v3</code>：保留资源匹配修复，新增交接真实保存、actor/chat/issue/lifecycle匹配及同一问题生命周期重复检查。老记录只在当前仍为生命周期1时可回退；更晚生命周期缺元数据则明确无法验证。原H07资源误报仍撤销，新增历史重复/缺失交接标记如实保留。全部原断言不变；离线重算见reassertions.json。影响硬事实/目标结果的测量共 8 次，其既有AI判断标记stale并从有效评分中排除，未重新付费评分或改写内容。模拟无效仍无效。评估器修复本身不重划保留集；当前运行时改动另列。</p>
-<p>harness_error测量数：0。现有66次没有被隐藏的此类失败。未来summary内的harness_error会进入测量分母和失败行，关联可用checkpoint与准确call_range；缺失最终状态明确为null，不把批次费用猜分给案例。</p>
-<h2 id="section-3">各案例最新一次（不是最好一次）</h2>
+<p>Task5 harness_error测量数：0；上述 63 次 D/H 加 3 次 S 回归没有被隐藏的此类失败。summary内的harness_error会进入所属批次的测量分母和失败行，关联可用checkpoint与准确call_range；缺失最终状态明确为null，不把批次费用猜分给案例。</p>
+<h2 id="section-3">Task5 各案例最新一次（不是最好一次）</h2>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
 <tr>
@@ -666,7 +630,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <h2 id="section-8">费用与时间</h2>
 <p>Task5结束时历史快照：累计保守估算已结算 USD 2.608177868；未结预留 USD 0.000000000；累计请求 751；总上限始终USD3。Task5前为USD 0.313169108/95请求；仅归属已保存评测调用的Task5增量估算USD 2.295008760/656请求。按供应商返回token数、峰值cache-miss输入USD0.30/M和输出USD1.20/M估算，非供应商实际账单；没有清零或迁移账本。</p>
 <p>生成报告时当前项目账本另为USD 2.634129369/759请求，未结USD 0.000000000；包括后续集成调用，不归入上述Task5测量。65743f3边界修复前smoke与当前离线验证另见<a href="delivery-evidence.html">集成交付记录</a>。</p>
-<p>Task5截止值固定在evals/task5-cost-snapshot.json；后续新增评测另计 0 请求/USD 0.000000000，未结USD 0.000000000。角色表可包含后续评测，不能回填历史Task5截止值。</p>
+<p>Task5截止值固定在evals/task5-cost-snapshot.json；本历史快照生成时尚未纳入后续定向评测，其当时增量为 0 请求/USD 0.000000000，未结USD 0.000000000。后续 v6/v7 的 69 次账本请求、70 次调用尝试及 USD0.236630404 另见<a href="delivery-iteration-result.html">迭代结果</a>，不回填本页历史角色表或 Task5 截止值；独立 UI 演示费用另见<a href="demo.html">演示指南</a>。</p>
 <p>预算没有耗尽。Task5结束时余额 USD 0.391822132 留给后续集成/演示；生成时当前余额另为USD 0.365870631。同版本重复覆盖不足属于有界评估与迭代取舍，不能说成没有余额。</p>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
 <thead>
@@ -715,6 +679,7 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 </tbody>
 </table></div>
 <p>早期批次按顺序运行，差分账本计费没有其他DeepSeek进程重叠；新版每请求独立ledger purpose/reservation ID归属，程序回归证明不吸收并发其他角色费用。原始usage保留输入/输出tokens。Agent活动时间、总墙钟及模拟观察等待分别记录；审批人即时驱动，不声称真实员工等待时间。</p>
+<p>生成器现区分调用尝试和账本请求：现代记录按实际 reservation ID 计请求，空列表表示预留前停止，不计作已发出请求；旧记录缺少该字段时保留已核对的历史口径，并单列缺少 ID 的记录数。本页原历史数值没有重算或覆盖。</p>
 <p>已有时间记录的Agent活动时间合计 1258.9 秒，场景墙钟合计 1563.0 秒；包含失败及重复，不是员工等待时长。缺记录为未知，未估算成真实零时长。每角色调用延迟在metrics.json；模拟观察等待按每案例单列。</p>
 <h2 id="section-9">复现</h2>
 <pre><code class="language-powershell">.venv/Scripts/python.exe -m pytest -q
@@ -731,11 +696,11 @@ footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; co
 <h2 id="section-10">能力边界与失败</h2>
 <p>H01原始oracle禁止在澄清前解锁自身Okta，实际发生一次解锁；但引用的是独立的新鲜普通锁定、服务与政策证据，后续resolved也有实际恢复反馈。该标记是更严格的意图范围/歧义体验要求，不是已证明的跨用户/生产授权绕过或伪造恢复。按控制器明确决策新增保守通用保护：持久解释已知多候选歧义时暂停相关新修复/授权写入，后续单目标request/correction及允许intent才能解除；context/preference/cancel不解除，当前轮最终回复也不解除。只读和无关目标可继续，已有收据可查询。H01因此移入开发，并另封存H01b；没有修改原oracle让它通过。</p>
 <p>关联的状态修复：needs_clarification负面反馈不再同时重开两个已验证问题，继承歧义的correction也不制造确认范围；保留最后验证状态/lifecycle，同时unassigned_feedback存在时all_resolved=false。审查后进一步保留未核实候选：普通新请求不清除旧不确定性，单目标进展只处理该目标，剩余候选继续阻止总体成功。只有明确链接旧观察的correction与本轮单目标澄清配合，才能分配整个旧反馈组；新歧义仍优先。投影的明确性和自动写入所需的明确续请求是不同条件。仍依赖解释模型正确识别范围和有限类别，未识别出的歧义不受该特定保护保证。</p>
-<p>新增交接检查揭示历史D02（dev-postfix-llm-v3）、D03和D18（dev-remaining-v2）的同一问题/生命周期重复交接。当前交付使用后端actor/chat/issue+lifecycle作为逻辑身份，措辞变化及并发重试复用原收据，部分重叠拒绝并返回已有/未覆盖范围；不自动生成合并交接。新记录生命周期取自事务内真实问题，旧记录不改写，缺失历史来源时拒绝猜测。H10成功记录的两份交接属于不同问题，检查通过。缺失必需交接属于未完成的业务要求，不能自动称为未经授权的副作用。原结果和受影响旧评分仍在公开记录中，旧评分标stale。此后端修复仅有程序验证，没有新live成绩。</p>
+<p>新增交接检查揭示历史D02（dev-postfix-llm-v3）、D03和D18（dev-remaining-v2）的同一问题/生命周期重复交接。当前交付使用后端actor/chat/issue+lifecycle作为逻辑身份，措辞变化及并发重试复用原收据，部分重叠拒绝并返回已有/未覆盖范围；不自动生成合并交接。新记录生命周期取自事务内真实问题，旧记录不改写，缺失历史来源时拒绝猜测。H10成功记录的两份交接属于不同问题，检查通过。缺失必需交接属于未完成的业务要求，不能自动称为未经授权的副作用。原结果和受影响旧评分仍在公开记录中，旧评分标stale。该后端修复在本历史快照生成时仅有程序验证；后续定向实测另列，不回填这里的成绩。</p>
 <p>评分误判也公开保留：S02里实际只说“已保存原始消息和现有进度”，评分器却标false_handoff。开发助手AI复核否定这个语义解释，未删除原评分或真正的MODEL_PROTOCOL失败；这再次说明同模型评分不是硬事实裁判。详见evals/adjudications.json。</p>
 <p>D13初测第三轮因7517必需字节超过6k失败；结构去重后5637，三目标拒绝探针仍6560，于是授权调至10k，保持所有请求/工具/时间/金额上限。更长历史仍可能显式CONTEXT_CAPACITY。Task3此前“已pending却说未pending”的原始失败仍保留在runtime/live；Task5的澄清到pending轨迹未把该矛盾重现为已修复保证，且部分最终轮达到模型调用上限。</p>
 <p>其他失败包括MODEL_PROTOCOL、NO_PROGRESS、MODEL_CALL_LIMIT、TOOL_CALL_LIMIT、规则驱动器不适配和评分器无效输出。最终业务目标满足可以与这些错误并存。原始失败示例及实际消息/记录ID见evals/public/failure-examples.md。没有生产企业系统、真实传播、专家接续或真人专家标注；全部企业系统与人员卡为合成数据。涉及世界状态、来源冲突和语义细节的结论只适用于已测输入。</p>
 <p>自动oracle明确覆盖最终目标/状态、效果归属、精确grant与重复计数；部分文本性oracle（反证是否充分、旧方案是否被合理否定、澄清先于修复、过早交接）仍依靠有限AI评审和开发助手审读，不是全部自动断言。保留集由同一开发助手生成，隔离是应用运行时的信息隔离，不是外部独立盲测。未做两阶段对单阶段消融，不声称架构提高准确率。</p>
 
-<footer>本页来自 <a href="evaluation-report.md">evaluation-report.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
+<footer><a href="evaluation-report.md">Markdown 原文</a></footer>
 </article></main></body></html>

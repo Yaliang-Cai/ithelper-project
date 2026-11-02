@@ -2,7 +2,7 @@
 
 > 当前契约：严格提议见[contracts.py](../app/contracts.py)，业务工具 Schema 见[catalog.py](../app/catalog.py)，执行逻辑见[tools.py](../app/tools.py)，HTTP 见[main.py](../app/main.py)。本文整理输出与终结 JSON 按当前 Schema 编写；示意 ID 不是真实可执行凭据。输入示例仅为摘录。运行提示词唯一来源为[prompts.py](../app/prompts.py)，下文中文用于解释职责，不另维护可执行提示词。
 
-本文解释每步如何组织上下文、限制提议和保存记录。当前实现有程序验证和部分真实测量；结构合法仍可能解释错误，成绩与限制见[实测报告](evaluation-report.md)。默认 10 模型请求/12 非终结工具/120 秒，第十次仅 submit_turn。10k/12k 为业务上下文的保守 UTF-8 字节目标，不含整个原生请求；完整预算口径见[系统设计](01-system-design.md)。
+本文解释每步如何组织上下文、限制提议和保存记录。结构合法仍可能解释错误，当前成绩与限制见[验证结果](implementation-status.md)。默认 10 模型请求/12 非终结工具/120 秒，第十次仅 submit_turn。10k/12k 为业务上下文的保守 UTF-8 字节目标，不含整个原生请求；完整预算口径见[系统设计](01-system-design.md)。
 
 ## 1 一次消息如何经过系统
 

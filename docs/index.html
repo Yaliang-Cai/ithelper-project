@@ -1,88 +1,53 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IT Helpdesk Agent 文档入口</title><style>
-:root { color-scheme: light; --ink:#172638; --muted:#5b6877; --line:#dce3eb; --accent:#225cc5; }
+<title>项目文档</title><style>
+:root { color-scheme:light; }
 * { box-sizing:border-box; }
-html { scroll-behavior:smooth; scroll-padding-top:24px; }
-body { margin:0; color:var(--ink); background:#f5f7fb; font:16px/1.85 'Microsoft YaHei','PingFang SC',sans-serif; }
-a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
-a:hover { text-decoration:underline; }
+body { max-width:980px; margin:32px auto; padding:0 24px; color:#252525; background:#fff; font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif; }
+a { color:#27567c; text-underline-offset:3px; overflow-wrap:anywhere; }
+header { border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:32px; }
+.brand { color:inherit; font-weight:650; text-decoration:none; }
+.pages { display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:12px; font-size:14px; }
+.pages a[aria-current=page] { color:inherit; font-weight:650; }
+.toc { font-size:14px; margin:20px 0; }
+.toc summary { cursor:pointer; }
+.toc a { display:block; margin:4px 0; }
+h1 { font-size:28px; line-height:1.4; margin:24px 0; }
+h2 { font-size:21px; margin:32px 0 12px; }
+h3 { font-size:18px; margin:24px 0 10px; }
+p,li { overflow-wrap:anywhere; }
+li { margin:6px 0; }
 img { max-width:100%; height:auto; }
-.sidebar { position:fixed; inset:0 auto 0 0; width:268px; padding:30px 22px; background:#edf2f9; border-right:1px solid var(--line); overflow:auto; }
-.brand { font-size:18px; font-weight:700; line-height:1.6; margin-bottom:6px; }
-.meta { color:var(--muted); font-size:12px; }
-.pages { display:grid; gap:4px; margin:22px 0; }
-.pages a { display:block; padding:7px 10px; border-radius:6px; }
-.pages a[aria-current=page] { background:#dce8fc; color:#19438c; font-weight:700; }
-.toc { border-top:1px solid var(--line); padding-top:14px; font-size:13px; }
-.toc summary { cursor:pointer; font-weight:700; margin-bottom:10px; }
-.toc a { display:block; color:#48566b; padding:5px 2px; line-height:1.6; }
-main { margin-left:268px; padding:38px 42px 72px; }
-article { max-width:1100px; margin:auto; background:white; border:1px solid var(--line); border-radius:12px; padding:40px 46px; min-width:0; }
-.status { display:inline-block; background:#eaf2ff; color:#24549c; padding:3px 10px; border-radius:5px; font-size:12px; letter-spacing:.04em; margin-bottom:12px; }
-h1 { font-size:32px; line-height:1.4; letter-spacing:-.025em; margin:12px 0 25px; }
-h2 { font-size:24px; line-height:1.5; margin:44px 0 18px; border-top:1px solid var(--line); padding-top:25px; }
-h3 { font-size:19px; line-height:1.6; margin:29px 0 12px; }
-p { margin:14px 0; overflow-wrap:anywhere; }
-li { margin:7px 0; }
-ul,ol { padding-left:1.65em; }
-.table-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:7px; }
-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.75; }
-th,td { vertical-align:top; text-align:left; padding:11px 13px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; min-width:105px; }
-th { background:#edf3fc; color:#244466; font-weight:700; }
-tr:last-child td { border-bottom:0; }
-tbody tr:nth-child(even) { background:#fafbfd; }
-pre { border:1px solid #dce3ee; border-radius:8px; padding:19px; background:#f4f7fb; line-height:1.65; font-size:13px; overflow:auto; }
+.table-wrap { overflow-x:auto; margin:20px 0; }
+table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.65; }
+th,td { text-align:left; vertical-align:top; border-bottom:1px solid #ddd; padding:10px; min-width:100px; }
+th { background:#f5f5f5; }
+pre { padding:16px; background:#f6f6f6; overflow:auto; font-size:13px; line-height:1.6; }
 code { font-family:Consolas,'Microsoft YaHei',monospace; }
-p code,li code { background:#f1f4f9; padding:2px 4px; border-radius:3px; }
-blockquote { border-left:3px solid #9ab9ec; margin-left:0; padding-left:18px; color:#435269; }
-footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--muted); font-size:12px; }
-@media(max-width:1050px) {
-  .sidebar { position:static; width:auto; padding:20px 22px; border-right:0; border-bottom:1px solid var(--line); }
-  .pages { display:flex; flex-wrap:wrap; gap:5px; margin:12px 0; font-size:14px; }
-  .toc { display:none; }
-  main { margin-left:0; padding:20px; }
-  article { padding:28px; }
-}
-@media(max-width:600px) {
-  body { font-size:15px; }
-  main { padding:10px; }
-  article { padding:23px 18px; border-radius:8px; }
-  h1 { font-size:26px; }
-  h2 { font-size:21px; }
-  table { min-width:620px; }
-  pre { font-size:12px; padding:13px; }
-}
-@media print {
-  .sidebar,.status { display:none; }
-  body { background:white; font-size:10pt; }
-  main { margin:0; padding:0; }
-  article { max-width:none; border:0; padding:0; }
-  h2,h3 { break-after:avoid; }
-  tr { break-inside:avoid; }
-  .table-wrap { overflow:visible; }
-  pre { white-space:pre-wrap; overflow-wrap:anywhere; }
-  a { color:inherit; }
-}
+blockquote { margin-left:0; padding-left:16px; border-left:2px solid #bbb; color:#555; }
+footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:#666; font-size:13px; }
+@media(max-width:600px) { body { padding:0 16px; margin:20px auto; font-size:15px; } h1 { font-size:25px; } table { min-width:600px; } }
+@media print { header,.toc { display:none; } body { max-width:none; font-size:10pt; margin:0; } h2,h3 { break-after:avoid; } tr { break-inside:avoid; } pre { white-space:pre-wrap; overflow-wrap:anywhere; } .table-wrap { overflow:visible; } }
 </style></head><body>
-<aside class="sidebar"><div class="brand">IT Helpdesk Agent</div><div class="meta">方案设计 · 2026.11.02</div>
-<nav class="pages" aria-label="文档导航"><a href="index.html" aria-current="page">阅读入口</a><a href="demo.html">演示与录屏</a><a href="delivery-iteration-result.html">员工交互迭代</a><a href="01-system-design.html">01 系统设计</a><a href="02-evaluation.html">02 评估设计</a><a href="03-defense-and-extensions.html">03 答辩与扩展</a><a href="04-prompts-and-contracts.html">04 提示词与契约</a><a href="implementation-status.html">实际实现状态</a><a href="evaluation-report.html">真实评测报告</a><a href="delivery-evidence.html">集成交付证据</a><a href="engineering-decisions.html">七项工程裁定</a></nav><details class="toc" open><summary>本页目录</summary></details></aside>
-<main><article><div class="status">设计与实测分开 · <a href="implementation-status.html">实现状态</a> · <a href="evaluation-report.html">真实评测</a> · <a href="delivery-evidence.html">集成证据</a></div><h1 id="section-1">IT Helpdesk Agent 文档入口</h1>
-<p><a href="../README.md">根README：安装、账号、运行与边界</a>。源码与脱敏证据随仓库分享；应用仅在本机运行。</p>
-<p>当前入口：<a href="demo.html">演示指南与真实模型录屏</a>、<a href="delivery-iteration-result.html">员工交互迭代结果</a>。当前 v7 仅复测 D05/D09；以下历史报告保留各自版本与费用快照。</p>
-<p>继续开发先读<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>：当前代码职责、校验归属、数据覆盖、按变更选测试、自然交互验收和提升依据。它替代旧的未勾选任务清单，原计划可从 Git 历史查阅。</p>
-<ol>
-<li><a href="implementation-status.html">实现状态</a>：当前行为、默认值、费用和限制。</li>
-<li><a href="evaluation-report.html">真实评测报告</a>：历史版本、实际模式、分子/分母、失败与未测。</li>
-<li><a href="delivery-evidence.html">集成交付证据</a>：新输入真实HTTP/browser smoke、重启、原题逐项映射。</li>
-<li><a href="engineering-decisions.html">七项工程裁定</a>：理由及判断错误代价，与用户确认产品选择分开。</li>
-<li><a href="01-system-design.html">系统设计</a>：需求、架构、状态、来源、政策与执行。</li>
-<li><a href="02-evaluation.html">评估设计</a>：30设计槽位、驱动器、断言、评分和实验口径。</li>
-<li><a href="03-defense-and-extensions.html">答辩与扩展</a>：选择依据与未实现扩展。</li>
-<li><a href="04-prompts-and-contracts.html">提示词与契约</a>：实际提议Schema示例、阶段职责和语义局限。</li>
-</ol>
-<p><img alt="实际架构" src="architecture.svg"/></p>
-<p>设计文件保留选择理由和扩展条件，当前接口与预算已按代码校对；输入摘录和设计目标不代表已通过成绩。HTML来自Markdown，入口index.html。可选文档工具：pip install markdown-it-py beautifulsoup4，然后从仓库根执行python docs/_tools/render_docs.py。原题见<a href="../agentic_ai_take_home_candidate_instructions_v20260421_01.html">候选题目</a>。</p>
+<header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
+<nav class="pages" aria-label="文档导航"><a href="index.html" aria-current="page">文档</a><a href="demo.html">演示</a><a href="01-system-design.html">系统设计</a><a href="implementation-status.html">验证结果</a></nav></header>
+<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">建议阅读</a><a href="#section-3">实测记录</a><a href="#section-4">开发与答辩参考</a></details><h1 id="section-1">项目文档</h1>
+<p>提交时以仓库根目录的 <a href="../README.md">README</a> 为入口。原题要求可运行代码、README 和面试演示；本目录的 HTML 只是 Markdown 的本地阅读版本，不需要单独提交整个文档站。</p>
+<h2 id="section-2">建议阅读</h2>
+<ul>
+<li><a href="demo.html">演示说明</a>：录屏、登录账号与现场操作。</li>
+<li><a href="implementation-status.html">验证结果与限制</a>：哪些能力已运行，哪些结论仍缺证据。</li>
+<li><a href="01-system-design.html">系统设计</a>：模块分工、数据、状态和执行边界。需要详细技术说明时查阅。</li>
+</ul>
+<h2 id="section-3">实测记录</h2>
+<ul>
+<li><a href="delivery-iteration-result.html">当前提示词迭代</a>：v6 的七案测量、v7 的两案复测及失败原文。</li>
+<li><a href="evaluation-report.html">历史评测</a>：较早版本的场景、检索对照与评分记录。</li>
+<li><a href="delivery-evidence.html">集成记录</a>：浏览器、重启、CI 修复和原题对应关系。</li>
+</ul>
+<h2 id="section-4">开发与答辩参考</h2>
+<p><a href="02-evaluation.html">评估设计</a>、<a href="04-prompts-and-contracts.html">提示词与契约</a>、<a href="03-defense-and-extensions.html">取舍与扩展</a>、<a href="engineering-decisions.html">工程决策记录</a>、<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>。这些是详细参考，不要求评审逐页阅读。</p>
+<p>HTML 由 Markdown 生成。修改文档后可运行 <code>python docs/_tools/render_docs.py</code>，需要 <code>markdown-it-py</code> 和 <code>beautifulsoup4</code>。原题：<a href="../agentic_ai_take_home_candidate_instructions_v20260421_01.html">Candidate Instructions</a>。</p>
 
-<footer>本页来自 <a href="README.md">README.md</a>。本文区分已确认选择、工程默认值与未来扩展；评估方案不代表已取得的成绩。</footer>
+<footer><a href="README.md">Markdown 原文</a></footer>
 </article></main></body></html>

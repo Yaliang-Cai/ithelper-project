@@ -1,6 +1,6 @@
 # IT Helpdesk Agent 系统设计
 
-> 当前实现按 `e662abf` 代码校对。本文说明用户目标、模块职责、数据与执行边界；运行方式见[README](../README.md)，开发步骤见[开发与测试流程](superpowers/plans/2026-11-02-helpdesk-implementation.md)，真实成绩和未测范围见[实测报告](evaluation-report.md)。示意 ID 不是真实执行凭据。
+> 本文说明用户目标、模块职责、数据与执行边界。运行方式见[README](../README.md)，维护方法见[开发与测试流程](superpowers/plans/2026-11-02-helpdesk-implementation.md)，当前验证范围见[验证结果](implementation-status.md)。示意 ID 不是真实执行凭据。
 
 本系统面向遇到 IT 问题的员工，通过多轮交流、后台查询和受约束的操作推进解决过程。它使用一个业务 Agent，由自定义控制循环驱动；语义理解、状态存储、权限校验和工具执行分工明确。
 

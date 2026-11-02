@@ -1,10 +1,18 @@
-# 本地集成交付证据
+# 集成与修复记录
 
 2026-11-02（Asia/Shanghai）。本页保留 65743f3 的集成检查与随后边界修复的离线验证；正式评测仍为历史版本测量，没有真人专家或真实企业系统。源码现随 GitHub 仓库分享，应用仍仅在本机运行。
 
 新增 v6 `5055722` 的七次定向实测及最终 v7 `baca519` 的 D05/D09 配对检查另见[员工交互迭代结果](delivery-iteration-result.md)、[v6 证据](evidence/delivery-iteration-v6.json)和[v7 证据](evidence/delivery-iteration-v7.json)。这是单独的新证据，含未完成、无效模拟和评测余量停止；不替换本页旧 smoke 或正式历史汇总，最终 v7 不继承 v6 的五类覆盖。
 
 当前 v7 的[真实模型 UI 录屏与讲解](demo.md)、[消息与费用](evidence/demo-v7-recording/demo-v7.json)、[本次重启核对](evidence/task2-restart.json)独立保存；不覆盖下面的历史 smoke、截图或费用快照。
+
+## 0.1.2：复发验收与报告统计修正
+
+按原题再次检查发现三处错误：复发症状未使较早恢复反馈失效；同一问题再次操作后，追加指导沿用了首次操作的反馈门槛；报告把一次预算预留前停止计为实际请求。前两处只修改 `app/domain.py` 的现有条件，第三处修改 `evals/report.py`，同时固定 Task5 历史批次分母、区分后续测量。
+
+新增四项回归均先失败再通过。集成验证为 **218 passed（45.48 秒）**，**31 个案例变体结构有效**。只读重算后续两批评测为 70 次尝试、69 次账本请求、US$0.236630404。原始案例、公开结果 JSON、费用快照与媒体未改；本轮无新增付费调用。v7 两案及录屏是本次验收修复前的实测，不能视作修复后模型效果验证。
+
+README、演示说明和结果摘要已按提交用途整理，详细设计保留为参考。文档 HTML 改为简单阅读排版，不是单独交付要求。提交后的运行结果见[GitHub CI](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml)。
 
 ## 0.1.1：托管 CI 的换行可移植性修正
 

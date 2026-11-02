@@ -549,3 +549,53 @@ def test_reopened_lifecycle_requires_its_own_precise_approval(env):
     assert stale['error']['code']=='APPROVAL_REQUIRED'
     domain.decide_approval('pat.approver',fresh['id'],'approved')
     assert call(env,'grant_catalog_access',**grant,approval_id=fresh['id'])['ok']
+
+
+def test_recurrent_symptom_rejects_old_recovery_but_accepts_newer_feedback(env):
+    domain=env[1];issue=env[4]
+    assert call(env,'grant_catalog_access',issue_id=issue,resource_id='grafana.sales',permission='read')['ok']
+    access=call(env,'inspect_access',resource_id='grafana.sales')['evidence'][0]['id']
+    recovered=feedback(env,issue,'Grafana is working','first-recovery')
+    domain.apply_issue_updates('alice.sales',env[3],[proposal(env,issue,[access,recovered])])
+
+    feedback(env,issue,'Grafana will not load again','recurrent-symptom','symptom')
+    current=domain.snapshot('alice.sales',env[3])['issues'][0]
+    assert current['status']=='investigating' and current['lifecycle']==2
+    with pytest.raises(DomainError,match='PRECONDITION_FAILED'):
+        domain.apply_issue_updates('alice.sales',env[3],[proposal(env,issue,[access,recovered])])
+    assert domain.snapshot('alice.sales',env[3])['issues'][0]==current
+
+    later=feedback(env,issue,'Grafana is working again now','later-recovery')
+    domain.apply_issue_updates('alice.sales',env[3],[proposal(env,issue,[access,later])])
+    assert domain.snapshot('alice.sales',env[3])['issues'][0]['status']=='resolved'
+
+
+def test_repeated_lifecycle_action_requires_new_failure_before_other_guidance(env):
+    from app.seed import knowledge_documents
+    domain=env[1]
+    issue=domain.create_issue('alice.sales',env[3],'Login',['okta'],'login_recovery')['id']
+    first=call(env,'unlock_account',issue_id=issue,service_id='okta')
+    assert first['ok']
+    recovered=feedback(env,issue,'Login works','login-recovery')
+    account=call(env,'inspect_account',service_id='okta')['evidence'][0]['id']
+    domain.apply_issue_updates('alice.sales',env[3],[proposal(env,issue,[account,recovered])])
+
+    feedback(env,issue,'Cannot log in again','login-recurrence','reported_failure')
+    second=call(env,'unlock_account',issue_id=issue,service_id='okta')
+    assert second['ok'] and second['action_id']!=first['action_id']
+    assert call(env,'unlock_account',issue_id=issue,service_id='okta')['action_id']==second['action_id']
+    assert call(env,'inspect_account',service_id='okta')['data']['unlock_count']==2
+    article=next(a for a in knowledge_documents() if a['id']=='kb.account-browser')
+    kb=domain.persist_evidence('alice.sales',env[3],'kb',article['id'],article['revision'],article,{'service_id':'okta'})['id']
+    before=domain.snapshot('alice.sales',env[3])['attempts']
+    with pytest.raises(DomainError,match='WAITING_FOR_ATTEMPT_FEEDBACK'):
+        domain.record_attempt('alice.sales',env[3],issue,'browser_private_window',{},[kb])
+    assert domain.snapshot('alice.sales',env[3])['attempts']==before
+
+    feedback(env,env[4],'Grafana still fails','other-goal-failure','reported_failure')
+    with pytest.raises(DomainError,match='WAITING_FOR_ATTEMPT_FEEDBACK'):
+        domain.record_attempt('alice.sales',env[3],issue,'browser_private_window',{},[kb])
+    feedback(env,issue,'Login still fails after the new unlock','new-unlock-failure','reported_failure')
+    guidance=domain.record_attempt('alice.sales',env[3],issue,'browser_private_window',{},[kb])
+    assert guidance['outcome']=='guidance_offered'
+    assert article['text'] in guidance['reviewed_steps']

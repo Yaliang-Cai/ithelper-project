@@ -216,10 +216,11 @@ class Domain:
             require(len(prior)<2,'ATTEMPT_LIMIT','Two distinct repair paths already attempted')
             if prior:
                 require(bool(set(evidence_refs)-{ref for row in prior for ref in row.get('evidence_refs',[])}),'NO_APPLICABLE_EVIDENCE','Another remedy requires new evidence')
-                previous=prior[-1];sequence=previous.get('after_message_sequence',0)
-                if previous.get('action_id'):
-                    action=unpack(c.execute('SELECT * FROM actions WHERE id=?',(previous['action_id'],)).fetchone())
-                    sequence=action['receipt']['after_message_sequence']
+                # Distinct-remedy records are reused across issue lifecycles.
+                # Every later execution still needs its own failure feedback.
+                actions=[unpack(r) for r in c.execute('SELECT * FROM actions WHERE issue_id=?',(issue_id,))]
+                sequence=max([r.get('after_message_sequence',0) for r in prior]+
+                             [a['receipt'].get('after_message_sequence',0) for a in actions]+[0])
                 failures=[unpack(r) for r in c.execute('SELECT o.* FROM observations o JOIN messages m ON m.id=o.message_id WHERE o.conversation_id=? AND m.rowid>?',(conversation_id,sequence))]
                 require(any(issue_id in o['issue_refs'] and o.get('status')=='active' and o['category'] in ('reported_failure','symptom','correction') and o.get('mapping_status')=='tentative' for o in failures),'WAITING_FOR_ATTEMPT_FEEDBACK','Verify the previous remedy first; a different guidance path requires later issue-bound failure feedback')
             aid=new_id('ATTEMPT');payload={'normalized_parameters':normalized_parameters,'evidence_refs':evidence_refs,'outcome':'guidance_offered','reviewed_steps':[article['text'] for article in valid],
@@ -475,11 +476,11 @@ class Domain:
         prior_attempts=[unpack(r) for r in c.execute('SELECT * FROM attempts WHERE issue_id=?',(issue['id'],))]
         after=max([a['receipt'].get('after_message_sequence',0) for a in prior_actions]+[a.get('after_message_sequence',0) for a in prior_attempts]+[0])
         feedback=[r for r in feedback if sequence(r)>after]
-        # A later failure/correction invalidates an earlier recovery report.
+        # The same recurrence categories that reopen a goal invalidate older recovery.
         if feedback:
             latest=max(sequence(r) for r in feedback)
             failures=[unpack(r) for r in c.execute('SELECT * FROM observations WHERE conversation_id=?',(issue['conversation_id'],))]
-            require(not any(issue['id'] in r['issue_refs'] and r['status']=='active' and r['category'] in ('reported_failure','correction') and sequence(r)>=latest for r in failures),'PRECONDITION_FAILED','Conflicting feedback')
+            require(not any(issue['id'] in r['issue_refs'] and r['status']=='active' and r['category'] in ('reported_failure','symptom','correction') and sequence(r)>=latest for r in failures),'PRECONDITION_FAILED','Conflicting feedback')
         evidence=[r for t,r in refs if t=='evidence']
         if criterion in ('precise_access','access_and_user_verification'):
             resource=issue.get('resource_id')

@@ -1,4 +1,4 @@
-"""Read-only aggregation of every saved version; never choose best stochastic runs."""
+"""Aggregate saved evidence; keep Task5 outcomes separate from later measurements."""
 import json
 import hashlib
 import re
@@ -13,8 +13,13 @@ START_SPEND=0.313169108
 START_REQUESTS=95
 CRITICAL=['D04','D13','D14','D19','H01b','H06','H07','H10']
 
+def task5_measurements(rows):
+    """Use the recorded cutoff batches, not case IDs repeated in later tuning."""
+    batches=set(json.loads(TASK5_SNAPSHOT.read_text(encoding='utf-8'))['recorded_batches'])
+    return [r for r in rows if r['batch'] in batches]
+
 def measurement_costs(roles):
-    """Attribute only saved evaluation calls, never a global-ledger delta."""
+    """Attribute saved ledger requests, excluding attempts blocked before reserve."""
     return {'calls':sum(v['calls'] for v in roles.values()),
             'settled_estimate_usd':round(sum(v['estimated_spend_usd'] for v in roles.values()),9),
             'unsettled_reservations_usd':round(sum(v['uncertain_reserved_usd'] for v in roles.values()),9)}
@@ -93,9 +98,16 @@ def collect():
                     'goal_checks':assertions['goals'],'oracle_goals':case['oracle'].get('goals',[]),'agent_active_seconds':sum(r.get('elapsed_seconds',0) for r in state['runs']),'evidence_sources':sorted({e['source'] for e in state['evidence']}),'grader_invalid_response':d.get('grader_invalid_response')}
             rows.append(record)
     rows.sort(key=lambda r:(r['timestamp'],r['batch'],r['case_id']))
-    roles=defaultdict(lambda:{'calls':0,'prompt_tokens':0,'completion_tokens':0,'estimated_spend_usd':0.,'uncertain_reserved_usd':0.,'latency_seconds':0.})
+    roles=defaultdict(lambda:{'calls':0,'attempted_calls':0,'legacy_calls_without_reservation_ids':0,'prompt_tokens':0,'completion_tokens':0,'estimated_spend_usd':0.,'uncertain_reserved_usd':0.,'latency_seconds':0.})
     for c in all_calls:
-        item=roles[c['purpose']];item['calls']+=1;item['prompt_tokens']+=c.get('usage',{}).get('prompt_tokens',0);item['completion_tokens']+=c.get('usage',{}).get('completion_tokens',0);item['estimated_spend_usd']+=c['estimated_spend_usd'];item['uncertain_reserved_usd']+=c['reservation_delta_usd'];item['latency_seconds']+=c['latency_seconds']
+        item=roles[c['purpose']];item['attempted_calls']+=1
+        if 'ledger_reservation_ids' in c:
+            item['calls']+=len(set(c['ledger_reservation_ids']))
+        else:
+            # Early sequential batches used reviewed ledger deltas and lack IDs.
+            # An explicit empty modern ID list means no request was reserved.
+            item['calls']+=1;item['legacy_calls_without_reservation_ids']+=1
+        item['prompt_tokens']+=c.get('usage',{}).get('prompt_tokens',0);item['completion_tokens']+=c.get('usage',{}).get('completion_tokens',0);item['estimated_spend_usd']+=c['estimated_spend_usd'];item['uncertain_reserved_usd']+=c['reservation_delta_usd'];item['latency_seconds']+=c['latency_seconds']
     save(ROOT/'evals/public/reassertions.json',{'version':ASSERTION_VERSION,'evaluator_sha256':hashlib.sha256((ROOT/'evals/runner.py').read_bytes()).hexdigest(),'method':'Offline deterministic checks on unchanged saved states and original oracles. No new Agent or grader calls. Affected prior AI judgments are stale, not rescored.','rows':reassertions})
     save(ROOT/'evals/public/manifests.json',{'runs':manifests,'explicitly_unrun':unrun})
     return rows,dict(roles),calibration,frozen
@@ -124,7 +136,8 @@ def business_metrics(rows):
             'semantic_unjudged':sum(r['semantic_flags'] is None for r in valid)}
 
 def main():
-    rows,roles,calibration,frozen=collect();formal=[r for r in rows if not r['case_id'].startswith('S')];latest={};first={}
+    collected,roles,calibration,frozen=collect();rows=task5_measurements(collected);calibration=task5_measurements(calibration)
+    formal=[r for r in rows if not r['case_id'].startswith('S')];latest={};first={}
     for r in formal:latest[r['case_id']]=r;first.setdefault(r['case_id'],r)
     final=[r for r in formal if r['frozen_profile']];baseline=[r for r in first.values() if r['case_id'].startswith('D')]
     current_ledger=BudgetLedger(LEDGER_PATH).report()
@@ -133,7 +146,7 @@ def main():
     ledger=scopes['task5']['end_ledger']
     repeat={c:{'all_versions':sum(r['case_id']==c for r in formal),'frozen_profile':sum(r['case_id']==c for r in final)} for c in CRITICAL}
     delivered_hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in ROOT.glob('app/*.py')}
-    delivery={'latest_measured_freeze':'freeze-v3.json','latest_measured_git_head':frozen['git_head'],'delivered_runtime_hashes':delivered_hashes,'runtime_files_changed_since_measurement':[p for p,h in delivered_hashes.items() if frozen['hashes'].get(p)!=h],'current_delivery_live_measurements':0,'validation':'Formal benchmarks remain historical; completed65743f3 live smoke is pre-hardening evidence. Current runtime has offline program/HTTP/browser validation only.'}
+    delivery={'latest_measured_freeze':'freeze-v3.json','latest_measured_git_head':frozen['git_head'],'delivered_runtime_hashes':delivered_hashes,'runtime_files_changed_since_measurement':[p for p,h in delivered_hashes.items() if frozen['hashes'].get(p)!=h],'current_delivery_live_measurements':0,'validation':'Task5 outcomes remain historical. Later targeted v6/v7 measurements and the separate UI recording are linked below; later source changes do not inherit their live validation.','live_measurement_count_scope':'Collected evaluation scenarios whose app source hashes match the current checkout; excludes the separately recorded UI demo.','separate_evidence':['docs/delivery-iteration-result.md','docs/demo.md']}
     smoke_path=ROOT/'docs/evidence/delivery-smoke.json'
     if smoke_path.exists():
         smoke=json.loads(smoke_path.read_text(encoding='utf-8'))
@@ -141,22 +154,24 @@ def main():
         delivery['integration_smoke']['measured_runtime_revision']='65743f3'
         delivery['integration_smoke']['runtime_files_changed_since_smoke']=[p for p,h in smoke['runtime_hashes'].items() if not (ROOT/p).exists() or hashlib.sha256((ROOT/p).read_bytes()).hexdigest()!=h]
     manifest_by_batch={m['batch']:m['process_start_manifest'] for m in json.loads((ROOT/'evals/public/manifests.json').read_text(encoding='utf-8'))['runs']}
-    delivery['current_delivery_live_measurements']=sum(all(manifest_by_batch.get(r['batch'],{}).get('hashes',{}).get(p)==h for p,h in delivered_hashes.items()) for r in rows)
+    delivery['current_delivery_live_measurements']=sum(all(manifest_by_batch.get(r['batch'],{}).get('hashes',{}).get(p)==h for p,h in delivered_hashes.items()) for r in collected)
     summary={'ledger':ledger,'task5_settled_estimate_usd':ledger['spent_usd']-START_SPEND,'task5_request_delta':ledger['requests']-START_REQUESTS,'roles':roles,'coverage':sorted(first),'design_slots_covered':len({c[:3] for c in first}),'original_H01_moved_to_development':True,'replacement_measured':'H01b' in first,'initial_development_mixed_versions':metrics(baseline),'frozen_profile_all_measurements':metrics(final),'all_formal_versions_descriptive_only':metrics(formal),'critical_repeats':repeat,'calibration':[{'batch':c['batch'],'matched':c['matched'],'total':c['total']} for c in calibration],
              'frozen_missing_cases':sorted(set(first)-{r['case_id'] for r in final}),'business_program_proxies_latest_candidate':business_metrics(final),'grade_scores_provisional':True,'no_single_final_30_case_success_rate':True}
     summary['delivery_vs_measurement']=delivery
+    summary['measurement_scope']={'outcomes':'Task5 recorded_batches only','formal_dh_runs':len(formal),'special_regression_runs':len(rows)-len(formal),'total_runs':len(rows),'later_batches_excluded_from_task5_outcomes':sorted({r['batch'] for r in collected}-{r['batch'] for r in rows})}
+    summary['evaluation_call_accounting']={'attempted_calls':sum(v['attempted_calls'] for v in roles.values()),'ledger_requests':sum(v['calls'] for v in roles.values()),'legacy_calls_without_reservation_ids':sum(v['legacy_calls_without_reservation_ids'] for v in roles.values())}
     summary['current_project_ledger']=current_ledger
     summary['subsequent_evaluation_costs']=scopes['subsequent_evaluations']
     summary['task5_cost_snapshot']='evals/task5-cost-snapshot.json'
-    summary['cost_scope']='ledger and Task5 deltas use immutable Task5-end snapshot; roles include all collected evaluations; subsequent_evaluation_costs separately reports later evaluation calls; current_project_ledger also includes integration'
+    summary['cost_scope']='Task5 outcomes and cost cutoff use recorded snapshot batches; roles include all collected evaluations. calls counts reservation IDs, or the reviewed historical count when IDs are absent; attempted_calls also retains pre-reservation blocks. Subsequent costs are separate; current_project_ledger also includes integration.'
     summary['harness_error_measurements']=sum(r.get('measurement_status')=='harness_error' for r in rows)
     summary['stale_judgments']=[{'batch':r['batch'],'case_id':r['case_id']} for r in rows if r['grader_stale']]
     save(ROOT/'evals/public/metrics.json',summary);save(ROOT/'evals/public/runs.json',rows);save(ROOT/'evals/public/calibration.json',calibration)
     retrieval=json.loads((ROOT/'evals/results/retrieval-v1/retrieval.json').read_text(encoding='utf-8'));save(ROOT/'evals/public/retrieval.json',retrieval)
-    lines=['# 实测评估报告','', '本报告由 `python -m evals.report` 汇总所有保留版本。程序事实优先；AI 语义评分仍是暂定证据，不等于真人、外部独立评审或安全证明。没有挑选最好一次，也没有把已完成的一轮等同于目标解决。','',
+    lines=['# 实测评估报告（Task5 历史快照）','', '本报告由 `python -m evals.report` 汇总 Task5 截止快照所列批次的全部保留版本；后续同案定向测量不并入历史结果分母，费用另列。下文“最新已测候选”均指 Task5 当时的冻结配置。程序事实优先；AI 语义评分仍是暂定证据，不等于真人、外部独立评审或安全证明。没有挑选最好一次，也没有把已完成的一轮等同于目标解决。','',
            f"候选冻结提交：`{frozen['git_head']}`；冻结时间：`{frozen['timestamp']}`。解释阶段上限为10,000、决策阶段12,000保守UTF-8字节；每事件仍最多10次模型、12次工具、120秒。全部模型角色请求官方 `deepseek-flash`，thinking disabled；返回模型字段和逐进程源码哈希在原始manifest/call记录中。供应商别名不构成确定checkpoint。",'',
-           f"这是最新正式基准**已实测**配置。当前交付运行时另有变化：{', '.join(delivery['runtime_files_changed_since_measurement'])}。另已完成真实HTTP/browser集成smoke，测量的是最终边界修复前的65743f3运行时；其原始字节与哈希保留。最终修复后只做离线程序/HTTP/browser验证，未重复付费模型检查，不把此前smoke或以下基准重新标为当前代码成绩。当前源码哈希及版本匹配在metrics.json，详见[集成与修复证据](delivery-evidence.md)。",'',
-           '## 覆盖与版本','',f"覆盖30个设计槽位中的 {len({c[:3] for c in first})} 个；保存并测量 {len(first)} 个具体变体、共 {len(formal)} 次场景运行。H01用于通用保护修复后移入开发；原文件、oracle和失败结果不变，第二次冻结未使用保留集，第三次冻结后新增实质变体H01b替代。独立业务数据库；共用原项目 `runtime/usage.sqlite`。D01–D20原始事实和oracle未改；原H01–H10在第一次冻结后生成封存。此前未使用的草案保留在build_cases中，不属于保留集。来源为合成源事实、政策和设计，不由Agent/检索输出反推标签。",'',
+           f"这是 Task5 正式基准已实测配置。当前应用相对该冻结版本变化的文件：{', '.join(delivery['runtime_files_changed_since_measurement']) or '无'}。65743f3 的修复前 HTTP/browser smoke 原始字节与哈希保留。后续[员工交互迭代](delivery-iteration-result.md)另列 v6 七案和 v7 两案，[真实模型 UI 录屏](demo.md)另列账号正常路径；这些发生在本次审计修复前，不代表修复后当前代码已获付费验证。历史基准、定向测量与录屏不合并成同版本成功率。版本边界另见[交付证据](delivery-evidence.md)。",'',
+           '## 覆盖与版本','',f"覆盖30个设计槽位中的 {len({c[:3] for c in first})} 个；保存并测量 {len(first)} 个具体变体，正式 D/H 测量 {len(formal)} 次，另有 S 系列特殊回归 {len(rows)-len(formal)} 次，Task5 合计 {len(rows)} 次。H01用于通用保护修复后移入开发；原文件、oracle和失败结果不变，第二次冻结未使用保留集，第三次冻结后新增实质变体H01b替代。独立业务数据库；共用原项目 `runtime/usage.sqlite`。D01–D20原始事实和oracle未改；原H01–H10在第一次冻结后生成封存。此前未使用的草案保留在build_cases中，不属于保留集。来源为合成源事实、政策和设计，不由Agent/检索输出反推标签。",'',
            '开发初测、冻结后的保留测试及重复测量分开。以下数字不是同一最终版本的30例成功率。','',
            '| 分组 | 测量次数 | 程序目标满足 | 硬检查失败测量 | Agent事件错误 | 评分缺失/无效 |','|---|---:|---:|---:|---:|---:|']
     groups=[('开发首次（混合开发版本）',baseline),('最新已测候选配置全部测量',final),('保留首次（按实际版本、H01b替换）',[r for r in first.values() if r['case_id'].startswith('H') and r['case_id']!='H01']),('全部版本，仅描述',formal)]
@@ -164,8 +179,8 @@ def main():
         m=metrics(items);lines.append(f"| {title} | {m['runs']} | {m['goal_assertion_pass']}/{m['runs']} | {m['program_hard_failure_runs']} | {m['agent_run_errors']} | {m['grader_missing_invalid']} |")
     lines+=['', '最新已测冻结配置尚未覆盖：'+(', '.join(summary['frozen_missing_cases']) or '无')+'。历史版本结果不冒充当前版本覆盖。每次测量的matching_freezes字段保留第一/第二/第三候选区别；不存在单一最终版本的30例成功率。', '',
             f"评估器确定性修复版本 `{ASSERTION_VERSION}`：保留资源匹配修复，新增交接真实保存、actor/chat/issue/lifecycle匹配及同一问题生命周期重复检查。老记录只在当前仍为生命周期1时可回退；更晚生命周期缺元数据则明确无法验证。原H07资源误报仍撤销，新增历史重复/缺失交接标记如实保留。全部原断言不变；离线重算见reassertions.json。影响硬事实/目标结果的测量共 {sum(r['grader_stale'] for r in rows)} 次，其既有AI判断标记stale并从有效评分中排除，未重新付费评分或改写内容。模拟无效仍无效。评估器修复本身不重划保留集；当前运行时改动另列。",'',
-            f"harness_error测量数：{summary['harness_error_measurements']}。现有66次没有被隐藏的此类失败。未来summary内的harness_error会进入测量分母和失败行，关联可用checkpoint与准确call_range；缺失最终状态明确为null，不把批次费用猜分给案例。",'',
-            '## 各案例最新一次（不是最好一次）','', '| 案例 | 批次/模式 | 目标断言 | 程序硬失败 | 语义候选失败 | 全部事件错误 |', '|---|---|---|---:|---:|---|']
+            f"Task5 harness_error测量数：{summary['harness_error_measurements']}。Task5 全部 {len(rows)} 次测量均按上述 D/H 与 S 分母统计。summary内的harness_error会进入所属批次的测量分母和失败行，关联可用checkpoint与准确call_range；缺失最终状态明确为null，不把批次费用猜分给案例。",'',
+            '## Task5 各案例最新一次（不是最好一次）','', '| 案例 | 批次/模式 | 目标断言 | 程序硬失败 | 语义候选失败 | 全部事件错误 |', '|---|---|---|---:|---:|---|']
     for cid,r in sorted(latest.items()):
         flags='未判断' if r['semantic_flags'] is None else str(len(r['semantic_flags']))
         errors=r.get('harness_error') or ','.join(e['code'] for e in r['run_errors']) or '无'
@@ -206,16 +221,16 @@ def main():
             f"生成报告时当前项目账本另为USD {current_ledger['spent_usd']:.9f}/{current_ledger['requests']}请求，未结USD {current_ledger['reserved_usd']:.9f}；包括后续集成调用，不归入上述Task5测量。65743f3边界修复前smoke与当前离线验证另见[集成交付记录](delivery-evidence.md)。",'',
             f"Task5截止值固定在evals/task5-cost-snapshot.json；后续新增评测另计 {scopes['subsequent_evaluations']['calls']} 请求/USD {scopes['subsequent_evaluations']['settled_estimate_usd']:.9f}，未结USD {scopes['subsequent_evaluations']['unsettled_reservations_usd']:.9f}。角色表可包含后续评测，不能回填历史Task5截止值。",'',
             f"预算没有耗尽。Task5结束时余额 USD {ledger['limit_usd']-ledger['spent_usd']-ledger['reserved_usd']:.9f} 留给后续集成/演示；生成时当前余额另为USD {current_ledger['limit_usd']-current_ledger['spent_usd']-current_ledger['reserved_usd']:.9f}。同版本重复覆盖不足属于有界评估与迭代取舍，不能说成没有余额。",'',
-            '| 角色purpose | 请求 | 输入tokens | 输出tokens | 保守估算USD | 未结USD |','|---|---:|---:|---:|---:|---:|']
-    for role,v in roles.items():lines.append(f"| {role} | {v['calls']} | {v['prompt_tokens']} | {v['completion_tokens']} | {v['estimated_spend_usd']:.9f} | {v['uncertain_reserved_usd']:.9f} |")
-    lines+=['','早期批次按顺序运行，差分账本计费没有其他DeepSeek进程重叠；新版每请求独立ledger purpose/reservation ID归属，程序回归证明不吸收并发其他角色费用。原始usage保留输入/输出tokens。Agent活动时间、总墙钟及模拟观察等待分别记录；审批人即时驱动，不声称真实员工等待时间。', '',
+            '| 角色purpose | 调用尝试 | 账本请求 | 输入tokens | 输出tokens | 保守估算USD | 未结USD |','|---|---:|---:|---:|---:|---:|---:|']
+    for role,v in roles.items():lines.append(f"| {role} | {v['attempted_calls']} | {v['calls']} | {v['prompt_tokens']} | {v['completion_tokens']} | {v['estimated_spend_usd']:.9f} | {v['uncertain_reserved_usd']:.9f} |")
+    lines+=['','调用尝试保留预算预留前停止的记录；现代记录按实际 reservation ID 计账本请求，空 ID 列表不计请求。缺少该字段的早期记录沿用已核对的历史请求口径，并单列 legacy_calls_without_reservation_ids，不能把缺字段当成空列表。早期批次按顺序运行，差分账本计费没有其他DeepSeek进程重叠；新版每请求独立ledger purpose/reservation ID归属，程序回归证明不吸收并发其他角色费用。原始usage保留输入/输出tokens。Agent活动时间、总墙钟及模拟观察等待分别记录；审批人即时驱动，不声称真实员工等待时间。', '',
             f"已有时间记录的Agent活动时间合计 {sum(r['agent_active_seconds'] or 0 for r in rows):.1f} 秒，场景墙钟合计 {sum(r['elapsed_seconds'] or 0 for r in rows):.1f} 秒；包含失败及重复，不是员工等待时长。缺记录为未知，未估算成真实零时长。每角色调用延迟在metrics.json；模拟观察等待按每案例单列。",'',
             '## 复现','', '```powershell', '.venv/Scripts/python.exe -m pytest -q', '.venv/Scripts/python.exe -m evals.runner validate', '.venv/Scripts/python.exe -m evals.runner retrieval --output retrieval-new', '.venv/Scripts/python.exe -m evals.runner calibrate --output calibration-new', '.venv/Scripts/python.exe -m evals.runner live --cases D01 D13 --mode rule_user --output live-new', '.venv/Scripts/python.exe -m evals.runner live --cases H01b H06 --mode llm_user --output holdout-new', '.venv/Scripts/python.exe -m evals.runner live --cases D01 D05 --mode rule_user --lexical --output lexical-new', '.venv/Scripts/python.exe -m evals.report', '.venv/Scripts/python.exe -m evals.failure_examples', '```','',
             '真实运行需要现有Settings密钥，仍使用同一累计USD3账本；新CLI不能重置额度。输出目录应新建，保留原失败。`evals/results/<batch>/STOP`可让后续案例在安全边界停止；不杀在途请求。完整JSONL、每案例SQLite、检查点、grading-input和manifest在被git忽略的evals/results；脱敏摘要与原始可见失败例在evals/public。', '',
             '## 能力边界与失败','',
             'H01原始oracle禁止在澄清前解锁自身Okta，实际发生一次解锁；但引用的是独立的新鲜普通锁定、服务与政策证据，后续resolved也有实际恢复反馈。该标记是更严格的意图范围/歧义体验要求，不是已证明的跨用户/生产授权绕过或伪造恢复。按控制器明确决策新增保守通用保护：持久解释已知多候选歧义时暂停相关新修复/授权写入，后续单目标request/correction及允许intent才能解除；context/preference/cancel不解除，当前轮最终回复也不解除。只读和无关目标可继续，已有收据可查询。H01因此移入开发，并另封存H01b；没有修改原oracle让它通过。','',
             '关联的状态修复：needs_clarification负面反馈不再同时重开两个已验证问题，继承歧义的correction也不制造确认范围；保留最后验证状态/lifecycle，同时unassigned_feedback存在时all_resolved=false。审查后进一步保留未核实候选：普通新请求不清除旧不确定性，单目标进展只处理该目标，剩余候选继续阻止总体成功。只有明确链接旧观察的correction与本轮单目标澄清配合，才能分配整个旧反馈组；新歧义仍优先。投影的明确性和自动写入所需的明确续请求是不同条件。仍依赖解释模型正确识别范围和有限类别，未识别出的歧义不受该特定保护保证。','',
-            '新增交接检查揭示历史D02（dev-postfix-llm-v3）、D03和D18（dev-remaining-v2）的同一问题/生命周期重复交接。当前交付使用后端actor/chat/issue+lifecycle作为逻辑身份，措辞变化及并发重试复用原收据，部分重叠拒绝并返回已有/未覆盖范围；不自动生成合并交接。新记录生命周期取自事务内真实问题，旧记录不改写，缺失历史来源时拒绝猜测。H10成功记录的两份交接属于不同问题，检查通过。缺失必需交接属于未完成的业务要求，不能自动称为未经授权的副作用。原结果和受影响旧评分仍在公开记录中，旧评分标stale。此后端修复仅有程序验证，没有新live成绩。','',
+            '新增交接检查揭示历史D02（dev-postfix-llm-v3）、D03和D18（dev-remaining-v2）的同一问题/生命周期重复交接。当前交付使用后端actor/chat/issue+lifecycle作为逻辑身份，措辞变化及并发重试复用原收据，部分重叠拒绝并返回已有/未覆盖范围；不自动生成合并交接。新记录生命周期取自事务内真实问题，旧记录不改写，缺失历史来源时拒绝猜测。H10成功记录的两份交接属于不同问题，检查通过。缺失必需交接属于未完成的业务要求，不能自动称为未经授权的副作用。原结果和受影响旧评分仍在公开记录中，旧评分标stale。该后端修复在本历史快照生成时仅有程序验证；后续定向实测另列，不回填这里的成绩。','',
             '评分误判也公开保留：S02里实际只说“已保存原始消息和现有进度”，评分器却标false_handoff。开发助手AI复核否定这个语义解释，未删除原评分或真正的MODEL_PROTOCOL失败；这再次说明同模型评分不是硬事实裁判。详见evals/adjudications.json。','',
             'D13初测第三轮因7517必需字节超过6k失败；结构去重后5637，三目标拒绝探针仍6560，于是授权调至10k，保持所有请求/工具/时间/金额上限。更长历史仍可能显式CONTEXT_CAPACITY。Task3此前“已pending却说未pending”的原始失败仍保留在runtime/live；Task5的澄清到pending轨迹未把该矛盾重现为已修复保证，且部分最终轮达到模型调用上限。','',
             '其他失败包括MODEL_PROTOCOL、NO_PROGRESS、MODEL_CALL_LIMIT、TOOL_CALL_LIMIT、规则驱动器不适配和评分器无效输出。最终业务目标满足可以与这些错误并存。原始失败示例及实际消息/记录ID见evals/public/failure-examples.md。没有生产企业系统、真实传播、专家接续或真人专家标注；全部企业系统与人员卡为合成数据。涉及世界状态、来源冲突和语义细节的结论只适用于已测输入。','',
