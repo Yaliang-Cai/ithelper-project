@@ -7,4 +7,4 @@
 | v0.1.3 | 多账号多轮实录；验收错误补充具体问题范围 | 完整套件 221 项；新录屏 8 个事件完成，保留工具拒绝和原失败记录 |
 | 提交文档整理 | 整理 README、HTML 阅读版、评估结果和生产化说明 | 应用、数据、案例与实模结果不变；源码与录屏版本仍可核对 |
 
-[当前检查](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml) · [结果与限制](implementation-status.md) · [演示](demo.md)
+[当前检查](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml) · [结果与限制](implementation-status.md) · [演示视频](../demo.webm)

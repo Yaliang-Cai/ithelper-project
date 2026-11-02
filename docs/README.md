@@ -5,5 +5,5 @@
 - [系统设计](01-system-design.md)：模块、状态、验收与取舍。
 - [评估设计](02-evaluation.md)：案例、断言与评分方法。
 - [验证结果](implementation-status.md)：测量、失败与限制。
-- [演示](demo.md)：视频和现场账号。
+- [演示视频](../demo.webm)。现场账号见项目 README。
 - [生产化说明](productionization.md)：企业接入与上线顺序。

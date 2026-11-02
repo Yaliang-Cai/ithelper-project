@@ -10,7 +10,7 @@ from markdown_it import MarkdownIt
 
 ROOT=Path(__file__).resolve().parents[2]
 PAGES=[('README.md','delivery.html')]+[(f'docs/{name}.md',f'docs/{name}.html') for name in (
-    '01-system-design','02-evaluation','implementation-status','demo',
+    '01-system-design','02-evaluation','implementation-status',
     'productionization','evaluation-report','delivery-iteration-result','delivery-evidence')]
 TARGETS={(ROOT/source).resolve():ROOT/target for source,target in PAGES}
 CSS='''
