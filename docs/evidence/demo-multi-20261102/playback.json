@@ -1,0 +1,72 @@
+{
+  "duration_seconds": 437.92,
+  "bytes": 56098159,
+  "sha256": "8413665ccd5b44c45a7c4113560c31cd8bd06bdfa2a24fcf2182fca39873e420",
+  "resolution": [
+    1440,
+    1000
+  ],
+  "recording": "continuous original-speed; no cuts; silent",
+  "chapters": [
+    {
+      "seconds": 18,
+      "label": "登录问题与追问"
+    },
+    {
+      "seconds": 56,
+      "label": "解锁与实际回执"
+    },
+    {
+      "seconds": 96,
+      "label": "同一聊天提出新问题"
+    },
+    {
+      "seconds": 155,
+      "label": "核对影响范围与等待原因"
+    },
+    {
+      "seconds": 194,
+      "label": "另一员工申请两项权限"
+    },
+    {
+      "seconds": 264,
+      "label": "确认资源并提交审批"
+    },
+    {
+      "seconds": 362,
+      "label": "审批人批准"
+    },
+    {
+      "seconds": 366,
+      "label": "自动继续开通"
+    },
+    {
+      "seconds": 401,
+      "label": "员工反馈与分别验收"
+    }
+  ],
+  "samples": [
+    {
+      "path": "receipt.png",
+      "seconds": 75.2
+    },
+    {
+      "path": "sources.png",
+      "seconds": 179.907
+    },
+    {
+      "path": "approved.png",
+      "seconds": 386.141
+    }
+  ],
+  "browser": {
+    "metadata": {
+      "duration": 437.92,
+      "width": 1440,
+      "height": 1000
+    },
+    "chapter_seek_and_play": true,
+    "mobile_no_horizontal_overflow": true,
+    "page_errors": []
+  }
+}

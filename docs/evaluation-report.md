@@ -179,7 +179,7 @@ Task5截止值固定在evals/task5-cost-snapshot.json；本历史快照生成时
 .venv/Scripts/python.exe -m evals.failure_examples
 ```
 
-真实运行需要现有Settings密钥，仍使用同一累计USD3账本；新CLI不能重置额度。输出目录应新建，保留原失败。`evals/results/<batch>/STOP`可让后续案例在安全边界停止；不杀在途请求。完整JSONL、每案例SQLite、检查点、grading-input和manifest在被git忽略的evals/results；脱敏摘要与原始可见失败例在evals/public。
+真实运行需要现有Settings密钥，仍使用同一累计账本和当前配置限额（原评测USD3；后续重录获准USD4）；新CLI不能重置额度。输出目录应新建，保留原失败。`evals/results/<batch>/STOP`可让后续案例在安全边界停止；不杀在途请求。完整JSONL、每案例SQLite、检查点、grading-input和manifest在被git忽略的evals/results；脱敏摘要与原始可见失败例在evals/public。
 
 ## 能力边界与失败
 

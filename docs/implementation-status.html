@@ -31,7 +31,7 @@ footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:
 </style></head><body>
 <header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
 <nav class="pages" aria-label="文档导航"><a href="index.html">文档</a><a href="demo.html">演示</a><a href="01-system-design.html">系统设计</a><a href="implementation-status.html" aria-current="page">验证结果</a></nav></header>
-<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">原题要求与实际实现</a><a href="#section-3">已有验证</a><a href="#section-4">本轮检查修正</a><a href="#section-5">仍然存在的问题</a><a href="#section-6">费用与复现</a></details><h1 id="section-1">验证结果与限制</h1>
+<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">原题要求与实际实现</a><a href="#section-3">已有验证</a><a href="#section-4">0.1.3：多账号录屏与错误定位</a><a href="#section-5">0.1.2：验收与统计修正</a><a href="#section-6">仍然存在的问题</a><a href="#section-7">费用与复现</a></details><h1 id="section-1">验证结果与限制</h1>
 <p>2026-11-02。项目已具备可运行的员工聊天、模拟业务操作、审批、确认与交接。程序边界的验证比自然对话效果更充分；目前可作为 take-home 原型交付，尚不能证明大多数新问题都能稳定解决。</p>
 <h2 id="section-2">原题要求与实际实现</h2>
 <div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
@@ -86,8 +86,8 @@ footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:
 </thead>
 <tbody>
 <tr>
-<td>v0.1.2 程序回归</td>
-<td>本地 218 passed，45.48 秒；提交后的结果见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">托管 CI</a></td>
+<td>v0.1.3 程序回归</td>
+<td>本地 221 passed，25.39 秒；提交后的结果见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">托管 CI</a></td>
 <td>给定输入与模型响应下的程序行为；不证明模型会自行作出这些决定</td>
 </tr>
 <tr>
@@ -99,6 +99,11 @@ footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:
 <td>浏览器检查</td>
 <td>14 项脚本模型交互、3 项受控时钟检查通过</td>
 <td>登录、状态、审批确认和界面到期行为；外部模型是替身</td>
+</tr>
+<tr>
+<td>0.1.3 多账号录屏</td>
+<td>7 条员工输入、1 个审批事件，8 次回复；一次解锁、两次授权，Salesforce 等待恢复</td>
+<td>真实模型配合模拟业务；每轮展开详情，保留被拒绝的工具尝试，不是盲测</td>
 </tr>
 <tr>
 <td>修复前 v7 真实模型复测</td>
@@ -123,23 +128,27 @@ footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:
 </tbody>
 </table></div>
 <p>最新代码检查见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">工作流记录</a>。真实模型的每次版本、消息、状态与费用见<a href="delivery-iteration-result.html">当前迭代</a>、<a href="demo.html">录屏说明</a>和<a href="evaluation-report.html">历史评测</a>。</p>
-<h2 id="section-4">本轮检查修正</h2>
+<h2 id="section-4">0.1.3：多账号录屏与错误定位</h2>
+<p>试录暴露多问题收尾的错误信息缺少范围：拒绝 Okta 结案时只说缺少应用检查，模型转而重复查询 Salesforce，两次事件以 <code>NO_PROGRESS</code> 结束。现有验收错误补充所属问题、类型和服务，缺少服务状态时说明对应查询工具；验收条件未放宽。</p>
+<p>新增回归先重现失败，再验证多项更新整体回滚、版本保持，以及补正确证据后重提成功。另有累计预算提高仍保留旧费用、录制不得截断在途事件或未结费用的回归。最终 221 项通过。</p>
+<p>修复后重新录制三账号、多轮和审批继续处理；8 个事件完成，48 次模型请求。一次新鲜账号证据不足的拒绝明确指向 Okta，模型随后补查并完成收尾。该次结果不能证明普遍稳定；<a href="demo.html">演示说明</a>保留失败、改动与实际消息的链接。预算经确认从 US$3 提高到 US$4，仍使用原账本，本轮新增费用未超过获准的 US$1。</p>
+<h2 id="section-5">0.1.2：验收与统计修正</h2>
 <ul>
 <li>员工报告问题复发后，旧的恢复反馈曾可能再次被用于结案。现在复发症状会使较早反馈失效，新的明确恢复反馈仍可通过验收。</li>
 <li>同一问题再次执行解锁后，追加另一种指导曾沿用首次操作的反馈时间。现在以最近实际操作或尝试为准，要求该问题有更新的失败反馈。</li>
 <li>报告生成器曾把一次预留前被预算阻止的调用计为实际请求。现在分开统计尝试与账本请求，并按原批次固定历史结果分母，后续定向测量另列。</li>
 </ul>
-<p>四项新回归在修复前失败、修复后通过；完整离线套件 218 项通过。修复限于现有验收与统计逻辑，没有新增服务、审批层或业务功能。本轮没有新增付费模型调用，实模结果对应以上修复前的代码。</p>
-<h2 id="section-5">仍然存在的问题</h2>
+<p>四项新回归在修复前失败、修复后通过；完整离线套件 218 项通过。修复限于现有验收与统计逻辑，没有新增服务、审批层或业务功能。0.1.2 检查没有新增付费模型调用；当时引用的实模结果对应该次修复前代码。后续 0.1.3 录屏另列。</p>
+<h2 id="section-6">仍然存在的问题</h2>
 <ol>
-<li>追问与结构化问题有时不一致。D05 可见问题只问页面范围，结构化问题还包含起始时间；当前测量没有覆盖下一轮回答。</li>
-<li>回复仍会冗长或包含内部会话键。D09 的确认说明达 340 字，提示词约束没有完全解决表达问题。</li>
-<li>最终提示词只复测两个已知案例，重复次数不足。此前五类场景的测量不能全部归给 v7，也没有最终版本的完整盲测。</li>
+<li>追问与结构化问题有时不一致。旧 D05 只问页面范围却记录了起始时间问题；新版对话覆盖了时间、页面和同事情况的续问，但仍有重复询问已经确认信息的问题。</li>
+<li>回复仍冗长。新版出现英文 KB 原文、过强的诊断措辞，以及把 Data 看板正常扩展为其他看板没有报错；没有充分证据支撑这部分语义。</li>
+<li>v7 的正式定向复测只有两个已知案例，另有旧录屏和本次多账号演示。重复次数不足；未覆盖外部事故恢复后的续问，没有最终版本的完整盲测。</li>
 <li>程序能阻止不满足权限条件的操作，却不能证明诊断、指代和交接解释在语义上正确。同模型评分出现过误判，因此保留原文并单列无效评分。</li>
 </ol>
 <p>优先补同一版本的多轮续问、失败复测与重复覆盖，再考虑新功能。生产化另需真实身份与业务接口、外部操作对账、专家接续和独立评审。</p>
-<h2 id="section-6">费用与复现</h2>
-<p>录屏结束时，共享账本累计估算 US$2.892116173、835 次请求，未结预留为 0；项目 US$3 内剩 US$0.107883827。这是按 token 计算的保守估算，非供应商账单，embedding 另计。后续现场交互仍会收费，业务重置不清空账本。</p>
+<h2 id="section-7">费用与复现</h2>
+<p>0.1.3 重录结束时，共享账本累计估算 US$3.340527677、935 次请求，未结预留为 0；项目 US$4 内剩 US$0.659472323。本轮试录与重录新增 US$0.448411504、100 次请求；旧录屏结束时的 US$2.892116173 / 835 次快照保留不改。费用按 token 保守估算，非供应商账单，embedding 另计。后续现场交互仍会收费，业务重置不清空账本。</p>
 <p><a href="../README.md">运行与测试命令</a> · <a href="delivery-evidence.html">集成及修复记录</a> · <a href="02-evaluation.html">详细评估设计</a></p>
 
 <footer><a href="implementation-status.md">Markdown 原文</a></footer>

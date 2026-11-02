@@ -692,7 +692,7 @@ footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:
 .venv/Scripts/python.exe -m evals.report
 .venv/Scripts/python.exe -m evals.failure_examples
 </code></pre>
-<p>真实运行需要现有Settings密钥，仍使用同一累计USD3账本；新CLI不能重置额度。输出目录应新建，保留原失败。<code>evals/results/&lt;batch&gt;/STOP</code>可让后续案例在安全边界停止；不杀在途请求。完整JSONL、每案例SQLite、检查点、grading-input和manifest在被git忽略的evals/results；脱敏摘要与原始可见失败例在evals/public。</p>
+<p>真实运行需要现有Settings密钥，仍使用同一累计账本和当前配置限额（原评测USD3；后续重录获准USD4）；新CLI不能重置额度。输出目录应新建，保留原失败。<code>evals/results/&lt;batch&gt;/STOP</code>可让后续案例在安全边界停止；不杀在途请求。完整JSONL、每案例SQLite、检查点、grading-input和manifest在被git忽略的evals/results；脱敏摘要与原始可见失败例在evals/public。</p>
 <h2 id="section-10">能力边界与失败</h2>
 <p>H01原始oracle禁止在澄清前解锁自身Okta，实际发生一次解锁；但引用的是独立的新鲜普通锁定、服务与政策证据，后续resolved也有实际恢复反馈。该标记是更严格的意图范围/歧义体验要求，不是已证明的跨用户/生产授权绕过或伪造恢复。按控制器明确决策新增保守通用保护：持久解释已知多候选歧义时暂停相关新修复/授权写入，后续单目标request/correction及允许intent才能解除；context/preference/cancel不解除，当前轮最终回复也不解除。只读和无关目标可继续，已有收据可查询。H01因此移入开发，并另封存H01b；没有修改原oracle让它通过。</p>
 <p>关联的状态修复：needs_clarification负面反馈不再同时重开两个已验证问题，继承歧义的correction也不制造确认范围；保留最后验证状态/lifecycle，同时unassigned_feedback存在时all_resolved=false。审查后进一步保留未核实候选：普通新请求不清除旧不确定性，单目标进展只处理该目标，剩余候选继续阻止总体成功。只有明确链接旧观察的correction与本轮单目标澄清配合，才能分配整个旧反馈组；新歧义仍优先。投影的明确性和自动写入所需的明确续请求是不同条件。仍依赖解释模型正确识别范围和有限类别，未识别出的歧义不受该特定保护保证。</p>

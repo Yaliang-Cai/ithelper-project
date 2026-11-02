@@ -4,7 +4,7 @@
 
 普通 FAQ 能回答“怎么做”，但无法确认员工当前的账号状态、决定是否需要审批，或在操作后继续核查。因此这里使用单个 Agent 动态选择工具，程序控制权限与执行条件。
 
-[演示视频](docs/evidence/demo-v7-recording/real-model-v7.webm) · [演示说明](docs/demo.md) · [验证结果与限制](docs/implementation-status.md)
+[演示视频](docs/evidence/demo-multi-20261102/walkthrough.webm) · [演示说明](docs/demo.md) · [验证结果与限制](docs/implementation-status.md)
 
 ## 支持范围
 
@@ -34,9 +34,9 @@ powershell -ExecutionPolicy Bypass -File scripts/run_local.ps1
 
 LLM 固定为官方 `deepseek-flash`，embedding 为 SiliconFlow `BAAI/bge-m3`。DeepSeek 凭据缺失时明确报错；embedding 不可用时降为关键词检索。凭据保存在本地 `.env`，不提交到仓库。
 
-关闭页面后可以重新打开历史聊天。服务重启后继续使用原数据库；在途事件需等待租约到期。清空业务演示前先停服务，再运行 `.venv/Scripts/python.exe -m scripts.demo_reset`。业务库为 `runtime/business.sqlite`，费用账本为固定的 `runtime/usage.sqlite`；重置业务不会恢复费用额度。
+仓库包含合成源数据和评测案例，不包含本机聊天数据库。首次启动会创建本地业务数据，可以直接输入新问题。关闭页面后可以重新打开历史聊天。服务重启后继续使用原数据库；在途事件需等待租约到期。清空业务演示前先停服务，再运行 `.venv/Scripts/python.exe -m scripts.demo_reset`。业务库为 `runtime/business.sqlite`，费用账本为固定的 `runtime/usage.sqlite`；重置业务不会恢复费用额度。
 
-项目累计模型费用上限为 US$3。本机已用额度和现场演示注意事项见[演示说明](docs/demo.md)。
+项目累计模型费用上限为 US$4。本机已用额度和现场演示注意事项见[演示说明](docs/demo.md)。
 
 ## 架构与取舍
 
@@ -63,8 +63,8 @@ Python + FastAPI 提供 API 和简单网页，SQLite 保存聊天、业务状态
 .venv/Scripts/python.exe -m evals.runner validate
 ```
 
-离线测试覆盖身份隔离、审批与确认、幂等、错误恢复、多问题状态和评测器。当前 **218 项通过，31 个案例变体结构有效**；提交后的检查见 [GitHub CI](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml)。离线测试采用模型替身，只能证明程序如何处理给定响应。
+离线测试覆盖身份隔离、审批与确认、幂等、错误恢复、多问题状态和评测器。当前 **221 项通过，31 个案例变体结构有效**；提交后的检查见 [GitHub CI](https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml)。离线测试采用模型替身，只能证明程序如何处理给定响应。
 
-真实模型测量按版本保留成功与失败。提示词 v7 仅复测了两个已知问题：应用事故进入等待状态，VPN 在确认后完成一次重置；另有账号解锁录屏。这些运行早于 v0.1.2 的复发验收修复；本轮修复仅做离线验证。应用案例尚未验证等待后的续问，VPN 回复仍偏长。历史 66 次测量来自多个版本，不能算作当前版本成功率。评测使用合成用户和同模型评分，没有真人盲测。[结果与证据索引](docs/implementation-status.md)列出完整范围。
+真实模型测量按版本保留成功与失败。新版录屏增加多轮登录恢复、同一聊天的新问题，以及两个员工和审批人之间的权限流程；等待外部服务恢复的问题保留未解决状态。试录发现多目标收尾失败后，补充了校验错误对应的问题与服务信息，并增加回归测试。早期 66 次测量来自多个版本，不能算作当前版本成功率。新版演示也不是盲测；回复仍有冗长、重复追问和诊断措辞过强的问题。评测使用合成用户和同模型评分，没有真人盲测。[结果与证据索引](docs/implementation-status.md)列出完整范围。
 
 更多时间优先补同一版本的多轮失败复测和重复测量，核对追问与结构化问题是否对应，再由 IT 专家检查诊断和交接质量。真实系统接入需要补 SSO、外部操作对账和人工接续。现阶段的主要不足是自然对话稳定性和验证广度。

@@ -4,7 +4,11 @@
 
 新增 v6 `5055722` 的七次定向实测及最终 v7 `baca519` 的 D05/D09 配对检查另见[员工交互迭代结果](delivery-iteration-result.md)、[v6 证据](evidence/delivery-iteration-v6.json)和[v7 证据](evidence/delivery-iteration-v7.json)。这是单独的新证据，含未完成、无效模拟和评测余量停止；不替换本页旧 smoke 或正式历史汇总，最终 v7 不继承 v6 的五类覆盖。
 
-当前 v7 的[真实模型 UI 录屏与讲解](demo.md)、[消息与费用](evidence/demo-v7-recording/demo-v7.json)、[本次重启核对](evidence/task2-restart.json)独立保存；不覆盖下面的历史 smoke、截图或费用快照。
+早期 v7 的[录屏说明](evidence/demo-v7-recording/index.html)、[消息与费用](evidence/demo-v7-recording/demo-v7.json)、[本次重启核对](evidence/task2-restart.json)独立保存；不覆盖下面的历史 smoke、截图或费用快照。
+
+## 0.1.3：多账号、多轮录屏
+
+新版 [演示](demo.md)记录两个员工和一个审批人的实际 UI 交互，每次回复后展开问题、回执与来源。试录发现多目标收尾的验收错误未说明失败的问题；补充错误范围后增加真实数据库回归，完整套件 221 项通过。重录 8 个事件均完成，模型仍有工具误用、重复追问和过强措辞，原消息均保留。两段试录合计新增 US$0.448411504；经确认的项目上限为 US$4，原账本未重置。旧证据和以下历史数字不改。
 
 ## 0.1.2：复发验收与报告统计修正
 

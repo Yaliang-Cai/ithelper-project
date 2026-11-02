@@ -1,6 +1,6 @@
 """Small PAID live HTTP/browser smoke; run from repository root.
 
-Requires optional Playwright. Start normal app first. Uses original shared USD3
+Requires optional Playwright. Start normal app first. Uses the original shared
 ledger, two fresh employee messages at most, no simulator/grader/oracle.
 """
 import argparse
@@ -18,9 +18,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def ledger():
+    from app.config import Settings
     with sqlite3.connect(f'file:{(ROOT / "runtime/usage.sqlite").as_posix()}?mode=ro', uri=True) as db:
         spent, reserved, count = db.execute('SELECT COALESCE(SUM(spent),0),COALESCE(SUM(CASE WHEN spent IS NULL THEN reserved ELSE 0 END),0),COUNT(*) FROM costs').fetchone()
-    return dict(spent_usd=spent / 1e9, reserved_usd=reserved / 1e9, requests=count, limit_usd=3)
+    return dict(spent_usd=spent / 1e9, reserved_usd=reserved / 1e9, requests=count, limit_usd=Settings.load(ROOT/'.env').llm_budget_usd)
 
 
 def main():
