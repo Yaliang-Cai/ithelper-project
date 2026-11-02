@@ -28,7 +28,8 @@ def test_exhausted_canonical_connectivity_budget_makes_no_provider_requests(tmp_
     import app.providers as providers
     canonical = tmp_path / 'canonical/usage.sqlite'
     ledger = BudgetLedger(canonical)
-    ledger.settle(ledger.reserve(3, purpose='prior-project-requests'), 3)
+    limit = Settings().llm_budget_usd
+    ledger.settle(ledger.reserve(limit, purpose='prior-project-requests'), limit)
     before = ledger.report(); requests = []
     monkeypatch.setattr(probe, 'PROJECT_LEDGER', canonical, raising=False)
     custom = tmp_path / 'alternate-runtime'

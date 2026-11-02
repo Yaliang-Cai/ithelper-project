@@ -12,8 +12,8 @@ class BudgetOverrun(BudgetExceeded):
     """Incurred cost exceeded a reservation; ledger is now fail-closed."""
 
 class BudgetLedger:
-    def __init__(self, path, limit_usd=3.0):
-        if not math.isfinite(limit_usd) or not 0 < limit_usd <= 3:
+    def __init__(self, path, limit_usd=4.0):
+        if not math.isfinite(limit_usd) or not 0 < limit_usd <= 4:
             raise ValueError('Invalid budget limit')
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)

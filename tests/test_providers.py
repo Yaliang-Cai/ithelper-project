@@ -150,7 +150,7 @@ def test_load_env_and_secret_repr(tmp_path,monkeypatch):
 
 def test_default_authorized_budget():
     from app.config import Settings
-    assert Settings().llm_budget_usd == 3.0
+    assert Settings().llm_budget_usd == 4.0
 
 def test_http_failure_never_retries(tmp_path):
     from app.providers import ProviderError
@@ -195,7 +195,7 @@ def test_connectivity_json_bounded_retry(monkeypatch):
     assert probe_json(probe) == ['failed','ok']
     assert probe.calls == 2
 
-@pytest.mark.parametrize('limit',[3.000001,4])
+@pytest.mark.parametrize('limit',[4.000001,5])
 def test_rejects_unauthorized_limit(tmp_path,limit):
     from app.config import Settings
     from app.budget import BudgetLedger
@@ -286,7 +286,7 @@ def test_smaller_authorized_limit_and_environment_ceiling(tmp_path):
     assert Settings(llm_budget_usd=.5).llm_budget_usd==.5
     assert BudgetLedger(tmp_path/'small.sqlite',.5).report()['limit_usd']==.5
     env=tmp_path/'ceiling.env'
-    env.write_text('LLM_BUDGET_USD=3.1')
+    env.write_text('LLM_BUDGET_USD=4.1')
     with pytest.raises(ValueError):
         Settings.load(env)
 
@@ -294,4 +294,20 @@ def test_smaller_authorized_limit_and_environment_ceiling(tmp_path):
 def test_ledger_boundary_rejects_above_authorized_limit(tmp_path):
     from app.budget import BudgetLedger
     with pytest.raises(ValueError):
-        BudgetLedger(tmp_path/'cap.sqlite',3.01)
+        BudgetLedger(tmp_path/'cap.sqlite',4.01)
+
+
+def test_authorized_budget_increase_preserves_existing_spend(tmp_path):
+    from app.budget import BudgetLedger, BudgetExceeded
+    path = tmp_path / 'usage.sqlite'
+    original = BudgetLedger(path, 3)
+    reservation = original.reserve(2.9, purpose='earlier-work')
+    original.settle(reservation, 2.9)
+    increased = BudgetLedger(path, 4)
+    assert increased.report()['spent_usd'] == 2.9
+    assert increased.report()['requests'] == 1
+    later = increased.reserve(.9, purpose='new-recording')
+    increased.settle(later, .8)
+    assert increased.report()['spent_usd'] == 3.7
+    with pytest.raises(BudgetExceeded):
+        increased.reserve(.31, purpose='over-cap')

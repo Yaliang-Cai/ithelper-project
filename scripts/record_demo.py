@@ -1,7 +1,7 @@
 """One PAID real-model UI demo in a fresh business world, never a benchmark.
 
 Run from the repository root with a Python containing Playwright. The server
-uses .venv, the current application factory and the original fixed USD3 ledger.
+uses .venv, the current application factory and the original project ledger.
 No reset, replay of a model answer, grader, simulator, auth trace or session dump.
 """
 import argparse
@@ -35,33 +35,25 @@ def ledger_rows():
 
 def factory():
     """Explicitly injected provider; only this demo has a smaller spend margin."""
-    from app.budget import BudgetExceeded, BudgetLedger
+    from app.budget import BudgetLedger
     from app.config import PROJECT_LEDGER, Settings
     from app.main import create_app
     from app.providers import DeepSeekClient
     world = Path(os.environ['HELPDESK_RECORD_WORLD'])
     settings = replace(Settings.load(ROOT / '.env'), runtime_dir=world)
-    ledger = BudgetLedger(PROJECT_LEDGER, settings.llm_budget_usd)
-
-    class DemoMargin:
-        def reserve(self, amount_usd, *, purpose):
-            report = ledger.report()
-            if report['spent_usd'] + report['reserved_usd'] + amount_usd > CEILING:
-                raise BudgetExceeded('Demo margin reached before request reservation')
-            return ledger.reserve(amount_usd, purpose=purpose)
-
-        def settle(self, *args):
-            return ledger.settle(*args)
+    ceiling = min(float(os.environ.get('HELPDESK_RECORD_CEILING', CEILING)), settings.llm_budget_usd)
+    ledger = BudgetLedger(PROJECT_LEDGER, ceiling)
 
     class RecordedClient(DeepSeekClient):
         def complete(self, *args, **kwargs):
+            kwargs['purpose'] = os.environ.get('HELPDESK_RECORD_PURPOSE_PREFIX', '') + kwargs['purpose']
             response = super().complete(*args, **kwargs)
             with (world / 'provider-metadata.jsonl').open('a', encoding='utf-8') as stream:
                 stream.write(json.dumps({'purpose': kwargs['purpose'], 'returned_model': response.get('model'),
                                          'usage': response.get('usage')}) + '\n')
             return response
 
-    return create_app(settings, provider=RecordedClient(settings, DemoMargin()))
+    return create_app(settings, provider=RecordedClient(settings, ledger))
 
 
 def main():
@@ -74,11 +66,13 @@ def main():
     world = ROOT / 'runtime/recordings' / datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     world.mkdir(parents=True, exist_ok=False)
     before_rows = ledger_rows()
+    from app.config import Settings
+    limit = Settings.load(ROOT / '.env').llm_budget_usd
     before_ids = {row['id'] for row in before_rows}
     def budget(rows):
         return {'spent_usd': sum(r['spent'] or 0 for r in rows) / 1e9,
                 'reserved_usd': sum(r['reserved'] for r in rows if r['spent'] is None) / 1e9,
-                'requests': len(rows), 'limit_usd': 3}
+                'requests': len(rows), 'limit_usd': limit}
     before = budget(before_rows)
     assert before['reserved_usd'] == 0 and before['spent_usd'] < CEILING, 'No new calls: demo margin unavailable'
     save(world / 'budget-before.json', before)
