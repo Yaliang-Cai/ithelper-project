@@ -428,6 +428,31 @@ def test_application_acceptance_rechecks_actual_current_service_state(env):
         domain.apply_issue_updates('alice.sales',env[3],[proposal(env,issue,[old,obs])])
 
 
+def test_multi_issue_rejection_identifies_failed_goal_and_allows_evidence_repair(env):
+    domain=env[1]
+    login=domain.create_issue('alice.sales',env[3],'Login recovered',['okta'])['id']
+    slow=domain.create_issue('alice.sales',env[3],'Salesforce slow',['salesforce'])['id']
+    recovered=feedback(env,login,'Okta works now','okta-recovered')
+    incident=call(env,'get_service_context',service_id='salesforce')['evidence'][0]['id']
+    updates=[proposal(env,slow,[incident],'waiting_external'),proposal(env,login,[recovered])]
+    with pytest.raises(DomainError) as caught:
+        domain.apply_issue_updates('alice.sales',env[3],updates)
+    error=caught.value
+    assert error.code=='PRECONDITION_FAILED'
+    assert error.data['issue_id']==login
+    assert error.data['criterion_id']=='application_recovery'
+    assert error.data['service_refs']==['okta']
+    assert 'okta' in error.message and 'get_service_context' in error.message
+    # A rejected batch still rolls back its earlier, otherwise valid update.
+    state=domain.snapshot('alice.sales',env[3])
+    assert all(i['status']=='investigating' for i in state['issues'])
+    fresh=call(env,'get_service_context',service_id='okta')['evidence'][0]['id']
+    updates[1]['evidence_refs'].append(fresh)
+    domain.apply_issue_updates('alice.sales',env[3],updates)
+    by_id={i['id']:i['status'] for i in domain.snapshot('alice.sales',env[3])['issues']}
+    assert by_id[login]=='resolved' and by_id[slow]=='waiting_external'
+
+
 def test_message_and_event_submit_are_atomic_and_idempotent(env):
     domain=env[1]
     with env[0].write() as c:c.execute("CREATE TRIGGER fail_event BEFORE INSERT ON events BEGIN SELECT RAISE(ABORT,'queue unavailable'); END")

@@ -421,7 +421,13 @@ class Domain:
                 require(issue['status'] not in ('handed_off','cancelled','denied') or p['requested_status']==issue['status'],'FORBIDDEN','Terminal issue stops automation')
                 refs=self._validate_refs(c,actor_id,conversation_id,p['evidence_refs'],issue['id'])
                 status=p['requested_status']
-                if status=='resolved': self._accept(c,actor_id,issue,refs)
+                if status=='resolved':
+                    try:self._accept(c,actor_id,issue,refs)
+                    except DomainError as exc:
+                        # A batch may contain several goals. Identify the owned
+                        # goal that failed so the next query targets its scope.
+                        raise DomainError(exc.code,exc.message,{**exc.data,'issue_id':issue['id'],
+                            'criterion_id':issue['acceptance_criteria_id'],'service_refs':issue['service_refs']}) from exc
                 if status=='waiting_approval':self._require_pending_approval(c,actor_id,issue,refs)
                 if status=='handed_off': require(any(t=='handoffs' and issue['id'] in r['issue_refs'] for t,r in refs),'PRECONDITION_FAILED','No persisted handoff')
                 if status=='denied': require(any(t=='approvals' and r['status']=='rejected' for t,r in refs) or any(t=='evidence' and r['source']=='policy' for t,r in refs),'PRECONDITION_FAILED','No denial evidence')
@@ -507,7 +513,7 @@ class Domain:
             for sid in issue['service_refs']:
                 service=unpack(c.execute("SELECT * FROM world_records WHERE kind='services' AND id=?",(sid,)).fetchone())
                 require(service is not None and service['status']=='operational','PRECONDITION_FAILED','Current service condition is not healthy')
-                require(any(e['source']=='service_state' and e['record_id']==sid and e['revision']==str(service['revision']) and e['content'].get('service',{}).get('status')=='operational' for e in evidence),'PRECONDITION_FAILED','Current objective application inspection missing')
+                require(any(e['source']=='service_state' and e['record_id']==sid and e['revision']==str(service['revision']) and e['content'].get('service',{}).get('status')=='operational' for e in evidence),'PRECONDITION_FAILED',f'Current objective application inspection missing for {sid}; call get_service_context and include its current EVID reference')
 
     def _event(self,c,actor_id,conversation_id,issue_id,kind,payload,dedupe_key):
         old=c.execute('SELECT * FROM events WHERE dedupe_key=?',(dedupe_key,)).fetchone()
