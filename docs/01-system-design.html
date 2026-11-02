@@ -1,964 +1,102 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IT Helpdesk Agent 系统设计</title><style>
-:root { color-scheme:light; }
-* { box-sizing:border-box; }
-body { max-width:980px; margin:32px auto; padding:0 24px; color:#252525; background:#fff; font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif; }
-a { color:#27567c; text-underline-offset:3px; overflow-wrap:anywhere; }
-header { border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:32px; }
-.brand { color:inherit; font-weight:650; text-decoration:none; }
-.pages { display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:12px; font-size:14px; }
-.pages a[aria-current=page] { color:inherit; font-weight:650; }
-.toc { font-size:14px; margin:20px 0; }
-.toc summary { cursor:pointer; }
-.toc a { display:block; margin:4px 0; }
-h1 { font-size:28px; line-height:1.4; margin:24px 0; }
-h2 { font-size:21px; margin:32px 0 12px; }
-h3 { font-size:18px; margin:24px 0 10px; }
-p,li { overflow-wrap:anywhere; }
-li { margin:6px 0; }
-img { max-width:100%; height:auto; }
-.table-wrap { overflow-x:auto; margin:20px 0; }
-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.65; }
-th,td { text-align:left; vertical-align:top; border-bottom:1px solid #ddd; padding:10px; min-width:100px; }
-th { background:#f5f5f5; }
-pre { padding:16px; background:#f6f6f6; overflow:auto; font-size:13px; line-height:1.6; }
-code { font-family:Consolas,'Microsoft YaHei',monospace; }
-blockquote { margin-left:0; padding-left:16px; border-left:2px solid #bbb; color:#555; }
-footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:#666; font-size:13px; }
-@media(max-width:600px) { body { padding:0 16px; margin:20px auto; font-size:15px; } h1 { font-size:25px; } table { min-width:600px; } }
-@media print { header,.toc { display:none; } body { max-width:none; font-size:10pt; margin:0; } h2,h3 { break-after:avoid; } tr { break-inside:avoid; } pre { white-space:pre-wrap; overflow-wrap:anywhere; } .table-wrap { overflow:visible; } }
-</style></head><body>
-<header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
-<nav class="pages" aria-label="文档导航"><a href="index.html">文档</a><a href="demo.html">演示</a><a href="01-system-design.html" aria-current="page">系统设计</a><a href="implementation-status.html">验证结果</a></nav></header>
-<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">1 已确认的选择</a><a href="#section-3">2 题目要求与交付证据</a><a href="#section-6">3 为什么需要这种架构</a><a href="#section-7">4 组件与技术默认值</a><a href="#section-8">5 两阶段调用的完整过程</a><a href="#section-13">6 上下文组织</a><a href="#section-14">7 记录模型与状态</a><a href="#section-18">8 工具与政策</a><a href="#section-23">9 身份与授权</a><a href="#section-24">10 审批与人工交接</a><a href="#section-27">11 诊断与结果判断</a><a href="#section-28">12 五类数据的组织</a><a href="#section-29">13 混合检索</a><a href="#section-30">14 五类场景的端到端示例</a><a href="#section-36">15 界面与 API 默认设计</a><a href="#section-37">16 故障与可观测性</a><a href="#section-38">17 验证顺序与实现边界</a></details><h1 id="section-1">IT Helpdesk Agent 系统设计</h1>
-<blockquote>
-<p>本文说明用户目标、模块职责、数据与执行边界。运行方式见<a href="../README.md">README</a>，维护方法见<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>，当前验证范围见<a href="implementation-status.html">验证结果</a>。示意 ID 不是真实执行凭据。</p>
-</blockquote>
-<p>本系统面向遇到 IT 问题的员工，通过多轮交流、后台查询和受约束的操作推进解决过程。它使用一个业务 Agent，由自定义控制循环驱动；语义理解、状态存储、权限校验和工具执行分工明确。</p>
-<p>设计目标是用一个规模有限但可检查的模拟企业环境，展示可靠的决策与执行边界。模型判断仍可能出错：结构合法不等于语义正确，审批有效不等于操作成功，操作成功也不总等于员工目标已实现。评估必须分别检查这些环节。</p>
-<h2 id="section-2">1 已确认的选择</h2>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<title>系统设计</title><style>
+*{box-sizing:border-box}body{max-width:940px;margin:36px auto;padding:0 24px;color:#222;background:#fff;font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif}
+h1{font-size:28px;line-height:1.4;margin:20px 0}h2{font-size:21px;margin:30px 0 12px}h3{font-size:18px}
+a{color:#285e88;text-underline-offset:3px;overflow-wrap:anywhere}p,li{overflow-wrap:anywhere}li{margin:5px 0}
+.table-wrap{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #ddd;min-width:105px}th{background:#f5f5f5}
+pre{overflow:auto;padding:16px;background:#f6f6f6;font-size:13px;line-height:1.6}code{font-family:Consolas,monospace}footer{border-top:1px solid #ddd;margin-top:32px;padding-top:12px;font-size:14px}
+@media(max-width:600px){body{padding:0 16px;margin:20px auto;font-size:15px}h1{font-size:25px}table{min-width:560px}}
+@media print{body{max-width:none;margin:0;font-size:10pt}h2,h3{break-after:avoid}tr{break-inside:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere}.table-wrap{overflow:visible}footer{display:none}}
+</style></head><body><main><h1 id="section-1">系统设计</h1>
+<p>系统服务于遇到 IT 问题的员工。聊天、审批和确认都进入持久事件，由一个 Agent 持续处理。模型决定调查和建议，业务代码决定记录与操作是否有效。</p>
+<h2 id="section-2">模块职责</h2>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
-<th>事项</th>
-<th>已确认方案</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>产品入口</td>
-<td>简单 Web 聊天，员工是主要用户</td>
-</tr>
-<tr>
-<td>场景</td>
-<td>账号、应用、连接、权限、跨系统五类全部覆盖</td>
-</tr>
-<tr>
-<td>数据</td>
-<td>知识库、系统状态与变更、用户目录、历史解决记录、政策五类全部模拟</td>
-</tr>
-<tr>
-<td>Agent</td>
-<td>单业务 Agent，自定义控制循环，不使用固定业务诊断分支或多 Agent 协作</td>
-</tr>
-<tr>
-<td>模型调用</td>
-<td>新用户消息先做语义整理，再做下一步决策；同一 Agent 分阶段调用</td>
-</tr>
-<tr>
-<td>上下文</td>
-<td>后端按明确规则组织，不依赖无限累积完整聊天</td>
-</tr>
-<tr>
-<td>多问题</td>
-<td>同一聊天维护多个问题项；关联可调整，默认不合并状态</td>
-</tr>
-<tr>
-<td>操作</td>
-<td>支持实际改变模拟后台的写操作</td>
-</tr>
-<tr>
-<td>确认</td>
-<td>明确请求且符合政策的低风险动作直接执行；有影响的动作先确认；越权不能靠确认绕过</td>
-</tr>
-<tr>
-<td>身份</td>
-<td>预置演示账号，本地账号密码认证，后端绑定员工身份</td>
-</tr>
-<tr>
-<td>审批</td>
-<td>小型审批页，真实保存模拟申请及批准或拒绝结果</td>
-</tr>
-<tr>
-<td>转人工</td>
-<td>保存完整交接并停止该问题项自动处理；专家结果回流列为扩展</td>
-</tr>
-<tr>
-<td>检索</td>
-<td>关键词与向量混合，关键词作为基线及故障降级</td>
-</tr>
-<tr>
-<td>模型供应商</td>
-<td>用户后续锁定 DeepSeek Flash；Agent、模拟用户和评分统一使用 deepseek-flash，模式记录在运行配置中</td>
-</tr>
-<tr>
-<td>记忆范围</td>
-<td>当前聊天持久化；新聊天不主动检索个人旧聊天。通用历史案例仍可检索</td>
-</tr>
-<tr>
-<td>模拟环境</td>
-<td>数据定义环境，程序执行状态变更；完整故障传播模拟器列为扩展</td>
-</tr>
-<tr>
-<td>通用知识</td>
-<td>可解释现象、提出待验证假设；企业事实和操作依据必须有受控来源</td>
-</tr>
-<tr>
-<td>排查深度</td>
-<td>有新依据才追加不同修复路径；初始最多两条，不把等待反馈算失败</td>
-</tr>
-<tr>
-<td>评估</td>
-<td>规则用户、自然语言 LLM 用户和非脚本探索结合；硬检查加分维度评价</td>
-</tr>
-<tr>
-<td>展示</td>
-<td>员工页面精简；审批和开发调试视图独立</td>
-</tr>
-</tbody>
-</table></div>
-<p>原先讨论中的“人工审阅”调整为由开发助手执行的 AI 辅助评审。真人盲测或 IT 专家审阅可以追加，但不作为无需用户日常介入的自动流程前提。</p>
-<h2 id="section-3">2 题目要求与交付证据</h2>
-<h3 id="section-4">2.1 Problem Framing Requirements</h3>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>要求</th>
-<th>设计回答</th>
-<th>交付证据</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>谁是用户</td>
-<td>普通员工，技术熟悉程度不同</td>
-<td>员工聊天与角色数据</td>
-</tr>
-<tr>
-<td>交互模型</td>
-<td>账号登录后自然语言多轮交流；必要动作确认</td>
-<td>真实界面演示</td>
-</tr>
-<tr>
-<td>直接解决与转人工</td>
-<td>查询、指导和目录内动作；能力或权限不足时交接</td>
-<td>动作矩阵、审批和交接案例</td>
-</tr>
-<tr>
-<td>数据来源及使用</td>
-<td>五类来源，以实体和时间关联，按需查询</td>
-<td>源数据、工具记录及引用</td>
-</tr>
-<tr>
-<td>成功交互</td>
-<td>员工目标满足其验收条件；分别统计审批、等待和交接</td>
-<td>问题状态与评估结果</td>
-</tr>
-<tr>
-<td>完整交接</td>
-<td>保留背景、影响、证据、尝试、未决问题和责任团队</td>
-<td>可读取的交接记录</td>
-</tr>
-</tbody>
-</table></div>
-<p>题目中的“两分钟”是成功体验示例，不是对所有场景的统一硬性时限。报告测量实际时间，并区分模型运行时间、员工响应等待和审批等待。</p>
-<h3 id="section-5">2.2 What We Are Looking For</h3>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>能力</th>
-<th>实现机制</th>
-<th>验证重点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Conversational diagnosis</td>
-<td>识别新诉求、补充、更正、反馈，必要时追问</td>
-<td>短输入能推进，不反复问已有信息</td>
-</tr>
-<tr>
-<td>Multi-step reasoning</td>
-<td>工具反馈影响下一步；假设可修正</td>
-<td>因证据变化改变诊断，而非编造解释</td>
-</tr>
-<tr>
-<td>Tool use</td>
-<td>原生工具调用与受控执行器</td>
-<td>工具真实调用，参数和返回可检查</td>
-</tr>
-<tr>
-<td>State / memory</td>
-<td>原始消息、观察、问题、关联、动作分开保存</td>
-<td>不遗漏问题、不混淆结果、重启可恢复</td>
-</tr>
-<tr>
-<td>Resolution vs escalation</td>
-<td>目标验收条件、政策与交接机制</td>
-<td>假解决、漏交接、过早交接分别统计</td>
-</tr>
-<tr>
-<td>Reliability</td>
-<td>有限重试、结构校验、空结果、冲突和不确定执行处理</td>
-<td>异常不伪装成成功</td>
-</tr>
-<tr>
-<td>Safety / guardrails</td>
-<td>身份绑定、动作目录、审批范围、确认绑定</td>
-<td>越权及重复执行受程序约束</td>
-</tr>
-<tr>
-<td>Evaluation</td>
-<td>分层评测、明确事实依据、保留集与重复运行</td>
-<td>过程与结果均可复查</td>
-</tr>
-<tr>
-<td>Production thinking</td>
-<td>日志、预算、延迟、版本与适配层</td>
-<td>能定位故障与解释成本</td>
-</tr>
-</tbody>
-</table></div>
-<p>最终仍须交付可运行代码、README 和演示。README 应包含选题范围、为何需要 Agent、架构、边界、模拟来源、假设取舍、启动方法、评估和改进方向。这组设计材料不替代可运行交付。</p>
-<h2 id="section-6">3 为什么需要这种架构</h2>
-<p>普通 FAQ 检索适合回答确定问题，但难以根据用户反馈修正诊断，也不管理动作前置条件和执行结果。纯规则系统能控制已知操作，却需要为大量自然语言表达和证据组合编写分支。</p>
-<p>本系统把开放的理解和调查交给模型，把可明确验证的条件交给程序。动态的是追问内容、调查对象和顺序；固定的是身份边界、记录结构、允许动作、权限条件和执行预算。一个 Agent 可以多次调用模型和工具，不等于一次提示词调用。</p>
-<p>不使用多 Agent，是因为当前没有必要将工作拆成多个自主角色；这会增加上下文传递和诊断责任归属的复杂度。分阶段调用有明确输入输出，但不创造多个自行协商的业务 Agent。</p>
-<p>选择自定义循环，是为了直接观察状态、上下文与执行过程。代价是自己承担持久化、重试和恢复测试。LangGraph 的检查点和中断能力是可行替代方案；当前选择不意味着它不适合 Agent。<a href="https://docs.langchain.com/oss/python/langgraph/overview">LangGraph 官方说明</a></p>
-<h2 id="section-7">4 组件与技术默认值</h2>
-<p>当前实现使用 Python、FastAPI、Pydantic 与 SQLite；前端为同一应用提供的 HTML、CSS 和 JavaScript。下表按职责解释架构，不要求把每个职责另建成服务或抽象层。实际文件与开发顺序见<a href="superpowers/plans/2026-11-02-helpdesk-implementation.md">开发与测试流程</a>。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>组件</th>
-<th>输入与输出</th>
+<th>模块</th>
 <th>责任</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Web 与认证</td>
-<td>登录请求、用户消息、审批操作</td>
-<td>验证身份、访问权限和请求格式</td>
+<td><code>app/main.py</code>、<code>auth.py</code>、<code>ui/</code></td>
+<td>登录、会话、员工聊天、审批和调试界面</td>
 </tr>
 <tr>
-<td>Conversation service</td>
-<td>用户事件与聊天 ID</td>
-<td>保存消息、安排运行、隔离会话</td>
+<td><code>worker.py</code>、<code>storage.py</code></td>
+<td>事件领取、租约恢复、SQLite 持久化</td>
 </tr>
 <tr>
-<td>Interpretation stage</td>
-<td>当前消息、问题概要、近期交流</td>
-<td>提出语义观察与问题更新候选</td>
+<td><code>agent.py</code>、<code>prompts.py</code>、<code>contracts.py</code></td>
+<td>解释消息、工具循环、结构化提议与停止条件</td>
 </tr>
 <tr>
-<td>State validator</td>
-<td>候选更新、当前身份与版本</td>
-<td>校验可写结构和引用，保存带来源记录</td>
+<td><code>context.py</code></td>
+<td>按当前身份和问题组织上下文，保留批准、拒绝、尝试及反馈</td>
 </tr>
 <tr>
-<td>Context builder</td>
-<td>运行用途、持久状态、相关证据</td>
-<td>组成实际发给模型的上下文</td>
+<td><code>domain.py</code></td>
+<td>问题状态、证据归属、验收、批准与确认、幂等和事务</td>
 </tr>
 <tr>
-<td>Decision loop</td>
-<td>上下文与工具定义</td>
-<td>让模型选择查询、动作、追问或交接</td>
+<td><code>tools.py</code>、<code>retrieval.py</code></td>
+<td>结构化业务查询、受限操作、知识库与历史检索</td>
 </tr>
 <tr>
-<td>Policy engine</td>
-<td>真实身份、动作、资源、审批、确认</td>
-<td>决定是否允许执行及缺失条件</td>
+<td><code>providers.py</code>、<code>budget.py</code></td>
+<td>供应商请求、费用预留和结算</td>
 </tr>
 <tr>
-<td>Tool executor</td>
-<td>已验证调用与操作 ID</td>
-<td>执行模拟查询或变更，记录真实结果</td>
-</tr>
-<tr>
-<td>Retrieval service</td>
-<td>文本查询、可用过滤条件</td>
-<td>混合检索、降级、返回证据引用</td>
-</tr>
-<tr>
-<td>Result service</td>
-<td>工具收据、候选状态及回复</td>
-<td>检查验收依据、呈现真实操作状态</td>
-</tr>
-<tr>
-<td>Evaluation harness</td>
-<td>独立场景、用户驱动器、断言</td>
-<td>重置环境、运行测试、记录与评分</td>
+<td><code>evals/</code>、<code>tests/</code></td>
+<td>场景驱动、用户模拟、结果断言、辅助评分与程序回归</td>
 </tr>
 </tbody>
 </table></div>
-<p>运行数据和评测数据分库存放。知识库与历史案例可用 Markdown 或 JSON 管理；可变账号、权限、会话、审批和操作记录存 SQLite。检索索引是可重建的派生数据。</p>
-<p>实际文件包括 app/main.py、auth.py、worker.py、agent.py、context.py、contracts.py、catalog.py、prompts.py、domain.py、tools.py、retrieval.py、storage.py、seed.py 及供应商/费用模块。状态与验收在 domain.py，工具执行在 tools.py，不另设空壳 Policy engine 或 Result service。data 存合成来源；evals 保存案例与评测代码，公开投影可提交，完整运行原件位于被忽略的 evals/results；tests 保存程序回归。</p>
-<p>入口负责身份、请求结构和 HTTP 访问约束；候选落库检查引用、归属和版本；工具产生效果前在事务内核对当前政策、精确审批/确认和目标。它们验证不同条件；同一规则复用已有函数，不在每层复制一套。执行前复查是因为等待期间状态可能改变，模型上下文的旧摘要不能代替当前授权。</p>
-<h2 id="section-8">5 两阶段调用的完整过程</h2>
-<h3 id="section-9">5.1 新用户消息</h3>
-<ol>
-<li>后端验证登录和聊天归属，分配消息 ID；先保存用户原文。</li>
-<li>取得同一聊天的运行锁和状态版本，防止两个并发请求相互覆盖。</li>
-<li>Context builder 为语义整理组装当前消息、近期交流、未回答的追问、问题项概要。</li>
-<li>模型返回更新候选，不直接访问数据库。</li>
-<li>程序检查结构、消息引用、对象归属和允许操作；不通过时返回有界错误，最多一次格式修正。</li>
-<li>在事务内保存候选观察与允许的记录变化；保留来源性质。</li>
-<li>为决策阶段重新组装上下文，包含用户原文和更新后的状态。</li>
-<li>模型选择工具或输出回复；工具执行前经过政策检查，结果由程序写入。</li>
-<li>工具结果加入当前运行上下文，模型可以继续调查，直到追问、返回结果、等待或达到预算。</li>
-<li>保存回复、问题进度及运行指标。结束一次运行不关闭聊天，也不自动解决所有问题。</li>
-</ol>
-<p>工具结果、审批结果等结构化事件不必再调用“理解用户消息”模型。它们由相应程序记录，再按需要触发决策阶段。</p>
-<h3 id="section-10">5.2 语义整理的允许输出</h3>
-<p>允许的顶层候选操作可以收敛为：新增问题建议、追加观察、纠正既往陈述建议、问题关联建议、需要澄清的指代。具体故障描述仍用自然语言，不为所有 IT 故障创建枚举。</p>
-<pre><code>{
-  "message_intents": ["progress_report", "additional_info"],
-  "observations": [
-    {
-      "candidate_key": "o1",
-      "target_refs": ["I-1"],
-      "category": "reported_recovery",
-      "claim": "用户报告 Grafana 已恢复",
-      "quote": "Grafana好了",
-      "mapping_status": "tentative"
-    },
-    {
-      "candidate_key": "o2",
-      "target_refs": ["I-2"],
-      "category": "reported_approval",
-      "claim": "用户声称主管已批准申请",
-      "quote": "老板说批了",
-      "mapping_status": "tentative"
-    }
-  ],
-  "new_issue_candidates": [],
-  "corrections": [],
-  "relation_candidates": [],
-  "unresolved_references": []
-}
-</code></pre>
-<p>当前消息 ID、操作者 ID、记录时间和 source_kind=user_report 由后端绑定。模型不能自行写 trusted=true、approved=true 或 operation_success=true。</p>
-<h3 id="section-11">5.3 程序到底校验什么</h3>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<h2 id="section-3">一轮对话</h2>
+<p>用户消息先保存并建立事件。模型把当前消息解释为新问题、补充信息、反馈或纠正；程序检查引用和归属后记录。Agent 读取当前上下文，调用工具，结合结果继续查询或提问，最后提出回复和各问题的状态更新。批准与确认通过独立事件恢复同一处理循环。</p>
+<p>消息原文、用户陈述、系统证据、推测、操作收据分开保存。用户声称“已批准”不能替代审批记录，历史相似案例不能证明当前根因。问题之间可以记录关联，各自保留状态和验收条件。</p>
+<h2 id="section-4">执行与验收</h2>
+<p>工具范围限定为本人普通账号解锁、受限会话重置和目录只读授权。业务事务核对精确目标、当前身份、政策和授权状态；模拟业务变更与操作收据一起提交。真实外部系统无法共享这个事务，后续需要单独对账。</p>
+<p>验收按目标区分：账号解锁查当前账号；登录体验恢复还需用户反馈；权限查精确资源的实际授权，需要使用验证的目标还需反馈；VPN 检查观察窗口和反馈；应用恢复检查当前服务状态、匹配事故与恢复反馈。审批、等待外部恢复和交接不算解决。</p>
+<p>执行结果不确定时先查询操作记录。问题复发会使旧的恢复反馈失效；下一种修复需考虑最近尝试和新的失败反馈。提交多项状态时整体校验，失败则整批回滚，避免部分回复与状态不一致。</p>
+<h2 id="section-5">主要取舍</h2>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
-<th>检查</th>
-<th>可验证条件</th>
-<th>不能由此证明的事情</th>
+<th>选择</th>
+<th>原因</th>
+<th>代价</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Schema</td>
-<td>字段、枚举、大小和嵌套是否合法</td>
-<td>文本内容是否正确</td>
+<td>单 Agent，两阶段调用</td>
+<td>理解与动作错误可分开检查，无需角色协调</td>
+<td>额外调用；未证明比单阶段更准确</td>
 </tr>
 <tr>
-<td>归属</td>
-<td>问题属于当前聊天和员工</td>
-<td>模型是否选中了语义上正确的问题</td>
+<td>程序组织上下文</td>
+<td>当前身份、授权、未解决问题和失败反馈可追溯</td>
+<td>长对话可能超限；当前不做跨聊天个人记忆</td>
 </tr>
 <tr>
-<td>引用</td>
-<td>原文片段确实存在于绑定消息</td>
-<td>对这句话的理解是否正确</td>
+<td>关键词与向量混合检索</td>
+<td>兼顾精确系统名和自然语言表达</td>
+<td>多一个供应商依赖，需记录关键词降级</td>
 </tr>
 <tr>
-<td>可写范围</td>
-<td>此接口没有审批与执行状态写权限</td>
-<td>用户陈述是否真实</td>
+<td>SQLite 与模拟适配器</td>
+<td>本地运行简单，操作过程可复现</td>
+<td>不代表多副本并发与真实外部操作可靠性</td>
 </tr>
 <tr>
-<td>幂等与版本</td>
-<td>消息未重复应用、版本未冲突</td>
-<td>当前诊断是否合理</td>
-</tr>
-<tr>
-<td>状态前置条件</td>
-<td>已存在规定的执行收据或批准记录</td>
-<td>用户体验是否已经恢复</td>
+<td>有界调用与有限修复尝试</td>
+<td>防止循环调用、重复操作和失控费用</td>
+<td>复杂问题可能提前停止，需要保留进度或交接</td>
 </tr>
 </tbody>
 </table></div>
-<p>合法候选作为带来源的观察保存。错误候选不会通过改变记录类型来升级成可信后台事实。对于字段错误，模型可以修正格式；对于授权失败，不允许模型通过改写参数规避限制。</p>
-<p>I-1 用户恢复反馈可作为其验收依据之一；I-2 用户声称获批只形成待核查观察。第二阶段应查询实际审批结果。原始消息继续保留，避免语义整理错误成为唯一输入。</p>
-<h3 id="section-12">5.4 剩余语义风险</h3>
-<p>“Grafana 好了？”可能被误解为恢复确认；“数据库那个”可能关联到错误申请。这不是 JSON 校验能完全解决的问题。第二次调用也可能重复同一模型的误判。</p>
-<p>对涉及授权和执行的决定，必须查询后台事实。对普通问题状态，使用可追溯、可纠正的更新，并纳入错误关联和假解决评测。当前使用自然语言反馈与必要澄清；“已恢复／仍有问题”的目标绑定按钮可以降低歧义，当前未实现，也不要求每次交流都通过表单。</p>
-<h2 id="section-13">6 上下文组织</h2>
-<p>上下文由程序中的 Context builder 组装，输入是已保存的状态、真实工具结果和当前运行目的。它不自行推断根因；语义相关性来自检索及模型候选，来源、时效、权限、预算和装配顺序由代码管理。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>上下文部分</th>
-<th>整理阶段</th>
-<th>决策阶段</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>固定指令与输出约束</td>
-<td>只解释新消息，不执行动作</td>
-<td>诊断、查证、行动边界与回复约束</td>
-</tr>
-<tr>
-<td>当前用户消息</td>
-<td>完整保留</td>
-<td>完整保留</td>
-</tr>
-<tr>
-<td>身份</td>
-<td>已验证员工 ID、必要概要</td>
-<td>已验证身份、允许范围与政策提示</td>
-</tr>
-<tr>
-<td>问题</td>
-<td>当前聊天各问题的短概要</td>
-<td>全部问题概要必需；详细状态按容量选取</td>
-</tr>
-<tr>
-<td>历史</td>
-<td>最近相关交流和未答追问</td>
-<td>近期交流、尝试记录、待确认动作</td>
-</tr>
-<tr>
-<td>证据</td>
-<td>必要的引用上下文</td>
-<td>当前证据内容、来源、时间和适用范围</td>
-</tr>
-<tr>
-<td>工具结果</td>
-<td>通常不需要完整重放</td>
-<td>当前运行的调用与结果完整保留</td>
-</tr>
-</tbody>
-</table></div>
-<p>当前业务上下文目标：整理阶段 10,000、决策阶段 12,000 保守 UTF-8 字节，不是精确 token 数。系统指令、工具定义、时间戳补充与当前原生工具循环另占请求空间，完整请求估计和实际 usage 另记；现有目标没有为整个请求实施等值字节硬上限。必需业务记录超容量时返回 CONTEXT_CAPACITY，不静默丢弃授权或拒绝历史。原 6k 失败与调整理由见<a href="engineering-decisions.html">决策记录</a>。</p>
-<p>必需记录包括身份、事件与当前消息、问题概要、授权范围、追问、尝试、操作、观察和关联/假设。之后按容量选问题详情、最近最多八条消息和证据内容，旧原文可由当前聊天读取工具取回。证据选择应保留重要反证，不能只挑支持当前假设的材料；当前装配器的顺序选择仍可能遗漏可选内容，必须检查实际省略记录。</p>
-<p>上下文输出包含选择/省略的来源 ID、记录版本与保守字节估计。字段 estimated_tokens、target_tokens 为兼容保留名称，estimation=conservative_utf8_bytes 说明实际单位。可选证据内容可能因容量被省略，不能声称所有冲突证据永远完整进入请求；重要反证漏传属于上下文失败，不以模型猜中结果来抵消。</p>
-<p>模型协议适配与业务上下文分离。项目默认 thinking=False；适配器仍保留供应商要求的原生字段与工具消息配对。原生隐藏推理仅用于必要的内存协议，不展示为 trace 或审计证据。</p>
-<p>建议每个新应用事件重新构建一次模型会话，把较早业务历史作为有来源的上下文数据；在该事件内部完整保留原生模型工具消息。不能将外部审批回调伪装成模型刚刚发起的 tool call。上下文重建后的引用和恢复行为需要适配器测试。</p>
-<h2 id="section-14">7 记录模型与状态</h2>
-<h3 id="section-15">7.1 核心记录</h3>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>记录</th>
-<th>关键字段</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Message</td>
-<td>id、conversation_id、actor、content、created_at</td>
-</tr>
-<tr>
-<td>Issue</td>
-<td>id、goal、service_refs、status、acceptance_criteria_id、version</td>
-</tr>
-<tr>
-<td>Observation</td>
-<td>issue_refs、source_kind、source_id、quote、claim、observed_at</td>
-</tr>
-<tr>
-<td>Evidence</td>
-<td>source、record_id、revision、content_hash、fetched_at、scope</td>
-</tr>
-<tr>
-<td>Hypothesis</td>
-<td>claim、support_refs、contradict_refs、tentative 或 supported 或 rejected</td>
-</tr>
-<tr>
-<td>Relation</td>
-<td>from_issue、to_issue、type、evidence_refs、status、revision</td>
-</tr>
-<tr>
-<td>Attempt</td>
-<td>issue_id、remedy_id、normalized_parameters、evidence_refs、outcome</td>
-</tr>
-<tr>
-<td>Action</td>
-<td>action_id、actor、target、parameters_hash、authorization_refs、status、receipt</td>
-</tr>
-<tr>
-<td>Confirmation</td>
-<td>action_fingerprint、actor、issued_at、expires_at、decision</td>
-</tr>
-<tr>
-<td>Approval</td>
-<td>requester、resource、permission、scope、approver_role、status、revision</td>
-</tr>
-<tr>
-<td>Handoff</td>
-<td>issue_refs、summary、facts、hypotheses、attempts、reason、team、created_at</td>
-</tr>
-<tr>
-<td>Run</td>
-<td>event_id、model_config、prompt_version、context_refs、usage、latency、outcome</td>
-</tr>
-</tbody>
-</table></div>
-<p>个人聊天不自动写入通用历史案例库。通用历史是经过整理的模拟来源，避免未经验证的 Agent 输出反过来成为知识依据。</p>
-<h3 id="section-16">7.2 问题状态</h3>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>状态</th>
-<th>含义</th>
-<th>允许继续的方式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>investigating</td>
-<td>正在调查，有未决信息</td>
-<td>查询、追问、动作或交接</td>
-</tr>
-<tr>
-<td>waiting_user</td>
-<td>等待员工补充或动作确认</td>
-<td>员工消息或确认事件</td>
-</tr>
-<tr>
-<td>waiting_approval</td>
-<td>申请尚未得到有效批准</td>
-<td>审批事件或查询状态</td>
-</tr>
-<tr>
-<td>waiting_external</td>
-<td>已知事故等外部条件尚未恢复</td>
-<td>员工询问或有实际外部状态更新</td>
-</tr>
-<tr>
-<td>verifying</td>
-<td>动作或指导已完成，验收条件未齐</td>
-<td>状态查询、用户反馈</td>
-</tr>
-<tr>
-<td>resolved</td>
-<td>对应目标已有充分验收依据</td>
-<td>后续复发报告可重新调查并保留历史</td>
-</tr>
-<tr>
-<td>handed_off</td>
-<td>完整交接已保存</td>
-<td>首版停止该项自动处理，可查看记录</td>
-</tr>
-<tr>
-<td>denied</td>
-<td>权限申请被拒绝或明确不允许</td>
-<td>解释结果；新范围需新申请</td>
-</tr>
-<tr>
-<td>cancelled</td>
-<td>员工撤回</td>
-<td>新诉求另行处理</td>
-</tr>
-</tbody>
-</table></div>
-<p>denied、handed_off 和 cancelled 都不是 resolved。waiting_external 也不是“已解决”。一个聊天的整体进度由程序汇总，不让模型另存可能矛盾的 all_resolved 标记。</p>
-<p>Run 状态另行使用 queued、running、waiting、completed、failed、budget_exhausted；一次运行结束和某个问题解决是两种状态。</p>
-<h3 id="section-17">7.3 多问题与关联</h3>
-<p>问题按可独立验收的用户目标组织，不按系统名称机械拆分。多个症状可能属于同一问题；两个权限申请通常有独立目标。</p>
-<p>已经存在的问题默认不因“相关”而合并。共享根因、依赖、同一事故等关系独立保存；各问题仍分别验收。重复描述优先追加已有项；若重复创建，标记 duplicate_of 并保留历史，不复制执行。</p>
-<p>语义判断只提出候选关联。明确的系统依赖可由配置支持，但“依赖存在”不证明此次故障一定沿该依赖传播。证据出现反例时可以否定关系。关系变化不得自动传播 resolved 状态。</p>
-<h2 id="section-18">8 工具与政策</h2>
-<h3 id="section-19">8.1 工具目录</h3>
-<p>模型可见工具按职责保持清楚，不使用可执行任意代码的通用工具。整理阶段不提供业务工具；决策阶段注册 16 个业务工具与内部 refine_issue、submit_turn，第十次模型请求只提供终结接口。当前没有按角色动态裁剪整套工具名单；能否执行由后端真实身份、范围与政策决定。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>工具</th>
-<th>主要作用</th>
-<th>关键约束</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>get_employee_context</td>
-<td>当前员工、设备、地点、部门与权限概要</td>
-<td>actor 由后端提供</td>
-</tr>
-<tr>
-<td>inspect_account</td>
-<td>当前员工的指定业务账号状态</td>
-<td>仅关联到当前员工的账号</td>
-</tr>
-<tr>
-<td>inspect_access</td>
-<td>查询目标资源的实际权限</td>
-<td>资源目录限定</td>
-</tr>
-<tr>
-<td>inspect_vpn</td>
-<td>查询当前员工 VPN 会话与可见诊断信息</td>
-<td>不返回无关员工记录</td>
-</tr>
-<tr>
-<td>get_service_context</td>
-<td>服务健康、事故、变更和配置的可见依赖</td>
-<td>返回范围与更新时间</td>
-</tr>
-<tr>
-<td>search_kb</td>
-<td>检索适用指南</td>
-<td>返回文章与片段 ID、版本</td>
-</tr>
-<tr>
-<td>search_history</td>
-<td>检索整理后的通用历史案例</td>
-<td>不检索其他员工原始聊天</td>
-</tr>
-<tr>
-<td>get_action_requirements</td>
-<td>查询动作政策与前置条件</td>
-<td>与执行端使用同一份政策</td>
-</tr>
-<tr>
-<td>get_approval</td>
-<td>查询当前问题关联申请</td>
-<td>不允许跨用户读取无关申请</td>
-</tr>
-<tr>
-<td>get_action_result</td>
-<td>核查操作结果，处理不确定执行</td>
-<td>根据后端签发 action_id</td>
-</tr>
-<tr>
-<td>read_conversation_context</td>
-<td>按引用读取当前聊天的旧原文</td>
-<td>聊天归属检查</td>
-</tr>
-<tr>
-<td>unlock_account</td>
-<td>解锁允许的模拟业务账号</td>
-<td>账号类型与停用原因检查</td>
-</tr>
-<tr>
-<td>grant_catalog_access</td>
-<td>开通资源目录内明确权限</td>
-<td>按政策检查审批或直接授权</td>
-</tr>
-<tr>
-<td>reset_vpn_session</td>
-<td>重置当前员工模拟 VPN 会话</td>
-<td>有影响，需绑定动作的确认</td>
-</tr>
-<tr>
-<td>request_approval</td>
-<td>创建精确范围的申请</td>
-<td>去重，不接受模型指定批准</td>
-</tr>
-<tr>
-<td>create_handoff</td>
-<td>保存完整交接</td>
-<td>保存成功才更新 handed_off</td>
-</tr>
-</tbody>
-</table></div>
-<p>记录观察、提出问题状态变化和生成回复属于内部受控接口，不必把每个数据库字段都暴露为模型工具。</p>
-<h3 id="section-20">8.2 统一工具返回</h3>
-<pre><code>{
-  "ok": true,
-  "data": {},
-  "evidence": [
-    {"source": "directory", "record_id": "E03", "revision": 4}
-  ],
-  "observed_at": "2026-11-02T09:00:00+08:00",
-  "action_id": null,
-  "error": null
-}
-</code></pre>
-<p>错误使用 code、retryable、execution_status 和安全说明。NO_MATCH、NOT_FOUND、FORBIDDEN、APPROVAL_REQUIRED、CONFIRMATION_REQUIRED、TIMEOUT、INVALID_ARGUMENT、CONFLICT、EXECUTION_UNCERTAIN 等分别处理。底层 Retrieval.search 无匹配时返回空 hits；模型可见 search_kb/search_history 工具再转换成 NO_MATCH 反馈。未命中与读取故障都不证明服务正常或企业事实不存在。</p>
-<h3 id="section-21">8.3 动作边界</h3>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>动作</th>
-<th>可直接执行</th>
-<th>需确认或审批</th>
-<th>不允许自动执行</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>普通账号解锁</td>
-<td>当前员工，普通锁定，目录政策允许</td>
-<td>政策要求的额外验证未满足则停止</td>
-<td>安全停用、他人账号、重置 MFA</td>
-</tr>
-<tr>
-<td>标准 Grafana 只读权限</td>
-<td>部门符合且员工明确请求</td>
-<td>目标或范围不明确先澄清</td>
-<td>管理员角色或任意资源</td>
-</tr>
-<tr>
-<td>目录内生产只读权限</td>
-<td>不直接执行</td>
-<td>有效资源负责人审批，范围与请求一致</td>
-<td>生产管理员、写入权限等未开放动作</td>
-</tr>
-<tr>
-<td>VPN 会话重置</td>
-<td>不由含糊故障描述直接触发</td>
-<td>告知影响并取得对应动作确认</td>
-<td>操作他人的会话</td>
-</tr>
-<tr>
-<td>生产服务或流水线修改</td>
-<td>无</td>
-<td>首版即使获批也不开放对应工具</td>
-<td>生产回滚、任意命令、重启关键服务</td>
-</tr>
-</tbody>
-</table></div>
-<p>工具目录决定“能否做”，审批决定“是否获得某项允许动作的额外授权”。批准不能创造原本不存在的工具能力。</p>
-<p>用户明确请求的低风险动作可以直接执行，但程序不可能只凭 Schema 证明自然语言授权成立。低风险动作仍存在意图误判风险，必须限制目标和影响范围并做评测。具有连接中断等影响的动作，用明确展示对象及影响的确认卡绑定 action_fingerprint；动作或目标变化时原确认失效。</p>
-<h3 id="section-22">8.4 幂等和不确定执行</h3>
-<p>后端以员工、聊天、问题生命周期、动作和规范化参数计算指纹，先查已有操作；新操作才签发 action_id。API 重试、刷新与重复审批事件复用原收据，不靠模型每次生成随机键去重。消息去重、整轮提议去重和业务动作去重属于不同对象。</p>
-<p>模拟数据变更和操作收据在同一数据库事务中提交。评测故意支持“已提交但响应超时”：此时调用方看到 EXECUTION_UNCERTAIN，先 get_action_result 查询，不能盲目再次执行。</p>
-<p>检查与变更尽量在同一事务内使用版本条件；确认或审批已失效、权限被撤回、资源状态变化时重新判定。对于不同操作之间的业务撤销，不承诺自动回滚所有动作；只对明确可补偿的模拟操作设计补偿规则。</p>
-<h2 id="section-23">9 身份与授权</h2>
-<p>帮助台登录与模拟 Okta 登录是不同系统，通过员工 ID 关联。员工可以用帮助台账号报告 Okta 锁定；这是原型的身份假设，不等价于企业生产环境中的独立强身份验证。</p>
-<p>预置演示账号使用密码哈希保存；建议成熟 Argon2id 实现，不保存明文密码。密码不进入模型上下文、普通日志或评测 trace。<a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP 密码存储</a></p>
-<p>后端会话通过 HttpOnly Cookie 关联用户。登录重建会话 ID，退出使其失效；写接口验证 CSRF，部署 HTTPS 时使用 Secure Cookie；本地开发的配置差异要写进 README。<a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">OWASP 会话管理</a></p>
-<p>employee 只能访问自己的聊天和申请；approver 只能处理其负责资源的申请，默认不允许批准自己的申请。调试权限单独控制，不能仅靠前端隐藏按钮。请求中的 user_id 不能覆盖后端身份。</p>
-<p>切换账号不继承前一账号的聊天、确认或工具执行上下文。同一员工可以重新打开自己的旧聊天；新建聊天不会自动读取旧聊天内容。</p>
-<h2 id="section-24">10 审批与人工交接</h2>
-<h3 id="section-25">10.1 审批闭环</h3>
-<p>申请绑定请求人、目标资源、具体权限、理由、相关问题、政策版本和有效期。状态为 pending、approved、rejected、expired、cancelled；执行状态另外记录。</p>
-<p>审批人通过自己的账号批准或拒绝。测试时由驱动器使用同样的权限路径提交审批，而不是直接修改 approved 字段。重复决策有幂等检查；终态冲突返回错误。</p>
-<p>工程默认采用后端持久事件驱动恢复：批准事件写入待处理运行，由同一应用的处理器读取；不依赖浏览器一直打开，也不保持一条 LLM 请求等待审批。事件处理仅恢复关联问题和已授权动作，不给审批人会话附加员工身份。</p>
-<p>恢复时重新读取员工是否有效、当前政策、批准范围、有效期、撤回状态和执行记录。原申请是针对该动作的持续请求，退出聊天本身不撤回它；员工可以明确取消申请。需要实时用户确认的动作仍需满足确认条件。此自动恢复方式是工程默认值，若改为员工点击继续，应同步修改界面和评测。</p>
-<h3 id="section-26">10.2 人工交接终点</h3>
-<p>交接内容包括：员工目标及影响、已知事实、证据来源、尝试与结果、未验证假设、缺失信息、转人工原因、建议团队、相关问题 ID 和必要对话引用。后台检查字段存在、引用有效、敏感信息范围；语义完整性仍需评估。</p>
-<p>只有记录持久化成功才进入 handed_off。首版没有真实 IT 队列或专家接单，所以界面应说“已创建模拟交接记录”，不能声称真人已接单或承诺响应时间。</p>
-<p>该问题停止自动诊断和修复，其他问题照常推进。首版不处理专家补充结果后的自动恢复；相关设计见扩展材料。</p>
-<h2 id="section-27">11 诊断与结果判断</h2>
-<p>每次调查应服务于一个未决点。优先查询系统已有信息，再询问员工独有的信息。一般一次问一个重点问题，两个紧密相关的问题可以合并。员工短输入、拼写错误和非专业表述都是正常情况。</p>
-<p>通用 IT 知识用于解释和提出假设；改变配置、命令执行等具体操作建议必须来自适用的已审阅指南。引用本身不保证适用，模型需要核对服务、版本和前置条件。政策不允许的行为不能通过让员工手工执行来绕过。</p>
-<p>第一次修复失败后，只有新证据或另一条明确适用路径才允许追加。初始上限为每问题两条不同修复路径；查询和等待反馈不占修复次数。remedy_id、参数与预期作用用于识别重复，语义上是否实质不同仍是评测重点。</p>
-<p>工程默认预算为每次事件最多 10 次模型请求和 12 次工具执行，格式修正也计入。接入初测原先设置 8 次，但实际澄清案例在正确创建审批后没有剩余调用完成回复，因此调整为 10 次，同时要求复用当前事实、合并独立查询；保留原始失败记录。只读工具最多额外重试一次，写操作不盲重试。单次模型请求初始超时 45 秒，单次运行总上限 120 秒，均以实测调整。这些是停止无限运行的硬上限，不是期望延迟目标。</p>
-<p>触发转人工的原因应可解释：员工明确要求、必须操作不开放、无法安全继续、缺少关键证据且可行替代已用尽，或合理尝试后无进展。达到单轮预算只说明本轮停止，不自动证明能力不足。</p>
-<p>已知事故且影响范围匹配时可以进入 waiting_external，提供经过证实的事故信息和适用临时办法；不要求每个事故都另建个人交接。影响范围不匹配时不能直接归因。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>目标</th>
-<th>验收条件示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>解锁账号</td>
-<td>后台普通锁定解除；若目标是恢复登录，还需登录验证或明确用户恢复反馈</td>
-</tr>
-<tr>
-<td>开通权限</td>
-<td>目标权限存在且范围正确；若用户诉求包含访问页面，则继续验证访问</td>
-</tr>
-<tr>
-<td>VPN 恢复</td>
-<td>连接恢复并达到案例定义的观察窗口，不能仅凭重置返回成功</td>
-</tr>
-<tr>
-<td>应用故障</td>
-<td>application_recovery 要求后续明确恢复反馈、当前服务健康、无匹配活跃事故及当前状态证据；不凭一句回复解决</td>
-</tr>
-<tr>
-<td>跨系统故障</td>
-<td>每个独立用户目标分别验收，根因相关不传播成功状态</td>
-</tr>
-</tbody>
-</table></div>
-<p>明确正向用户反馈可以成为验收依据，但其语义解释仍依赖模型。反馈含糊或与最新后台结果冲突时，不自动标记 resolved。测试环境通过确定的模拟状态检查用户模拟器有没有虚构恢复。</p>
-<h2 id="section-28">12 五类数据的组织</h2>
-<p>当前准备 22 篇 KB、12 条通用历史、6 个演示账号、8 个服务、5 个资源、2 个事故、2 个变更、2 条依赖和 12 条政策。题目只要求至少 2–3 类来源，五类是本项目的取舍；覆盖和一致性比数量重要，不要求每次查询所有来源。</p>
-<p>员工覆盖销售、远程办公、数据工程新人、平台工程师和资源审批人等角色。所有来源通过 employee_id、service_id、resource_id、region、device_version、change_id 关联。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>来源</th>
-<th>必要元数据</th>
-<th>有意设计的难点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>知识库</td>
-<td>服务、症状、适用版本、前置条件、有效时间、审阅状态</td>
-<td>同主题新旧版本、不可直接适用文章</td>
-</tr>
-<tr>
-<td>状态与变更</td>
-<td>服务、区域、开始时间、最近观察、受影响组件</td>
-<td>状态页延迟、地区不匹配、维护仅有时间相关性</td>
-</tr>
-<tr>
-<td>用户目录</td>
-<td>部门、角色、地区、设备、权限、账号标识</td>
-<td>新员工缺少权限、不同地区不同配置</td>
-</tr>
-<tr>
-<td>历史案例</td>
-<td>当时环境、症状、验证根因、解决步骤、结果</td>
-<td>症状相同但原因不同、环境已变</td>
-</tr>
-<tr>
-<td>政策</td>
-<td>动作、资源、直接允许条件、确认、审批角色、禁止条件</td>
-<td>紧急诉求不改变授权，申请范围变更</td>
-</tr>
-</tbody>
-</table></div>
-<p>合成来源注明模拟属性，静态世界 as_of 固定为 2026-11-02 09:00 Asia/Shanghai。评测使用受控时钟；实际演示的审批到期、租约与动作使用运行时钟，不能把静态 as_of 当成冻结的业务时钟。相对日期应结合消息时间与记录核对，不宣称已覆盖所有日期理解。</p>
-<p>后台只按配置和操作规则变化，不识别员工输入是否匹配某段演示台词。面试新问题照常经过模型、查询和政策检查；没有模拟的数据应报告未知，不临时编造企业记录。</p>
-<p>预期答案、隐藏根因和故障注入配置仅在评测侧可见。实际工具只能返回其职责允许观察到的信息，不直接附带“本例正确答案”。</p>
-<h2 id="section-29">13 混合检索</h2>
-<p>知识库和历史案例使用 BM25 与 embedding 检索。用户目录、状态和政策优先按 ID 与字段查询，不强行全部向量化。</p>
-<p>文档按自然小节切分，保留父文档、适用版本与前置条件，不切断经过审阅的操作段。当前不是严格的 300–600 token 切分器；单段超过 12,000 UTF-8 字节时明确省略并记录，不提供独立父段读取工具，长文支持仍有边界。</p>
-<p>查询同时进入关键词和向量两路，初始各取 10 个结果；按排名融合后保留约 5 个，按父文档去重。RRF 初始使用 1/(60+rank) 累加，仅作为可调整参数，不把排名分数当正确性概率。中文分词需保留英文产品名、错误码和版本号；不能直接采用只适合英语空格切分的处理方式。</p>
-<p>过滤只使用已知条件；员工未说明版本时不能猜版本再强过滤。无匹配时空 hits/工具 NO_MATCH 是合法结果，不为凑足 Top K 返回无关文档。语义门槛 0.48 只经过五条开发探针调节，不是正确性概率或普遍可信度。</p>
-<p>建议 BM25S 本地执行；向量使用硅基流动 BAAI/bge-m3，缓存文档向量，本地计算相似度。2026 年 11 月 2 日重新核对的官方价格页标为免费，用户提供独立密钥后的实际调用已返回 1024 维向量。不自动切换到收费的 Pro/BAAI/bge-m3；服务价格与可用性仍以供应商当时规则为准。<a href="https://siliconflow.cn/pricing">价格页</a> <a href="https://huggingface.co/BAAI/bge-m3">模型说明</a> <a href="https://github.com/xhluca/bm25s">BM25S</a></p>
-<p>索引保存 embedding 模型标识、维度、文档哈希、切分版本和索引版本。查询与文档必须使用同一向量空间；更换模型要重建索引，不能混用缓存。</p>
-<p>embedding 服务不可用时明确降级到 BM25，记录 degraded=true。不能把降级运行归入正常混合检索结果；缓存未命中的查询失败仍可使用关键词路径。Reranker 不是首版必需项。</p>
-<h2 id="section-30">14 五类场景的端到端示例</h2>
-<h3 id="section-31">14.1 账号</h3>
-<p>员工说“又登不进去了，密码改过了”。先识别具体系统或查已有上下文，保存“已改密码”，避免重复建议。查询账号和服务状态。普通锁定符合政策时执行解锁；MFA 故障或安全停用则走对应安全指导或人工交接。解锁成功后继续验证登录。</p>
-<h3 id="section-32">14.2 应用</h3>
-<p>员工说“Salesforce 太慢了”。询问影响范围前先查看员工地区和事故记录。有同地区事故并不等于所有个人问题都由事故导致，核对症状与时间。无事故时查询适用指南和近期变更，指导安全检查。确认事故后报告 waiting_external，不称已修复。</p>
-<h3 id="section-33">14.3 连接</h3>
-<p>员工说“VPN 十来分钟就掉”。查询客户端、会话和已知故障，询问后台无法获得的家庭网络情况。如果适用路径要求重置会话，先呈现影响及确认；执行后检查会话，并等待必要的持续观察。存在基础网络问题时，重置不能神奇治愈。</p>
-<h3 id="section-34">14.4 权限</h3>
-<p>员工同时申请 Grafana 和 Snowflake。建立独立目标，读取目录与政策。标准只读权限符合条件可执行；生产只读按政策申请审批。一个完成、一个等待时分别呈现。员工声称获批不改变审批记录。</p>
-<h3 id="section-35">14.5 跨系统</h3>
-<p>员工报告 Jenkins 超时与 Tableau 陈旧。检查维护、服务依赖、运行状态和历史案例；维护时间相近只形成候选关联。若需要生产网络变更，生成包含支持和反对证据的交接，停止该项自动修复。若一项恢复而另一项仍旧，分别记录。</p>
-<h2 id="section-36">15 界面与 API 默认设计</h2>
-<p>员工界面包含聊天、问题进度、动作确认卡、审批或交接编号，以及可展开的相关证据。语言跟随员工输入，默认回复简短，复杂步骤分段给出；中英文自然度仍需实际评测。用户可以收起界面、切换或重新打开聊天；当前没有业务上的聊天关闭状态，Agent 结束的是一次运行。</p>
-<p>审批界面只显示当前审批人有权处理的申请。调试视图独立，显示实际上下文、工具、状态差异、错误和耗时；敏感凭据排除。简短决策依据可以显示，模型内部思考文本不作为审计证据。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>API</th>
-<th>职责</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>POST /auth/login 与 /auth/logout</td>
-<td>登录和退出</td>
-</tr>
-<tr>
-<td>GET /me</td>
-<td>当前身份</td>
-</tr>
-<tr>
-<td>POST /conversations</td>
-<td>建立当前员工的聊天</td>
-</tr>
-<tr>
-<td>GET /conversations/{id}</td>
-<td>读取有权访问的历史</td>
-</tr>
-<tr>
-<td>POST /conversations/{id}/messages</td>
-<td>保存消息并创建运行</td>
-</tr>
-<tr>
-<td>GET /runs/{id}/events</td>
-<td>轮询事件/运行进度；当前未实现 SSE</td>
-</tr>
-<tr>
-<td>POST /confirmations/{id}/decision</td>
-<td>对绑定动作确认或取消</td>
-</tr>
-<tr>
-<td>GET /approvals 与 POST /approvals/{id}/decision</td>
-<td>有权限的审批查询和决策</td>
-</tr>
-<tr>
-<td>GET /handoffs/{id}</td>
-<td>读取有权查看的交接</td>
-</tr>
-<tr>
-<td>GET /debug/runs/{id}</td>
-<td>开发模式查看执行记录</td>
-</tr>
-</tbody>
-</table></div>
-<p>没有被授权的请求不能只靠猜测 ID 读取资源。输出中的 HTML 不直接信任模型内容，避免在聊天渲染中执行脚本。</p>
-<h2 id="section-37">16 故障与可观测性</h2>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>故障</th>
-<th>处理</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>LLM 不可用或超时</td>
-<td>保留消息和状态，说明本次未完成；不编造诊断</td>
-</tr>
-<tr>
-<td>非法结构化输出</td>
-<td>一次有界格式修正；仍失败则记录模型协议错误</td>
-</tr>
-<tr>
-<td>工具读超时</td>
-<td>有限重试或有依据的替代来源，标明缺失</td>
-</tr>
-<tr>
-<td>写操作结果不明</td>
-<td>查询 action_id 的实际执行记录</td>
-</tr>
-<tr>
-<td>检索无结果</td>
-<td>承认缺少依据，允许安全假设和针对性追问</td>
-</tr>
-<tr>
-<td>来源冲突</td>
-<td>保存冲突双方，核对时间和范围；不掩盖反证</td>
-</tr>
-<tr>
-<td>数据库保存失败</td>
-<td>不声称审批或交接已创建</td>
-</tr>
-<tr>
-<td>并发消息</td>
-<td>同一聊天运行串行化或使用版本冲突重试</td>
-</tr>
-<tr>
-<td>应用重启</td>
-<td>读取持久事件和操作收据，先核查在途动作</td>
-</tr>
-<tr>
-<td>预算耗尽</td>
-<td>停止本轮，保留进度；是否转人工另行判断</td>
-</tr>
-</tbody>
-</table></div>
-<p>每次运行保存 trace_id、阶段、模型和配置、提示词版本、数据与政策版本、上下文引用、工具调用及结果、状态变化、tokens、耗时和降级标记。用户模拟及评分调用与业务 Agent 调用分别计费统计。</p>
-<p>成本按实际 API 用量和执行时费率计算。请求数不是 token 成本的替代；缺少 reasoning 或缓存计费细节时报告估算范围，不能伪造精确费用。</p>
-<h2 id="section-38">17 验证顺序与实现边界</h2>
-<p>先验证程序边界：身份隔离、审批与确认、幂等和状态转换。再接模型，用少量困难案例检验信息提取、问题映射和上下文装配。随后补齐五类数据与动作，最后执行正式评估和演示准备。</p>
-<p>这不是承诺所有模型判断都准确。每一步须保留失败案例，判断问题来自数据、检索、上下文、模型、政策、执行还是用户模拟器。分阶段调用增加延迟和错误传递风险；未做对照时，只能说它使责任分解更清楚，不能声称已证明更准确。</p>
-<p>日常开发和评估可由开发助手执行。用户需要提供可用模型凭据并确定调用预算；若外部账户异常或必须由账户所有者操作，仍需要用户介入。凭据在本地配置，不写入仓库或设计材料。</p>
-<p>正式测评的详细场景、断言和评分见 02-evaluation.md。生产化与扩展见 03-defense-and-extensions.md。</p>
-
-<footer><a href="01-system-design.md">Markdown 原文</a></footer>
-</article></main></body></html>
+<p><a href="../delivery.html">运行与结果</a> · <a href="02-evaluation.html">评估设计</a> · <a href="productionization.html">生产化说明</a></p>
+</main>
+<footer><a href="../delivery.html">项目说明</a> · <a href="01-system-design.md">Markdown</a></footer></body></html>

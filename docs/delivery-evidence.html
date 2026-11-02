@@ -1,243 +1,45 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>集成与修复记录</title><style>
-:root { color-scheme:light; }
-* { box-sizing:border-box; }
-body { max-width:980px; margin:32px auto; padding:0 24px; color:#252525; background:#fff; font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif; }
-a { color:#27567c; text-underline-offset:3px; overflow-wrap:anywhere; }
-header { border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:32px; }
-.brand { color:inherit; font-weight:650; text-decoration:none; }
-.pages { display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:12px; font-size:14px; }
-.pages a[aria-current=page] { color:inherit; font-weight:650; }
-.toc { font-size:14px; margin:20px 0; }
-.toc summary { cursor:pointer; }
-.toc a { display:block; margin:4px 0; }
-h1 { font-size:28px; line-height:1.4; margin:24px 0; }
-h2 { font-size:21px; margin:32px 0 12px; }
-h3 { font-size:18px; margin:24px 0 10px; }
-p,li { overflow-wrap:anywhere; }
-li { margin:6px 0; }
-img { max-width:100%; height:auto; }
-.table-wrap { overflow-x:auto; margin:20px 0; }
-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.65; }
-th,td { text-align:left; vertical-align:top; border-bottom:1px solid #ddd; padding:10px; min-width:100px; }
-th { background:#f5f5f5; }
-pre { padding:16px; background:#f6f6f6; overflow:auto; font-size:13px; line-height:1.6; }
-code { font-family:Consolas,'Microsoft YaHei',monospace; }
-blockquote { margin-left:0; padding-left:16px; border-left:2px solid #bbb; color:#555; }
-footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:#666; font-size:13px; }
-@media(max-width:600px) { body { padding:0 16px; margin:20px auto; font-size:15px; } h1 { font-size:25px; } table { min-width:600px; } }
-@media print { header,.toc { display:none; } body { max-width:none; font-size:10pt; margin:0; } h2,h3 { break-after:avoid; } tr { break-inside:avoid; } pre { white-space:pre-wrap; overflow-wrap:anywhere; } .table-wrap { overflow:visible; } }
-</style></head><body>
-<header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
-<nav class="pages" aria-label="文档导航"><a href="index.html">文档</a><a href="demo.html">演示</a><a href="01-system-design.html">系统设计</a><a href="implementation-status.html">验证结果</a></nav></header>
-<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">0.1.3：多账号、多轮录屏</a><a href="#section-3">0.1.2：复发验收与报告统计修正</a><a href="#section-4">0.1.1：托管 CI 的换行可移植性修正</a><a href="#section-5">原交付的实际检查</a><a href="#section-6">真实smoke范围</a><a href="#section-7">费用与版本</a><a href="#section-8">原题逐项映射</a><a href="#section-9">设计与可执行契约</a><a href="#section-10">最终整体审查后的确定性修复（2026-11-02）</a><a href="#section-11">开发材料一致性审校</a></details><h1 id="section-1">集成与修复记录</h1>
-<p>2026-11-02（Asia/Shanghai）。本页保留 65743f3 的集成检查与随后边界修复的离线验证；正式评测仍为历史版本测量，没有真人专家或真实企业系统。源码现随 GitHub 仓库分享，应用仍仅在本机运行。</p>
-<p>新增 v6 <code>5055722</code> 的七次定向实测及最终 v7 <code>baca519</code> 的 D05/D09 配对检查另见<a href="delivery-iteration-result.html">员工交互迭代结果</a>、<a href="evidence/delivery-iteration-v6.json">v6 证据</a>和<a href="evidence/delivery-iteration-v7.json">v7 证据</a>。这是单独的新证据，含未完成、无效模拟和评测余量停止；不替换本页旧 smoke 或正式历史汇总，最终 v7 不继承 v6 的五类覆盖。</p>
-<p>早期 v7 的<a href="evidence/demo-v7-recording/index.html">录屏说明</a>、<a href="evidence/demo-v7-recording/demo-v7.json">消息与费用</a>、<a href="evidence/task2-restart.json">本次重启核对</a>独立保存；不覆盖下面的历史 smoke、截图或费用快照。</p>
-<h2 id="section-2">0.1.3：多账号、多轮录屏</h2>
-<p>新版 <a href="demo.html">演示</a>记录两个员工和一个审批人的实际 UI 交互，每次回复后展开问题、回执与来源。试录发现多目标收尾的验收错误未说明失败的问题；补充错误范围后增加真实数据库回归，完整套件 221 项通过。重录 8 个事件均完成，模型仍有工具误用、重复追问和过强措辞，原消息均保留。两段试录合计新增 US$0.448411504；经确认的项目上限为 US$4，原账本未重置。旧证据和以下历史数字不改。</p>
-<h2 id="section-3">0.1.2：复发验收与报告统计修正</h2>
-<p>按原题再次检查发现三处错误：复发症状未使较早恢复反馈失效；同一问题再次操作后，追加指导沿用了首次操作的反馈门槛；报告把一次预算预留前停止计为实际请求。前两处只修改 <code>app/domain.py</code> 的现有条件，第三处修改 <code>evals/report.py</code>，同时固定 Task5 历史批次分母、区分后续测量。</p>
-<p>新增四项回归均先失败再通过。集成验证为 <strong>218 passed（45.48 秒）</strong>，<strong>31 个案例变体结构有效</strong>。只读重算后续两批评测为 70 次尝试、69 次账本请求、US$0.236630404。原始案例、公开结果 JSON、费用快照与媒体未改；本轮无新增付费调用。v7 两案及录屏是本次验收修复前的实测，不能视作修复后模型效果验证。</p>
-<p>README、演示说明和结果摘要已按提交用途整理，详细设计保留为参考。文档 HTML 改为简单阅读排版，不是单独交付要求。提交后的运行结果见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">GitHub CI</a>。</p>
-<h2 id="section-4">0.1.1：托管 CI 的换行可移植性修正</h2>
-<p><a href="https://github.com/Yaliang-Cai/ithelper-project/actions/runs/41360433415">首次 GitHub Actions</a> 在 Ubuntu 26.04 / Python 3.12.15 安装成功，pytest 为 <strong>1 failed / 208 passed（30.51 秒）</strong>，结构验证未执行。失败来自历史 holdout 密封校验直接比较文件字节：原密封使用 CRLF，Git LF 检出内容相同但哈希不同；10 个案例仅恢复 CRLF 后均匹配原密封，没有事实变化。</p>
-<p>修正仅在测试内接受原始精确字节或统一 LF 到历史 CRLF 的换行转换，不进行 JSON 重序列化，也不容忍事实、空白、BOM、混合换行或裸 CR 变化。新增 5 项回归；普通检出 <strong>214 passed（24.28 秒）</strong>，逐文件核对原始 Git blob 的 LF 源码树 <strong>214 passed（24.48 秒）</strong>，两边均验证 31 个案例变体。原 209 项历史记录不改写，应用 v7、案例、oracle、密封值和媒体未变，无新增模型调用。</p>
-<p>该托管日志还提示 <code>setup-python@v5</code> 的 Node 20 兼容警告；仅改为官方 <a href="https://github.com/actions/setup-python/releases/tag/v6.0.0">setup-python v6</a> 的 Node 24 版本，实际 runner 2.338.2 满足其最低 2.327.1。<code>checkout@v6</code> 和 Python 依赖不变。源码包版本为 0.1.1，实际托管结果见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">工作流运行记录</a>，本地测试不能替代该结果。</p>
-<h2 id="section-5">原交付的实际检查</h2>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<title>版本与回归记录</title><style>
+*{box-sizing:border-box}body{max-width:940px;margin:36px auto;padding:0 24px;color:#222;background:#fff;font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif}
+h1{font-size:28px;line-height:1.4;margin:20px 0}h2{font-size:21px;margin:30px 0 12px}h3{font-size:18px}
+a{color:#285e88;text-underline-offset:3px;overflow-wrap:anywhere}p,li{overflow-wrap:anywhere}li{margin:5px 0}
+.table-wrap{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #ddd;min-width:105px}th{background:#f5f5f5}
+pre{overflow:auto;padding:16px;background:#f6f6f6;font-size:13px;line-height:1.6}code{font-family:Consolas,monospace}footer{border-top:1px solid #ddd;margin-top:32px;padding-top:12px;font-size:14px}
+@media(max-width:600px){body{padding:0 16px;margin:20px auto;font-size:15px}h1{font-size:25px}table{min-width:560px}}
+@media print{body{max-width:none;margin:0;font-size:10pt}h2,h3{break-after:avoid}tr{break-inside:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere}.table-wrap{overflow:visible}footer{display:none}}
+</style></head><body><main><h1 id="section-1">版本与回归记录</h1>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
-<th>检查</th>
-<th>模式与结果</th>
-<th>证据/复现</th>
+<th>阶段</th>
+<th>变化</th>
+<th>验证</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>安装</td>
-<td>Python3.12.10，<code>pip install -e '.[dev]'</code>成功，pip check无冲突</td>
-<td>最小运行安装<code>pip install -e .</code>；可选浏览器/录屏工具见<a href="demo.html">演示指南</a>，文档渲染工具见<a href="index.html">文档入口</a></td>
+<td>v0.1.1</td>
+<td>修正历史案例在 LF 与 CRLF 检出时的封存校验</td>
+<td>Windows 与 Linux 对应检查通过；不允许改写案例事实</td>
 </tr>
 <tr>
-<td>程序回归</td>
-<td>203 passed in23.33s，无warning；实际临时SQLite/认证/政策/Agent，外部模型fixture</td>
-<td><code>.venv/Scripts/python.exe -m pytest -q</code>；不等于语义成功率</td>
+<td>v0.1.2</td>
+<td>修正复发验收、最近尝试的反馈门槛和报告请求计数</td>
+<td>4 项新增回归先失败再通过；当时完整套件 218 项</td>
 </tr>
 <tr>
-<td>API不确定性</td>
-<td>先KeyError失败，补显式safe DTO后通过</td>
-<td><code>tests/test_api.py -k uncertainty</code>；仅source_message_id/candidate_issue_ids</td>
+<td>v0.1.3</td>
+<td>多账号多轮实录；验收错误补充具体问题范围</td>
+<td>完整套件 221 项；新录屏 8 个事件完成，保留工具拒绝和原失败记录</td>
 </tr>
 <tr>
-<td>显示回归</td>
-<td>实际JS+fixture HTTP+受控时钟，先复现过期按钮保留，修复后3项通过</td>
-<td><code>python scripts/verify_ui_states.py</code>：闲置到期删除确认控件；模糊反馈显示最后验证状态及待澄清；明确后移除提示</td>
-</tr>
-<tr>
-<td>浏览器</td>
-<td>scripted_model_real_agent_http_browser，14项通过，0付费调用</td>
-<td><code>python scripts/verify_browser.py</code>；本机runtime/browser/20261101T212831Z保存截图/trace/日志</td>
-</tr>
-<tr>
-<td>新输入真实模型</td>
-<td>2用户轮，2completed live_agent运行，1unlock操作，5非终结工具，8模型请求，0事件错误</td>
-<td><a href="evidence/delivery-smoke.json">实际消息/状态/回执</a>；两运行model_calls5/3、tool_calls4/1</td>
-</tr>
-<tr>
-<td>停止/重启</td>
-<td>实际HTTP：4消息/2运行/1动作及内容摘要、账本完全相同，无新增调用</td>
-<td><a href="evidence/restart.json">前后摘要</a></td>
-</tr>
-<tr>
-<td>重置</td>
-<td>默认业务库离线重新种子，账本字节不变；回归保留已结费用和未结预留</td>
-<td><code>python -m scripts.demo_reset</code>、tests/test_delivery.py；smoke后未清空记录</td>
-</tr>
-<tr>
-<td>其他检查</td>
-<td>eval validate31具体变体（30槽位+H01b）、compileall、node --check、pip check、diff --check通过</td>
-<td>全部不调用付费模型</td>
+<td>提交文档整理</td>
+<td>整理 README、HTML 阅读版、评估结果和生产化说明</td>
+<td>应用、数据、案例与实模结果不变；源码与录屏版本仍可核对</td>
 </tr>
 </tbody>
 </table></div>
-<p>另建全新runtime/setup-venv，以最小<code>pip install -e .</code>安装成功、pip check无冲突；该环境实际启动loopback8001并通过health/演示登录/空聊天检查后停止，项目账本完全未变。文档9个本地HTML通过链接/标题/表格/JSON示例检查；Chromium实际检查导航、架构SVG加载、实测报告与交付页可达、390px无横向溢出，并查看截图。首次临时文档检查把标题“评估”写成“评测”，修正断言后通过；不是应用/文档导航故障。</p>
-<p>交付前扫描152个tracked artifacts：两家已配置真实key的精确匹配0，长API token/Bearer模式匹配0；仅打印路径/数量，没有输出凭据。.env被忽略，runtime/.venv/.superpowers均无tracked内容。扫描发现旧协调报告曾被跟踪，已仅从Git索引移除，本机原件保留，公开评测/决策记录保留实质证据。</p>
-<p>Starlette1.10.0 TestClient优先加载httpx2，旧httpx路径发出弃用warning。按<a href="https://www.starlette.io/testclient/">官方说明</a>补dev可选依赖httpx2&gt;=2,&lt;3，本机2.16.0；<code>python -W error -c "from fastapi.testclient import TestClient"</code>通过。运行时httpx0.28.1保留，未为此升级FastAPI/Starlette或屏蔽warning。</p>
-<h2 id="section-6">真实smoke范围</h2>
-<p>开发助手通过浏览器输入全新自然语言，无场景ID/用户模拟器/grader/oracle。实际登录、CSRF、持久事件/worker、DeepSeek Flash、业务效果与卡片共同运行。初始驱动在异步新建聊天后过早读取选项，取得空聊天ID，轮询收到列表后报TypeError；首条消息已保存且继续执行。修正驱动等待选项，在同一个聊天恢复，没有重发首条消息或重复解锁。公开JSON中recovered_browser_driver=true，不声称脚本一次无中断完成。</p>
-<p>第一轮查询本人Okta普通锁定、政策允许、实际解锁并复查；模型请求试登录。第二轮输入“我刚才重新试了，现在已经能够登录 Okta。”，再次查询后resolved。后台unlock_count=1、revision=2。用户反馈属于合成环境的开发者输入，不能证明真实Okta登录。此路径实际来源directory/policy/tool_receipt，没有搜索KB/历史，不声称新增hybrid检索实测。embedding仅固定配置；检索证据见历史报告。</p>
-<p>桌面和390px截图实际查看，无横向溢出，手机聊天区可滚动。模型原文有字面<code>\n</code>和英文目标标题；按textContent安全保留，没有自动改写。</p>
-<p><img alt="真实桌面smoke" src="evidence/employee-live.png"/></p>
-<p><a href="evidence/employee-mobile.png">手机截图</a>。本次65743f3记录的服务<a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>；当时启动PID41816，stdout/stderr为runtime/delivery/app-restart.stdout.log、app-restart.stderr.log。PID随重启变化。</p>
-<h2 id="section-7">费用与版本</h2>
-<p>smoke前USD2.608177868/751请求/0预留；增量USD0.025951501/8请求；之后USD2.634129369/759请求/0预留，原USD3内余USD0.365870631。未换模型、增加额度、迁移或清零runtime/usage.sqlite。重启/离线检查无新增费用；估算不是供应商账单。</p>
-<p>Task5自身仍为656请求/USD2.295008760，结束快照保留。生成器现使用evals/task5-cost-snapshot.json固定Task5截止快照，后续评测费用与current_project_ledger另列，不吸收后续demo或新评测。冻结版本/原文不改写。65743f3（最终边界修复前）smoke精确runtime SHA256在<a href="evidence/delivery-smoke.json">JSON</a>，正式最新已测仍630e586；<a href="../evals/public/metrics.json">metrics</a>列当前代码差异。新增smoke不是正式30案例复跑。</p>
-<p>历史66次live测量跨版本；最新候选17次/10案例，16程序有效、12满足目标、4事件错误、1次有2个必需交接缺失标记。8份旧判断过期/有争议；5/6实测校准属于grader v3，v4仅程序验证。<a href="evaluation-report.html">完整实测</a>、<a href="../evals/public/failure-examples.md">失败原文</a>保留未测和反例。</p>
-<h2 id="section-8">原题逐项映射</h2>
-<p>对照<a href="../agentic_ai_take_home_candidate_instructions_v20260421_01.html">原始题目</a>，以下实现不等于所有语义能力达标。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>题目部分</th>
-<th>交付与证据</th>
-<th>限制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Problem Framing：用户/交互</td>
-<td>员工、多轮Web，根README和smoke</td>
-<td>非坐席工作台</td>
-</tr>
-<tr>
-<td>直接解决/升级边界</td>
-<td>自有普通账号/目录权限；影响确认、生产审批、保存交接</td>
-<td>无真实专家联络</td>
-</tr>
-<tr>
-<td>数据/用途</td>
-<td>五来源data与系统设计</td>
-<td>本smoke只用目录/政策/回执</td>
-</tr>
-<tr>
-<td>成功体验</td>
-<td>每目标独立核查，实际状态/反馈/审批</td>
-<td>两分钟为题目示例，不保证所有请求</td>
-</tr>
-<tr>
-<td>交接上下文</td>
-<td>facts/hypotheses/attempts/evidence/open_questions/team，实际ID</td>
-<td>专家接续未实现</td>
-</tr>
-<tr>
-<td>What We Are Looking For：对话诊断</td>
-<td>持久追问、有限语义类别、缺范围澄清</td>
-<td>模型仍可能误解</td>
-</tr>
-<tr>
-<td>多步推理/工具</td>
-<td>单Agent动态选择16业务工具与内部细化，真实trace</td>
-<td>无场景诊断分支</td>
-</tr>
-<tr>
-<td>状态/记忆</td>
-<td>独立问题、纠正、持久事件与重启证据</td>
-<td>当前聊天，无跨聊天个人检索</td>
-</tr>
-<tr>
-<td>解决/交接判断</td>
-<td>执行/验收分开，交接按问题生命周期幂等</td>
-<td>历史重复交接失败仍保留</td>
-</tr>
-<tr>
-<td>可靠性</td>
-<td>已知歧义暂停相关写入，协议/容量/工具/费用有界停止</td>
-<td>非全部语言歧义覆盖</td>
-</tr>
-<tr>
-<td>安全/guardrails</td>
-<td>Auth/CSRF/归属/精确范围/版本/租约/到期/撤销/幂等</td>
-<td>自由措辞不能完全程序证明</td>
-</tr>
-<tr>
-<td>评估</td>
-<td>规则/LLM用户、程序断言、同模型grader、检索对照</td>
-<td>无真人盲测，不池化版本成功率</td>
-</tr>
-<tr>
-<td>生产思考</td>
-<td>trace、持久费用预留、worker恢复、loopback、来源版本</td>
-<td>外部对账/SSO为扩展</td>
-</tr>
-<tr>
-<td>README：问题/为何Agent</td>
-<td>根README开头，多目标和动态证据/授权</td>
-<td>不只是FAQ查询</td>
-</tr>
-<tr>
-<td>README：架构/边界/来源</td>
-<td>架构图、四设计文件、data和工具目录</td>
-<td>企业系统合成</td>
-</tr>
-<tr>
-<td>README：假设/权衡</td>
-<td>七工程裁定、短预算/当前聊天/语义局限</td>
-<td>未证明两阶段准确性提升</td>
-</tr>
-<tr>
-<td>README：运行</td>
-<td>Python、安装、.env、账号、URL、重置、重启</td>
-<td>浏览器/文档依赖独立可选</td>
-</tr>
-<tr>
-<td>README：评估</td>
-<td>命令、实际模式、分版本数字和原失败</td>
-<td>当前交付非最终30全通过</td>
-</tr>
-<tr>
-<td>README：更多时间</td>
-<td>稳定性/同版本复测/独立标注/SSO/外部对账</td>
-<td>见答辩与扩展设计</td>
-</tr>
-<tr>
-<td>Code/Demo/Optional design note</td>
-<td>可运行源码、本地git archive、新输入演示、四设计材料</td>
-<td>不发布/push；包不含本机数据库/密钥/协调scratch</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="section-9">设计与可执行契约</h2>
-<p>单Agent、五场景/来源、真实模拟效果、独立多目标、审批恢复、lexical降级均实现。默认10模型/12非终结工具/120秒、10k/12k保守字节；增加guarded refine_issue。新目标来自员工请求，不因证据机械拆分。小语义匹配阈值属于开发样本启发式，不是通用语义验证；必需上下文不足停止。已知模糊反馈保留每目标上次验证，all_resolved=false且页面待澄清。概念JSON不能保证原样用于请求，实际以app/contracts.py、tools.py、main.py为准。四设计文档保留理由、历史目标和未实现扩展。</p>
-<h2 id="section-10">最终整体审查后的确定性修复（2026-11-02）</h2>
-<p>整体审查记录2项Important和2项Minor，本次逐项落实：connectivity改用所有真实模型入口共同引用的app/config.py canonical ledger，项目配置显式从仓库.env加载，RUNTIME_DIR/CWD只影响业务/输出、不分配新预算；预算已耗尽/overrun时探针在任何供应商请求前停止。API最外层Host校验只允许127.0.0.1/localhost，无通配部署默认值；攻击者匹配Host+Origin也在读取/登录/写入前400。报告开头区分已完成的旧smoke与当前修复，历史Task5费用固定快照并单列后续评测。</p>
-<p>新增离线回归先4failed/2passed，修复后相关41passed；最终全程序209passed in23.66s，无warning。真实程序/脚本模型浏览器14checks、受控时钟3checks均通过，零付费。固定历史Task5仍656请求/USD2.295008760；合成“后续新批次”的回归证明截止值不变而新费用另列。正式测量/原oracle不改写。</p>
-<p>原docs/evidence/delivery-smoke.json及其原始runtime哈希、两截图和restart.json字节保留：它测量65743f3，在当前config/main.py确定性修复之前。metrics.integration_smoke.matches_current_runtime现为false并列差异，当前没有新的live模型实测；不把旧成功路径重新贴到新HEAD。当前UI/服务加载已通过离线浏览器历史读取，未发送新消息。</p>
-<p>只停止经命令行核实的原app启动进程，再以隐藏loopback helper启动相同factory。新实际服务器PID8388，启动helper PID43028；URL仍http://127.0.0.1:8000/，日志runtime/delivery/final-fix-app.stdout.log、final-fix-app.stderr.log。正常localhost/127.0.0.1读取200；任意匹配Host+Origin的读取/health/登录/建聊天/入队请求全部400。消息4/事件2/运行2/动作1及内容摘要、759条账本行指纹完全一致；花费USD2.634129369、预留0、剩余USD0.365870631，未新增付费调用。</p>
-<p><a href="evidence/final-boundary-checks.json">最终离线边界与重启证据</a>记录模式、前后摘要、Host状态和进程。四项修复已通过定向复核，无新增阻断问题；交付 ZIP 从最终已提交源码生成，并核对文件内容与凭据排除。</p>
-<h2 id="section-11">开发材料一致性审校</h2>
-<p>后续审校统一了开发流程、实际接口和预算单位，修正幂等机制、检索切分/无匹配、时钟与未实现交互的描述。文档区分现有能力、验收目标和扩展，数据强调正反例及实体关系，改进强调失败依据与同版本证据。离线检查验证 5 个 JSON 示例，其中 3 个通过实际严格 Schema，核对 5 个接口和源数据数量；31 个案例的引用检查通过，生成的 9 页 HTML 通过结构与链接检查。此修订没有运行新的付费测量，历史成绩与语义局限沿用原记录。</p>
-
-<footer><a href="delivery-evidence.md">Markdown 原文</a></footer>
-</article></main></body></html>
+<p><a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">当前检查</a> · <a href="implementation-status.html">结果与限制</a> · <a href="demo.html">演示</a></p>
+</main>
+<footer><a href="../delivery.html">项目说明</a> · <a href="delivery-evidence.md">Markdown</a></footer></body></html>

@@ -12,3 +12,20 @@ evals/results/
 docs/_review/
 
 *.egg-info/
+
+# Local reference material
+agentic_ai_take_home_candidate_instructions_v20260421_01.html
+docs/03-defense-and-extensions.md
+docs/03-defense-and-extensions.html
+docs/04-prompts-and-contracts.md
+docs/04-prompts-and-contracts.html
+docs/engineering-decisions.md
+docs/engineering-decisions.html
+docs/superpowers/
+docs/index.html
+docs/architecture.svg
+docs/evidence/demo-v7-recording/
+docs/evidence/employee-live.png
+docs/evidence/employee-mobile.png
+docs/evidence/restart.json
+docs/evidence/task2-restart.json

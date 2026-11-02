@@ -1,130 +1,89 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>演示说明</title><style>
-:root { color-scheme:light; }
-* { box-sizing:border-box; }
-body { max-width:980px; margin:32px auto; padding:0 24px; color:#252525; background:#fff; font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif; }
-a { color:#27567c; text-underline-offset:3px; overflow-wrap:anywhere; }
-header { border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:32px; }
-.brand { color:inherit; font-weight:650; text-decoration:none; }
-.pages { display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:12px; font-size:14px; }
-.pages a[aria-current=page] { color:inherit; font-weight:650; }
-.toc { font-size:14px; margin:20px 0; }
-.toc summary { cursor:pointer; }
-.toc a { display:block; margin:4px 0; }
-h1 { font-size:28px; line-height:1.4; margin:24px 0; }
-h2 { font-size:21px; margin:32px 0 12px; }
-h3 { font-size:18px; margin:24px 0 10px; }
-p,li { overflow-wrap:anywhere; }
-li { margin:6px 0; }
-img { max-width:100%; height:auto; }
-.table-wrap { overflow-x:auto; margin:20px 0; }
-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.65; }
-th,td { text-align:left; vertical-align:top; border-bottom:1px solid #ddd; padding:10px; min-width:100px; }
-th { background:#f5f5f5; }
-pre { padding:16px; background:#f6f6f6; overflow:auto; font-size:13px; line-height:1.6; }
-code { font-family:Consolas,'Microsoft YaHei',monospace; }
-blockquote { margin-left:0; padding-left:16px; border-left:2px solid #bbb; color:#555; }
-footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:#666; font-size:13px; }
-@media(max-width:600px) { body { padding:0 16px; margin:20px auto; font-size:15px; } h1 { font-size:25px; } table { min-width:600px; } }
-@media print { header,.toc { display:none; } body { max-width:none; font-size:10pt; margin:0; } h2,h3 { break-after:avoid; } tr { break-inside:avoid; } pre { white-space:pre-wrap; overflow-wrap:anywhere; } .table-wrap { overflow:visible; } }
-</style></head><body>
-<header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
-<nav class="pages" aria-label="文档导航"><a href="index.html">文档</a><a href="demo.html" aria-current="page">演示</a><a href="01-system-design.html">系统设计</a><a href="implementation-status.html">验证结果</a></nav></header>
-<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">录屏内容</a><a href="#section-3">试录发现与局限</a><a href="#section-4">提交与本地记录</a><a href="#section-5">现场演示</a><a href="#section-6">可选复现工具</a></details><h1 id="section-1">演示说明</h1>
-<p><a href="evidence/demo-multi-20261102/index.html">播放新版录屏（含章节）</a> · <a href="evidence/demo-multi-20261102/walkthrough.webm">下载 WebM</a></p>
-<p>录屏长 <strong>7 分 18 秒</strong>，1440×1000，原速连续、无剪辑、无声。使用真实 DeepSeek Flash；企业系统与员工反馈为合成。录像包含操作间的停顿，可通过播放器章节跳转。</p>
-<h2 id="section-2">录屏内容</h2>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<title>演示</title><style>
+*{box-sizing:border-box}body{max-width:940px;margin:36px auto;padding:0 24px;color:#222;background:#fff;font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif}
+h1{font-size:28px;line-height:1.4;margin:20px 0}h2{font-size:21px;margin:30px 0 12px}h3{font-size:18px}
+a{color:#285e88;text-underline-offset:3px;overflow-wrap:anywhere}p,li{overflow-wrap:anywhere}li{margin:5px 0}
+.table-wrap{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #ddd;min-width:105px}th{background:#f5f5f5}
+pre{overflow:auto;padding:16px;background:#f6f6f6;font-size:13px;line-height:1.6}code{font-family:Consolas,monospace}footer{border-top:1px solid #ddd;margin-top:32px;padding-top:12px;font-size:14px}
+@media(max-width:600px){body{padding:0 16px;margin:20px auto;font-size:15px}h1{font-size:25px}table{min-width:560px}}
+@media print{body{max-width:none;margin:0;font-size:10pt}h2,h3{break-after:avoid}tr{break-inside:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere}.table-wrap{overflow:visible}footer{display:none}}
+</style></head><body><main><h1 id="section-1">演示</h1>
+<p><a href="evidence/demo-multi-20261102/index.html">播放视频（含章节）</a> · <a href="evidence/demo-multi-20261102/walkthrough.webm">下载 WebM</a></p>
+<p>7 分 18 秒，1440×1000，原速连续录制，无剪辑、无声。真实调用 DeepSeek Flash；企业系统与员工反馈为合成。</p>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
 <th>时间</th>
-<th>账号与操作</th>
-<th>观察重点</th>
+<th>内容</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>00:18</td>
-<td>Alice：模糊描述无法登录</td>
-<td>补问目标系统；范围未明确的解锁被程序拒绝</td>
+<td>Alice 模糊描述无法登录，Agent 补问系统</td>
 </tr>
 <tr>
 <td>00:56</td>
-<td>Alice：说明 Okta 锁定与已改密码</td>
-<td>完成一次解锁，展示回执，请员工重试</td>
+<td>明确 Okta 锁定，完成一次解锁并展示回执</td>
 </tr>
 <tr>
 <td>01:36</td>
-<td>Alice：登录恢复，又提出 Salesforce 转圈</td>
-<td>原问题验收，新问题单独调查</td>
+<td>登录恢复后，在原聊天提出 Salesforce 转圈</td>
 </tr>
 <tr>
 <td>02:35</td>
-<td>Alice：补充起始时间、页面和同事情况</td>
-<td>对照地区事故，保留“等待外部恢复”</td>
+<td>补充时间与同事情况，对照地区事故，保留等待状态</td>
 </tr>
 <tr>
 <td>03:14</td>
-<td>Chen：申请 Grafana 与生产库只读</td>
-<td>标准权限先办理；生产资源需明确目标</td>
+<td>Chen 申请 Grafana 和生产库只读，两项目标分开推进</td>
 </tr>
 <tr>
 <td>04:24</td>
-<td>Chen：确认 Grafana 可用，选择 analytics</td>
-<td>Grafana 完成，生产库单独等待审批</td>
+<td>确认看板可用与精确生产资源，提交审批</td>
 </tr>
 <tr>
 <td>06:02</td>
-<td>Pat：批准 analytics 只读申请</td>
-<td>实际审批页面与独立账号</td>
+<td>Pat 在审批页面批准 analytics 只读申请</td>
 </tr>
 <tr>
 <td>06:06</td>
-<td>返回 Chen 的聊天</td>
-<td>审批事件自动触发 Agent，执行开通并核查</td>
+<td>审批事件触发继续处理，实际开通并核查</td>
 </tr>
 <tr>
 <td>06:41</td>
-<td>Chen：反馈数据库和看板可用</td>
-<td>两项分别验收</td>
+<td>员工反馈可用，两项分别验收</td>
 </tr>
 </tbody>
 </table></div>
-<p>共 3 个账号、2 个聊天、7 条员工输入、8 次 Agent 回复。每次回复后都展开已有的问题编号、操作回执、审批编号和来源。实际发生一次解锁、两次授权；生产库授权引用 Pat 的批准记录。Salesforce 没有被标成解决。</p>
-<p>8 个事件均完成，48 次模型请求，新增估算 US$0.220164301；这不表示每次工具调用都成功。录像保留范围错误、证据不足和版本冲突被拒绝后继续处理的过程。<a href="evidence/demo-multi-20261102/walkthrough.json">消息与工具记录</a>包含运行提交 <code>bd41762</code> 和源码哈希；<a href="evidence/demo-multi-20261102/playback.json">媒体校验</a>记录时长与文件哈希。提示词仍为 v7。</p>
-<h2 id="section-3">试录发现与局限</h2>
-<p>此前试录中，模型同时提交 Okta 结案和 Salesforce 等待，程序只返回“缺少当前应用检查”，未指出失败的问题。模型连续查错对象，两次事件以 <code>NO_PROGRESS</code> 停止。<a href="evidence/demo-multi-20261102/pre-fix.json">原始失败记录</a>保留不改。</p>
-<p>修复仅补充错误所属的问题、验收类型和服务；缺少服务状态时说明对应查询工具。没有放宽验收条件。新增真实数据库回归验证整批回滚、版本保留和补证据后重提，完整套件 221 项通过。新版录屏中，另一处缺少账号检查的拒绝也带上问题范围，模型随后查询了正确账号并继续完成。这是一次实际恢复过程，不是对模型稳定性的统计证明。</p>
-<p>仍能看到回复偏长、已经确认的信息被重复询问、英文 KB 原文直接出现在中文回复，以及“基本排除电脑问题”等证据不足以完全支持的措辞。最后一句还把“Data 看板正常”扩展为其他看板也没有报错，超出了员工反馈范围。状态和操作可审计，语言含义仍需评测。VPN 确认、交接和外部事故恢复后的续问不在新版录像内。</p>
-<h2 id="section-4">提交与本地记录</h2>
-<p>原题要求可运行仓库、README 和面试演示，允许录像，也会现场输入新问题。没有要求预置员工聊天历史。仓库包含合成源数据、评测案例和上述演示证据；<code>runtime/</code> 中的业务数据库、个人本地聊天、费用账本与密钥不进入提交包。首次启动会建立本地业务数据，评审可以直接聊天。</p>
-<p>提交入口是仓库根目录 README；本页播放器用于观看视频。<code>docs/index.html</code> 只是详细文档的本地阅读入口，不是单独提交项。旧版 33 秒录屏仍保留在<a href="evidence/demo-v7-recording/index.html">历史目录</a>。</p>
-<h2 id="section-5">现场演示</h2>
-<p>按 <a href="../README.md">README</a> 启动服务，打开 http://127.0.0.1:8000/ 。所有演示密码为 <code>DemoPass123!</code>。</p>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<p>3 个账号、2 个聊天、7 条员工输入、8 次回复。每次回复后展开问题编号、实际回执、审批编号和相关来源。共执行一次解锁、两次授权；Salesforce 没有被标成解决。48 次模型请求估算 US$0.220164301，embedding 另计。</p>
+<p>录像保留被程序拒绝的尝试和补查过程。回复仍存在冗长、重复提问和语义超出证据的情况，详见<a href="implementation-status.html">验证结果</a>。<a href="evidence/demo-multi-20261102/walkthrough.json">实际消息、工具与运行版本</a>、<a href="evidence/demo-multi-20261102/pre-fix.json">修复前失败</a>和<a href="evidence/demo-multi-20261102/playback.json">媒体校验</a>一并提供。</p>
+<h2 id="section-2">现场运行</h2>
+<p>按 <a href="../delivery.html">README</a> 启动，打开 http://127.0.0.1:8000/ 。直接输入新问题，无需复用录像台词或案例编号。</p>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
 <th>账号</th>
-<th>可演示的内容</th>
+<th>适合观察的内容</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>alice.sales</code></td>
-<td>普通账号锁定、解锁与反馈；后续新问题</td>
+<td>账号锁定、恢复反馈、新问题</td>
 </tr>
 <tr>
 <td><code>bo.remote</code></td>
-<td>VPN 排查、影响确认、一次重置与后续观察</td>
+<td>VPN 环境询问、影响确认、重置与观察</td>
 </tr>
 <tr>
 <td><code>chen.data</code></td>
-<td>Grafana 与精确生产库权限，分别推进</td>
+<td>标准权限与生产库审批</td>
 </tr>
 <tr>
 <td><code>dana.platform</code></td>
-<td>跨系统调查与必要交接</td>
+<td>跨系统调查、证据与交接</td>
 </tr>
 <tr>
 <td><code>pat.approver</code></td>
@@ -136,20 +95,6 @@ footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:
 </tr>
 </tbody>
 </table></div>
-<p>重录使用隔离业务库，所以不会给日常界面增加这两段历史，也没有覆盖现有聊天。录屏中的恢复反馈是模拟员工输入，没有连接真实 Okta、Grafana 或 Snowflake。</p>
-<p>本轮获准新增最多 US$1，项目总上限提高至 US$4；试录和重录合计 US$0.448411504、100 次请求。结束时原共享账本累计 US$3.340527677、935 次请求，未结预留为 0，剩 US$0.659472323。费用按 token 保守估算，非供应商账单，embedding 另计。现场新对话仍收费，每次请求先预留费用；不要清空或更换账本恢复额度。</p>
-<h2 id="section-6">可选复现工具</h2>
-<p>观看已有视频无需安装录制工具。重录需要 Playwright，且会产生新费用：</p>
-<pre><code class="language-powershell">python -m pip install playwright
-python -m playwright install chromium ffmpeg
-# 离线检查
-python scripts/verify_browser.py
-python scripts/verify_ui_states.py
-# 交互式录制；输出目录必须尚不存在
-python -m scripts.record_walkthrough --output runtime/my-new-demo --max-cost 0.20
-</code></pre>
-<p>程序打印命令目录后，按 <code>001.json</code>、<code>002.json</code> 顺序写入操作，例如 <code>{"op":"login","actor":"alice.sales"}</code>、<code>{"op":"new_chat"}</code>、<code>{"op":"send","text":"Okta 提示账号锁定"}</code>。每一步先读取相应 <code>results/</code> 文件和实际回答，再发送下一步。其他操作见脚本头部说明；最后发送 <code>{"op":"finish"}</code>，等待在途事件和费用结算后生成视频与 JSON。</p>
-<p>每次录制使用独立业务库，费用仍记入原账本。<code>--max-cost</code> 是本次预留增量上限，也受项目总上限约束；预算不会因新建业务世界而重置。</p>
-
-<footer><a href="demo.md">Markdown 原文</a></footer>
-</article></main></body></html>
+<p>密码均为 <code>DemoPass123!</code>。审批人可在另一浏览器会话登录，也可退出后切换。录像使用隔离业务库，不预置到评审者的本地聊天中。现场的新对话需要可用 API 配置与预算；重置业务不会清空费用账本。</p>
+</main>
+<footer><a href="../delivery.html">项目说明</a> · <a href="demo.md">Markdown</a></footer></body></html>

@@ -1,155 +1,98 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>验证结果与限制</title><style>
-:root { color-scheme:light; }
-* { box-sizing:border-box; }
-body { max-width:980px; margin:32px auto; padding:0 24px; color:#252525; background:#fff; font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif; }
-a { color:#27567c; text-underline-offset:3px; overflow-wrap:anywhere; }
-header { border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:32px; }
-.brand { color:inherit; font-weight:650; text-decoration:none; }
-.pages { display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:12px; font-size:14px; }
-.pages a[aria-current=page] { color:inherit; font-weight:650; }
-.toc { font-size:14px; margin:20px 0; }
-.toc summary { cursor:pointer; }
-.toc a { display:block; margin:4px 0; }
-h1 { font-size:28px; line-height:1.4; margin:24px 0; }
-h2 { font-size:21px; margin:32px 0 12px; }
-h3 { font-size:18px; margin:24px 0 10px; }
-p,li { overflow-wrap:anywhere; }
-li { margin:6px 0; }
-img { max-width:100%; height:auto; }
-.table-wrap { overflow-x:auto; margin:20px 0; }
-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.65; }
-th,td { text-align:left; vertical-align:top; border-bottom:1px solid #ddd; padding:10px; min-width:100px; }
-th { background:#f5f5f5; }
-pre { padding:16px; background:#f6f6f6; overflow:auto; font-size:13px; line-height:1.6; }
-code { font-family:Consolas,'Microsoft YaHei',monospace; }
-blockquote { margin-left:0; padding-left:16px; border-left:2px solid #bbb; color:#555; }
-footer { margin:36px 0 24px; padding-top:14px; border-top:1px solid #ddd; color:#666; font-size:13px; }
-@media(max-width:600px) { body { padding:0 16px; margin:20px auto; font-size:15px; } h1 { font-size:25px; } table { min-width:600px; } }
-@media print { header,.toc { display:none; } body { max-width:none; font-size:10pt; margin:0; } h2,h3 { break-after:avoid; } tr { break-inside:avoid; } pre { white-space:pre-wrap; overflow-wrap:anywhere; } .table-wrap { overflow:visible; } }
-</style></head><body>
-<header><a class="brand" href="../README.md">IT Helpdesk Agent</a>
-<nav class="pages" aria-label="文档导航"><a href="index.html">文档</a><a href="demo.html">演示</a><a href="01-system-design.html">系统设计</a><a href="implementation-status.html" aria-current="page">验证结果</a></nav></header>
-<main><article><details class="toc"><summary>本页目录</summary><a href="#section-2">原题要求与实际实现</a><a href="#section-3">已有验证</a><a href="#section-4">0.1.3：多账号录屏与错误定位</a><a href="#section-5">0.1.2：验收与统计修正</a><a href="#section-6">仍然存在的问题</a><a href="#section-7">费用与复现</a></details><h1 id="section-1">验证结果与限制</h1>
-<p>2026-11-02。项目已具备可运行的员工聊天、模拟业务操作、审批、确认与交接。程序边界的验证比自然对话效果更充分；目前可作为 take-home 原型交付，尚不能证明大多数新问题都能稳定解决。</p>
-<h2 id="section-2">原题要求与实际实现</h2>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+*{box-sizing:border-box}body{max-width:940px;margin:36px auto;padding:0 24px;color:#222;background:#fff;font:16px/1.8 system-ui,'Microsoft YaHei',sans-serif}
+h1{font-size:28px;line-height:1.4;margin:20px 0}h2{font-size:21px;margin:30px 0 12px}h3{font-size:18px}
+a{color:#285e88;text-underline-offset:3px;overflow-wrap:anywhere}p,li{overflow-wrap:anywhere}li{margin:5px 0}
+.table-wrap{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #ddd;min-width:105px}th{background:#f5f5f5}
+pre{overflow:auto;padding:16px;background:#f6f6f6;font-size:13px;line-height:1.6}code{font-family:Consolas,monospace}footer{border-top:1px solid #ddd;margin-top:32px;padding-top:12px;font-size:14px}
+@media(max-width:600px){body{padding:0 16px;margin:20px auto;font-size:15px}h1{font-size:25px}table{min-width:560px}}
+@media print{body{max-width:none;margin:0;font-size:10pt}h2,h3{break-after:avoid}tr{break-inside:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere}.table-wrap{overflow:visible}footer{display:none}}
+</style></head><body><main><h1 id="section-1">验证结果与限制</h1>
+<p>当前可以运行员工聊天、模拟操作、审批、确认与交接。程序边界的验证比自然对话效果更充分；现有证据不足以说明大多数新问题都能稳定解决。</p>
+<h2 id="section-2">验证范围</h2>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
-<th>要求</th>
-<th>当前实现</th>
+<th>验证</th>
+<th>结果</th>
 <th>依据与局限</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>对话诊断与多步工具调用</td>
-<td>单 Agent 的理解阶段和动态工具循环；根据结果继续查询或追问</td>
-<td><code>app/agent.py</code>；真实对话保留工具轨迹，仍发生协议和问题理解错误</td>
+<td>程序回归</td>
+<td>221 项通过</td>
+<td>身份隔离、政策、审批确认、幂等、恢复、状态与评测器；模型采用替身。见 <a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">CI</a></td>
 </tr>
 <tr>
-<td>多源推理</td>
-<td>KB、历史、目录、状态变更、政策五类来源</td>
-<td><code>data/</code>、<code>app/retrieval.py</code>；同源小样本检索对照，不代表真实企业知识库</td>
+<td>案例结构</td>
+<td>31 个变体有效，30 个设计槽位</td>
+<td>五类场景与错误路径均有案例；不等于 31 个实模对话全部成功</td>
 </tr>
 <tr>
-<td>状态与记忆</td>
-<td>独立问题项、观察、证据、操作和当前聊天历史持久化</td>
-<td><code>app/domain.py</code>、<code>app/context.py</code>；不检索个人其他聊天，长历史可能容量停止</td>
+<td>最新真实模型录屏</td>
+<td>7 条员工输入和 1 个审批事件，8 次回复；一次解锁、两次授权</td>
+<td>8 个事件完成；Salesforce 等待外部恢复。业务与员工反馈为合成</td>
 </tr>
 <tr>
-<td>解决、审批与升级</td>
-<td>普通本人解锁、目录授权；VPN 确认；生产权限审批；保存交接</td>
-<td><code>app/tools.py</code>；模拟系统实际变更，交接没有连接真人</td>
+<td>v7 定向复测</td>
+<td>D05、D09 的程序目标满足，无事件错误</td>
+<td>两个已知案例各一次；等待外部恢复后的续问未验证</td>
 </tr>
 <tr>
-<td>可靠性与权限边界</td>
-<td>事务内核对范围、版本、批准与确认；幂等和中断恢复</td>
-<td>Domain/API/Worker 测试；不能保证模型正确理解所有自然语言</td>
+<td>历史实模测量</td>
+<td>63 次场景测量，另有 3 次特殊回归</td>
+<td>多个版本的探索结果，不能当作当前版本成功率</td>
 </tr>
 <tr>
-<td>评估与工程思考</td>
-<td>案例预期、用户模拟、程序断言、AI 评分、费用与执行记录</td>
-<td><code>evals/</code>；合成样本，同模型评分，无独立专家标注</td>
+<td>历史检索对照</td>
+<td>有答案查询：关键词 26/35，混合 35/35；无答案查询均 5/5</td>
+<td>小规模同源样本，未证明普遍端到端收益</td>
 </tr>
 </tbody>
 </table></div>
-<h2 id="section-3">已有验证</h2>
-<div aria-label="可横向滚动的表格" class="table-wrap" role="region" tabindex="0"><table>
+<p>最新录屏对应运行提交 <code>bd41762</code>，提示词 v7。8 个事件的后端处理耗时为 6.1–24.3 秒，48 次模型请求，估算 US$0.220164301，embedding 另计。这个时长不含员工思考和审批等待，不代表完整问题平均解决时长。费用按 token 保守估算，不是供应商账单。</p>
+<h2 id="section-3">失败与改进依据</h2>
+<div class="table-wrap" tabindex="0"><table>
 <thead>
 <tr>
-<th>验证</th>
-<th>结果</th>
-<th>能说明什么</th>
+<th>观察到的问题</th>
+<th>修改</th>
+<th>验证与剩余限制</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>v0.1.3 程序回归</td>
-<td>本地 221 passed，25.39 秒；提交后的结果见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">托管 CI</a></td>
-<td>给定输入与模型响应下的程序行为；不证明模型会自行作出这些决定</td>
+<td>多问题收尾时，错误没有指出缺证据的目标，模型重复查询另一服务</td>
+<td>验收错误附带当前问题、验收类型和服务范围</td>
+<td>回归验证整批回滚与补证据重提；新录屏中模型能按目标补查。仍只是一条恢复轨迹</td>
 </tr>
 <tr>
-<td>案例结构检查</td>
-<td>31 个变体有效，对应 30 个设计槽位</td>
-<td>数据可被驱动器执行，引用与结构有效；不是 31 个对话全部成功</td>
+<td>用户报告复发后，较早的恢复反馈可能再次用于结案</td>
+<td>新失败或纠正使较早恢复反馈失效</td>
+<td>程序回归通过，未完成各类复发的同版本实模重复测量</td>
 </tr>
 <tr>
-<td>浏览器检查</td>
-<td>14 项脚本模型交互、3 项受控时钟检查通过</td>
-<td>登录、状态、审批确认和界面到期行为；外部模型是替身</td>
+<td>重复操作后，下一种指导沿用首次操作时间</td>
+<td>以最近操作或尝试为反馈门槛</td>
+<td>程序回归通过，避免未观察结果就追加处理</td>
 </tr>
 <tr>
-<td>0.1.3 多账号录屏</td>
-<td>7 条员工输入、1 个审批事件，8 次回复；一次解锁、两次授权，Salesforce 等待恢复</td>
-<td>真实模型配合模拟业务；每轮展开详情，保留被拒绝的工具尝试，不是盲测</td>
-</tr>
-<tr>
-<td>修复前 v7 真实模型复测</td>
-<td>D05、D09 两案程序目标满足，无事件错误</td>
-<td>已知输入下的单次结果；D05 停在等待外部恢复，未验证之后的续问</td>
-</tr>
-<tr>
-<td>修复前 v7 录屏</td>
-<td>两轮交互、7 次请求、一次解锁、恢复反馈后结案</td>
-<td>修复前运行代码的一条账号路径；业务和员工反馈为合成</td>
-</tr>
-<tr>
-<td>历史真实模型评测</td>
-<td>63 次 D/H 场景测量，加 3 次 S 回归，共 66 次</td>
-<td>多个版本的探索与失败证据；不是最终版本成功率</td>
-</tr>
-<tr>
-<td>历史检索对照</td>
-<td>有答案查询 lexical 26/35、hybrid 35/35；无答案均 5/5</td>
-<td>小样本中混合检索改善了命中；未证明普遍端到端收益</td>
+<td>报告把预留前被预算阻止的调用算成实际请求</td>
+<td>分开统计尝试与账本请求，固定历史批次分母</td>
+<td>合成批次回归证明后续评测不会改变历史截止值</td>
 </tr>
 </tbody>
 </table></div>
-<p>最新代码检查见<a href="https://github.com/Yaliang-Cai/ithelper-project/actions/workflows/checks.yml">工作流记录</a>。真实模型的每次版本、消息、状态与费用见<a href="delivery-iteration-result.html">当前迭代</a>、<a href="demo.html">录屏说明</a>和<a href="evaluation-report.html">历史评测</a>。</p>
-<h2 id="section-4">0.1.3：多账号录屏与错误定位</h2>
-<p>试录暴露多问题收尾的错误信息缺少范围：拒绝 Okta 结案时只说缺少应用检查，模型转而重复查询 Salesforce，两次事件以 <code>NO_PROGRESS</code> 结束。现有验收错误补充所属问题、类型和服务，缺少服务状态时说明对应查询工具；验收条件未放宽。</p>
-<p>新增回归先重现失败，再验证多项更新整体回滚、版本保持，以及补正确证据后重提成功。另有累计预算提高仍保留旧费用、录制不得截断在途事件或未结费用的回归。最终 221 项通过。</p>
-<p>修复后重新录制三账号、多轮和审批继续处理；8 个事件完成，48 次模型请求。一次新鲜账号证据不足的拒绝明确指向 Okta，模型随后补查并完成收尾。该次结果不能证明普遍稳定；<a href="demo.html">演示说明</a>保留失败、改动与实际消息的链接。预算经确认从 US$3 提高到 US$4，仍使用原账本，本轮新增费用未超过获准的 US$1。</p>
-<h2 id="section-5">0.1.2：验收与统计修正</h2>
-<ul>
-<li>员工报告问题复发后，旧的恢复反馈曾可能再次被用于结案。现在复发症状会使较早反馈失效，新的明确恢复反馈仍可通过验收。</li>
-<li>同一问题再次执行解锁后，追加另一种指导曾沿用首次操作的反馈时间。现在以最近实际操作或尝试为准，要求该问题有更新的失败反馈。</li>
-<li>报告生成器曾把一次预留前被预算阻止的调用计为实际请求。现在分开统计尝试与账本请求，并按原批次固定历史结果分母，后续定向测量另列。</li>
-</ul>
-<p>四项新回归在修复前失败、修复后通过；完整离线套件 218 项通过。修复限于现有验收与统计逻辑，没有新增服务、审批层或业务功能。0.1.2 检查没有新增付费模型调用；当时引用的实模结果对应该次修复前代码。后续 0.1.3 录屏另列。</p>
-<h2 id="section-6">仍然存在的问题</h2>
+<p>多问题试录保留了两次 <code>NO_PROGRESS</code>，没有改成成功。新录屏仍可看到范围错误、证据不足和版本冲突被拒绝后继续处理。<a href="evidence/demo-multi-20261102/pre-fix.json">试录原文</a>与<a href="evidence/demo-multi-20261102/walkthrough.json">新录屏记录</a>可直接核对。</p>
+<h2 id="section-4">当前限制</h2>
 <ol>
-<li>追问与结构化问题有时不一致。旧 D05 只问页面范围却记录了起始时间问题；新版对话覆盖了时间、页面和同事情况的续问，但仍有重复询问已经确认信息的问题。</li>
-<li>回复仍冗长。新版出现英文 KB 原文、过强的诊断措辞，以及把 Data 看板正常扩展为其他看板没有报错；没有充分证据支撑这部分语义。</li>
-<li>v7 的正式定向复测只有两个已知案例，另有旧录屏和本次多账号演示。重复次数不足；未覆盖外部事故恢复后的续问，没有最终版本的完整盲测。</li>
-<li>程序能阻止不满足权限条件的操作，却不能证明诊断、指代和交接解释在语义上正确。同模型评分出现过误判，因此保留原文并单列无效评分。</li>
+<li>自然表达仍有偏差：重复追问、冗长、英文 KB 原文和过强诊断措辞。新录屏最后还把“Data 看板正常”扩展为其他看板没有报错，超出了员工反馈。</li>
+<li>最新录屏没有覆盖 VPN 确认、人工交接和外部事故恢复后的续问。同版本的场景广度与重复次数不足，没有完整的新问题盲测。</li>
+<li>程序能核查权限和证据归属，不能证明所有指代、诊断与回复语义都正确。用户模拟和语义评分同源，没有真人专家评价。</li>
+<li>没有企业 SSO、真实业务接口、真人接续或多副本部署验证。当前 SQLite 原子事务不能证明外部系统操作可靠性。</li>
 </ol>
-<p>优先补同一版本的多轮续问、失败复测与重复覆盖，再考虑新功能。生产化另需真实身份与业务接口、外部操作对账、专家接续和独立评审。</p>
-<h2 id="section-7">费用与复现</h2>
-<p>0.1.3 重录结束时，共享账本累计估算 US$3.340527677、935 次请求，未结预留为 0；项目 US$4 内剩 US$0.659472323。本轮试录与重录新增 US$0.448411504、100 次请求；旧录屏结束时的 US$2.892116173 / 835 次快照保留不改。费用按 token 保守估算，非供应商账单，embedding 另计。后续现场交互仍会收费，业务重置不清空账本。</p>
-<p><a href="../README.md">运行与测试命令</a> · <a href="delivery-evidence.html">集成及修复记录</a> · <a href="02-evaluation.html">详细评估设计</a></p>
-
-<footer><a href="implementation-status.md">Markdown 原文</a></footer>
-</article></main></body></html>
+<p>后续先补同版本的失败复测和自然多轮输入，再做独立 IT 评审。详细历史数字见<a href="evaluation-report.html">历史测量</a>，定向测量见<a href="delivery-iteration-result.html">迭代结果</a>。</p>
+</main>
+<footer><a href="../delivery.html">项目说明</a> · <a href="implementation-status.md">Markdown</a></footer></body></html>
